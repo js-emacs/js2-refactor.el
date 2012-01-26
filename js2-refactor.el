@@ -46,7 +46,8 @@
 ;;
 ;;  * `eo` is `expand-object`: Converts a one line object literal to multiline.
 ;;  * `co` is `contract-object`: Converts a multiline object literal to one line.
-;;  * `ig` is `inject-global-in-iife`: Creates a shortcut for a marked global by injecting it in the wrapping IIFE
+;;  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
+;;  * `ig` is `inject-global-in-iife`: Creates a shortcut for a marked global by injecting it in the wrapping immediately invoked function expression
 ;;  * `ev` is `extract-variable`: Takes a marked expression and replaces it with a var.
 ;;  * `rv` is `rename-var`: Renames the variable on point and all occurrences in its lexical scope.
 ;;
@@ -77,6 +78,9 @@
 
 ;;; Immediately invoked function expressions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-iife)
+
+;; Wrap the entire buffer in an immediately invoked function expression
+(define-key js2-mode-map (kbd "C-c RET wi") 'js-wrap-buffer-in-iife)
 
 ;; Create shortcut for marked global by injecting it in the wrapping IIFE
 (define-key js2-mode-map (kbd "C-c RET ig") 'js-inject-global-in-iife)

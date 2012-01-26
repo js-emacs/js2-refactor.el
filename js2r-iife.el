@@ -1,9 +1,23 @@
 (defvar js--iife-regexp "^(function (")
 
+(defun js-wrap-buffer-in-iife ()
+  "Wrap the entire buffer in an immediately invoked function expression"
+  (interactive)
+  (save-excursion
+    (when (ignore-errors (search-backward-regexp js--iife-regexp))
+      (error "Buffer already contains an immediately invoked function expression."))
+    (goto-char (point-min))
+    (insert "(function () {\n")
+    (goto-char (point-max))
+    (insert "\n")
+    (delete-blank-lines)
+    (insert "}());")
+    (indent-region (point-min) (point-max))))
+
 (defun js-inject-global-in-iife ()
   "Create shortcut for marked global by injecting it in the wrapping IIFE"
   (interactive)
-  (when (js2-parsed-errors)
+  (when js2-parsed-errors
     (error "Can't refactor while buffer has parse errors."))
   (unless (use-region-p)
     (error "Mark the variable to inject first."))
