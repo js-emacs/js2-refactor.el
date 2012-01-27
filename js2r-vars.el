@@ -35,16 +35,18 @@
 
 ;; Extract variable
 
-(defun js-extract-variable (name start end)
+(defun js2-extract-variable (name start end)
   (interactive "MVariable name: \nr")
   (let ((expression (buffer-substring start end))
-        (varpos (make-marker)))
+        (varpos (make-marker))
+        beg)
     (delete-region start end)
     (insert name)
     (set-marker varpos (point))
-    (back-to-indentation)
+    (goto-char (js2-node-abs-pos (js2-node-parent-stmt (js2-node-at-point))))
+    (setq beg (point))
     (insert (concat "var " name " = " expression ";\n"))
-    (indent-according-to-mode)
-    (goto-char varpos)))
+    (goto-char varpos)
+    (indent-region beg (point))))
 
 (provide 'js2r-vars)

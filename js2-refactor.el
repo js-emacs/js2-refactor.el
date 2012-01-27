@@ -91,7 +91,7 @@
 (require 'js2r-vars)
 
 ;; Extract
-(define-key js2-mode-map (kbd "C-c RET ev") 'js-extract-variable)
+(define-key js2-mode-map (kbd "C-c RET ev") 'js2-extract-variable)
 
 ;; Rename
 (define-key js2-mode-map (kbd "C-c RET rv") 'js2-rename-var)

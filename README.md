@@ -46,7 +46,6 @@ A list of some wanted improvements for the current refactorings.
  * wrap-buffer-in-iife: should skip comments and namespace initializations at buffer start.
  * inject-global-in-iife: with no active region, could use er/mark-symbol if it is defined
  * extract-variable: should use mark-multiple
- * extract-variable: should use always find a valid placement of the var-declaration.
  * extract-variable: could end with a query-replace of the expression in its scope.
  * rename-var: should skip keys in object literals
 
