@@ -35,18 +35,28 @@
 
 ;; Extract variable
 
-(defun js2-extract-variable (name start end)
-  (interactive "MVariable name: \nr")
+(defun js2r--start-of-parent-stmt ()
+  (js2-node-abs-pos (js2-node-parent-stmt (js2-node-at-point))))
+
+(defun js2-extract-variable (start end)
+  (interactive "r")
   (let ((expression (buffer-substring start end))
         (varpos (make-marker))
         beg)
     (delete-region start end)
-    (insert name)
     (set-marker varpos (point))
-    (goto-char (js2-node-abs-pos (js2-node-parent-stmt (js2-node-at-point))))
+    (insert "name")
+    (goto-char (js2r--start-of-parent-stmt))
+    (insert "var ")
     (setq beg (point))
-    (insert (concat "var " name " = " expression ";\n"))
+    (insert "name")
+    (insert (concat " = " expression ";\n"))
     (goto-char varpos)
-    (indent-region beg (point))))
+    (indent-region beg (point))
+    (mm/create-master varpos (+ 4 varpos))
+    (mm/add-mirror beg (+ 4 beg))))
+
+;; todo: mark-multiple should switch to multiple-cursors after first change
+;;       also: always delete everything, not rely on region to do that.
 
 (provide 'js2r-vars)

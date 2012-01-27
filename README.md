@@ -44,8 +44,7 @@ A list of some wanted improvements for the current refactorings.
  * expand- and contract-object: should work for arrays.
  * expand- and contract-object: should work for simple functions.
  * wrap-buffer-in-iife: should skip comments and namespace initializations at buffer start.
- * inject-global-in-iife: with no active region, could use er/mark-symbol if it is defined
- * extract-variable: should use mark-multiple
+ * inject-global-in-iife: with no active region, could use js2-node-at-point if it is defined
  * extract-variable: could end with a query-replace of the expression in its scope.
  * rename-var: should skip keys in object literals
 
