@@ -1,6 +1,23 @@
 ;; Make sure commas are placed correctly when moving a line up or down
 ;; in an object or array literal.
 
+(defun move-line-down ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (next-line)
+      (transpose-lines 1))
+    (next-line)
+    (move-to-column col)))
+
+(defun move-line-up ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (next-line)
+      (transpose-lines -1))
+    (move-to-column col)))
+
 (defun js--current-line-is-prefixed-with-list-item-start ()
   (save-excursion
     (back-to-indentation)
