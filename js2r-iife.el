@@ -8,10 +8,12 @@
       (error "Buffer already contains an immediately invoked function expression."))
     (goto-char (point-min))
     (insert "(function () {\n")
+    (when js2r-use-strict (insert "\"use strict\";\n"))
+    (insert "\n")
     (goto-char (point-max))
     (insert "\n")
     (delete-blank-lines)
-    (insert "}());")
+    (insert "\n}());")
     (indent-region (point-min) (point-max))))
 
 (defun js-inject-global-in-iife ()

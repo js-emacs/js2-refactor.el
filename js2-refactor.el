@@ -67,6 +67,11 @@
 
 (require 'js2-mode)
 
+;;; Settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar js2r-use-strict nil
+  "When non-nil, js2r inserts strict declarations in IIFEs.")
+
 ;;; Formatting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-formatting)
 
