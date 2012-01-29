@@ -16,15 +16,32 @@
     (insert "\n}());")
     (indent-region (point-min) (point-max))))
 
+(defun js2r--selected-name-positions ()
+  "Returns the (beginning . end) of the name at cursor, or active region."
+  (let ((current-node (js2-node-at-point))
+        beg end)
+    (unless (js2-name-node-p current-node)
+      (setq current-node (js2-node-at-point (- (point) 1))))
+    (if (not (and current-node (js2-name-node-p current-node)))
+        (error "Point is not on an identifier."))
+    (if (use-region-p)
+        (cons (region-beginning) (region-end))
+      (progn
+        (setq end (+ (js2-node-abs-pos current-node)
+                     (js2-node-len current-node)))
+        (skip-syntax-backward ".w_")
+        (cons (point) end)))))
+
 (defun js-inject-global-in-iife ()
   "Create shortcut for marked global by injecting it in the wrapping IIFE"
   (interactive)
   (when js2-parsed-errors
     (error "Can't refactor while buffer has parse errors."))
-  (unless (use-region-p)
-    (error "Mark the variable to inject first."))
   (save-excursion
-    (let* ((name (buffer-substring-no-properties (region-beginning) (region-end)))
+    (let* ((name-pos (js2r--selected-name-positions))
+           (name-beg (car name-pos))
+           (name-end (cdr name-pos))
+           (name (buffer-substring-no-properties name-beg name-end))
            (short (buster--global-shortcut name))
            beg end)
       (unless (search-backward-regexp js--iife-regexp)
