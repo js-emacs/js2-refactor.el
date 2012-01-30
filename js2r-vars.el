@@ -51,6 +51,8 @@
     (setq beg (point))
     (insert "name")
     (insert (concat " = " expression ";\n"))
+    (when (string-match-p "^function " expression)
+      (insert "\n"))
     (goto-char varpos)
     (indent-region beg (point))
     (mm/create-master varpos (+ 4 varpos))
