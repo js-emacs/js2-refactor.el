@@ -52,7 +52,8 @@
 
 (defun js2-extract-variable (start end)
   (interactive "r")
-  (let ((expression (buffer-substring start end))
+  (let ((deactivate-mark nil)
+        (expression (buffer-substring start end))
         (varpos (make-marker))
         (name (or (js2r--object-literal-key-behind start) "name"))
         beg)
@@ -68,6 +69,7 @@
       (insert "\n"))
     (goto-char varpos)
     (indent-region beg (point))
+    (push-mark (+ (length name) varpos) t t)
     (mm/create-master varpos (+ (length name) varpos))
     (mm/add-mirror beg (+ (length name) beg))))
 
