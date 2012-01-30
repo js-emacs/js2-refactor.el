@@ -37,6 +37,14 @@ There are also some minor conveniences bundled:
    element in an object or array literal, it makes sure that the commas are
    still correctly placed.
 
+## Bugs
+
+* **Undoing past an extract-variable messes up the buffer.** It's definitely
+  because of mark-multiple being used in an interactive command that also
+  modifies the buffer. The contents of master is mirrored. One possible solution
+  is to modify mark-multiple to be more like multiple-cursors. Other solutions
+  are most welcome.
+
 ## Todo
 
 A list of some wanted improvements for the current refactorings.
@@ -44,7 +52,6 @@ A list of some wanted improvements for the current refactorings.
  * expand- and contract-object: should work for arrays.
  * expand- and contract-object: should work for simple functions.
  * wrap-buffer-in-iife: should skip comments and namespace initializations at buffer start.
- * inject-global-in-iife: with no active region, could use js2-node-at-point if it is defined
  * extract-variable: could end with a query-replace of the expression in its scope.
  * rename-var: should skip keys in object literals
 
