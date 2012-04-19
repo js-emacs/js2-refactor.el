@@ -57,6 +57,14 @@
 ;;    element in an object or array literal, it makes sure that the commas are
 ;;    still correctly placed.
 ;;
+;;
+;; ## Contributions
+;;
+;; * [Matt Briggs](https://github.com/mbriggs) contributed `js2r-add-to-globals-annotation`
+;;
+;; Thanks!
+;;
+;;
 ;; ## Contribute
 ;;
 ;; This project is still in its infancy, and everything isn't quite sorted out
@@ -101,6 +109,8 @@
 ;; Rename
 (define-key js2-mode-map (kbd "C-c RET rv") 'js2-rename-var)
 
+;; Add to globals annotation
+(define-key js2-mode-map (kbd "C-c RET ag") 'js2r-add-to-globals-annotation)
 
 
 ;;; Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

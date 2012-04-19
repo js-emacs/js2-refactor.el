@@ -55,6 +55,12 @@ A list of some wanted improvements for the current refactorings.
  * extract-variable: could end with a query-replace of the expression in its scope.
  * rename-var: should skip keys in object literals
 
+## Contributions
+
+* [Matt Briggs](https://github.com/mbriggs) contributed `js2r-add-to-globals-annotation`
+
+Thanks!
+
 ## Contribute
 
 This project is still in its infancy, and everything isn't quite sorted out

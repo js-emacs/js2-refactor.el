@@ -49,19 +49,4 @@
     (forward-list)
     (insert ";")))
 
-(defun js2r--add-to-globals-annotation ()
-  (interactive)
-  (let ((var (word-at-point)))
-    (save-excursion
-      (beginning-of-buffer)
-      (when (not (string-match "^/\\* global " (current-line)))
-          (newline)
-          (previous-line)
-          (insert "/* global */"))
-      (while (not (string-match "*/" (current-line)))
-        (next-line))
-      (end-of-line)
-      (delete-char -2)
-      (insert (concat var " */")))))
-
 (provide 'js2r-functions)
