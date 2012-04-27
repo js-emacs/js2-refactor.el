@@ -53,7 +53,6 @@ A list of some wanted improvements for the current refactorings.
  * expand- and contract-object: should work for simple functions.
  * wrap-buffer-in-iife: should skip comments and namespace initializations at buffer start.
  * extract-variable: could end with a query-replace of the expression in its scope.
- * rename-var: should skip keys in object literals
 
 ## Contributions
 

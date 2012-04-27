@@ -27,6 +27,14 @@
         (error "Point is not on an identifier.")
       current-node)))
 
+(defun js2r--local-name-node-p (node)
+    (and (js2-name-node-p node)
+         (not (save-excursion ; not key in object literal { key: value }
+                (goto-char (+ (js2-node-abs-pos node) (js2-node-len node)))
+                (looking-at "[\n\t ]*:")))
+         (not (save-excursion ; not property lookup on object
+                (goto-char (js2-node-abs-pos node))
+                (looking-back "\\.[\n\t ]*")))))
 
 (defun js2-rename-var ()
   "Renames the variable on point and all occurrences in its lexical scope."
@@ -47,7 +55,7 @@
        (lambda (node end-p)
          (when (and (not end-p)
                     (not (eq node current-node))
-                    (js2-name-node-p node)
+                    (js2r--local-name-node-p node)
                     (string= name (js2-name-node-name node)))
            (let* ((start (js2-node-abs-pos node))
                   (end (+ start (js2-node-len node))))
