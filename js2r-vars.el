@@ -8,9 +8,9 @@
     (save-excursion
       (beginning-of-buffer)
       (when (not (string-match "^/\\* global " (current-line)))
-          (newline)
-          (previous-line)
-          (insert "/* global */"))
+        (newline)
+        (previous-line)
+        (insert "/* global */"))
       (while (not (string-match "*/" (current-line)))
         (next-line))
       (end-of-line)
@@ -28,40 +28,41 @@
       current-node)))
 
 (defun js2r--local-name-node-p (node)
-    (and (js2-name-node-p node)
-         (not (save-excursion ; not key in object literal { key: value }
-                (goto-char (+ (js2-node-abs-pos node) (js2-node-len node)))
-                (looking-at "[\n\t ]*:")))
-         (not (save-excursion ; not property lookup on object
-                (goto-char (js2-node-abs-pos node))
-                (looking-back "\\.[\n\t ]*")))))
+  (and (js2-name-node-p node)
+       (not (save-excursion ; not key in object literal { key: value }
+              (goto-char (+ (js2-node-abs-pos node) (js2-node-len node)))
+              (looking-at "[\n\t ]*:")))
+       (not (save-excursion ; not property lookup on object
+              (goto-char (js2-node-abs-pos node))
+              (looking-back "\\.[\n\t ]*")))))
 
 (defun js2-rename-var ()
   "Renames the variable on point and all occurrences in its lexical scope."
   (interactive)
-  (let* ((current-node (js2r--name-node-at-point))
-         (name (js2-name-node-name current-node))
-         (scope (js2-node-get-enclosing-scope current-node))
-         (scope (js2-get-defining-scope scope name))
-         (current-start (js2-node-abs-pos current-node))
-         (current-end (+ current-start (js2-node-len current-node))))
-    (push-mark current-end)
-    (goto-char current-start)
-    (activate-mark)
-    (mm/create-master current-start current-end)
-    (js2-with-unmodifying-text-property-changes
-      (js2-visit-ast
-       scope
-       (lambda (node end-p)
-         (when (and (not end-p)
-                    (not (eq node current-node))
-                    (js2r--local-name-node-p node)
-                    (string= name (js2-name-node-name node)))
-           (let* ((start (js2-node-abs-pos node))
-                  (end (+ start (js2-node-len node))))
-             (mm/add-mirror start end)))
-         t)))))
-
+  (let ((current-node (js2r--name-node-at-point)))
+    (unless (js2r--local-name-node-p current-node)
+      (error "Point is not on a local identifier"))
+    (let* ((name (js2-name-node-name current-node))
+           (scope (js2-node-get-enclosing-scope current-node))
+           (scope (js2-get-defining-scope scope name))
+           (current-start (js2-node-abs-pos current-node))
+           (current-end (+ current-start (js2-node-len current-node))))
+      (push-mark current-end)
+      (goto-char current-start)
+      (activate-mark)
+      (mm/create-master current-start current-end)
+      (js2-with-unmodifying-text-property-changes
+        (js2-visit-ast
+         scope
+         (lambda (node end-p)
+           (when (and (not end-p)
+                      (not (eq node current-node))
+                      (js2r--local-name-node-p node)
+                      (string= name (js2-name-node-name node)))
+             (let* ((start (js2-node-abs-pos node))
+                    (end (+ start (js2-node-len node))))
+               (mm/add-mirror start end)))
+           t))))))
 
 ;; Extract variable
 
@@ -77,6 +78,8 @@
 
 (defun js2-extract-variable (start end)
   (interactive "r")
+  (unless (use-region-p)
+    (error "Mark the expression you want to extract first."))
   (let ((deactivate-mark nil)
         (expression (buffer-substring start end))
         (varpos (make-marker))
