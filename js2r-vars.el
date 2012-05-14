@@ -2,6 +2,10 @@
 
 ;; Add to jslint globals annotation
 
+(defun current-line ()
+  (buffer-substring (save-excursion (beginning-of-line) (point))
+                    (save-excursion (end-of-line) (point))))
+
 (defun js2r-add-to-globals-annotation ()
   (interactive)
   (let ((var (word-at-point)))
@@ -10,11 +14,17 @@
       (when (not (string-match "^/\\* global " (current-line)))
         (newline)
         (previous-line)
-        (insert "/* global */"))
+        (insert "/* global */")
+        (newline)
+        (previous-line))
       (while (not (string-match "*/" (current-line)))
         (next-line))
       (end-of-line)
       (delete-char -2)
+      (unless (looking-back "global ")
+        (while (looking-back " ")
+          (delete-char -1))
+        (insert ", "))
       (insert (concat var " */")))))
 
 ;; Rename variable
