@@ -80,45 +80,33 @@
 (defvar js2r-use-strict nil
   "When non-nil, js2r inserts strict declarations in IIFEs.")
 
+
 ;;; Formatting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-formatting)
 
-;; Expand and contract object
 (define-key js2-mode-map (kbd "C-c RET eo") 'js-expand-object)
 (define-key js2-mode-map (kbd "C-c RET co") 'js-contract-object)
-
 
 
 ;;; Immediately invoked function expressions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-iife)
 
-;; Wrap the entire buffer in an immediately invoked function expression
 (define-key js2-mode-map (kbd "C-c RET wi") 'js-wrap-buffer-in-iife)
-
-;; Create shortcut for marked global by injecting it in the wrapping IIFE
 (define-key js2-mode-map (kbd "C-c RET ig") 'js-inject-global-in-iife)
-
 
 
 ;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-vars)
 
-;; Extract
 (define-key js2-mode-map (kbd "C-c RET ev") 'js2-extract-variable)
-
-;; Rename
 (define-key js2-mode-map (kbd "C-c RET rv") 'js2-rename-var)
-
-;; Add to globals annotation
 (define-key js2-mode-map (kbd "C-c RET ag") 'js2r-add-to-globals-annotation)
 
 
 ;;; Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-functions)
 
-;; Toggle function declaration/expression
 (define-key js2-mode-map (kbd "C-c RET tf") 'js2r-toggle-function-expression-and-declaration)
-
 
 
 ;;; Conveniences ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -127,7 +115,6 @@
 ;; Make sure commas are placed correctly when moving a line in a literal
 (define-key js2-mode-map (kbd "<C-S-down>") 'js-move-line-down)
 (define-key js2-mode-map (kbd "<C-S-up>") 'js-move-line-up)
-
 
 
 (provide 'js2-refactor)
