@@ -6,6 +6,8 @@
   (buffer-substring (save-excursion (beginning-of-line) (point))
                     (save-excursion (end-of-line) (point))))
 
+(require 'thingatpt)
+
 (defun js2r-add-to-globals-annotation ()
   (interactive)
   (let ((var (word-at-point)))
