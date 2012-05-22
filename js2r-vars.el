@@ -147,7 +147,9 @@
   (delete-char (js2-node-len node))
   (cond
    ((js2r--was-single-var)
-    (kill-whole-line))
+    (beginning-of-line)
+    (delete-char (save-excursion (end-of-line) (current-column)))
+    (delete-blank-lines))
 
    ((js2r--was-starting-var)
     (delete-char 1)
