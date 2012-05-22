@@ -32,7 +32,7 @@
         (skip-syntax-backward ".w_")
         (cons (point) end)))))
 
-(defun js-inject-global-in-iife ()
+(defun js2r-inject-global-in-iife ()
   "Create shortcut for marked global by injecting it in the wrapping IIFE"
   (interactive)
   (js2r--guard)

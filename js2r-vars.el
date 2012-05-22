@@ -1,35 +1,6 @@
 (require 'mark-multiple)
 
-;; Add to jslint globals annotation
-
-(defun current-line ()
-  (buffer-substring (save-excursion (beginning-of-line) (point))
-                    (save-excursion (end-of-line) (point))))
-
-(require 'thingatpt)
-
-(defun js2r-add-to-globals-annotation ()
-  (interactive)
-  (let ((var (word-at-point)))
-    (save-excursion
-      (beginning-of-buffer)
-      (when (not (string-match "^/\\* global " (current-line)))
-        (newline)
-        (previous-line)
-        (insert "/* global */")
-        (newline)
-        (previous-line))
-      (while (not (string-match "*/" (current-line)))
-        (next-line))
-      (end-of-line)
-      (delete-char -2)
-      (unless (looking-back "global ")
-        (while (looking-back " ")
-          (delete-char -1))
-        (insert ", "))
-      (insert (concat var " */")))))
-
-;; Rename variable
+;; Helpers
 
 (defun js2r--name-node-at-point ()
   (let ((current-node (js2-node-at-point)))
@@ -67,6 +38,49 @@
        t))
     result))
 
+(defun js2r--var-defining-node (var-node)
+  (unless (js2r--local-name-node-p var-node)
+    (error "Node is not on a local identifier"))
+  (let* ((name (js2-name-node-name var-node))
+         (scope (js2-node-get-enclosing-scope var-node))
+         (scope (js2-get-defining-scope scope name)))
+    (js2-symbol-ast-node
+     (js2-scope-get-symbol scope name))))
+
+
+;; Add to jslint globals annotation
+
+(defun current-line-contents ()
+  "Find the contents of the current line, minus indentation."
+  (buffer-substring (save-excursion (back-to-indentation) (point))
+                    (save-excursion (end-of-line) (point))))
+
+(require 'thingatpt)
+
+(defun js2r-add-to-globals-annotation ()
+  (interactive)
+  (let ((var (word-at-point)))
+    (save-excursion
+      (beginning-of-buffer)
+      (when (not (string-match "^/\\* global " (current-line-contents)))
+        (newline)
+        (previous-line)
+        (insert "/* global */")
+        (newline)
+        (previous-line))
+      (while (not (string-match "*/" (current-line-contents)))
+        (next-line))
+      (end-of-line)
+      (delete-char -2)
+      (unless (looking-back "global ")
+        (while (looking-back " ")
+          (delete-char -1))
+        (insert ", "))
+      (insert (concat var " */")))))
+
+
+;; Rename variable
+
 (defun js2r-rename-var ()
   "Renames the variable on point and all occurrences in its lexical scope."
   (interactive)
@@ -87,6 +101,75 @@
                   (mm/add-mirror beg (+ beg len))))
               (js2r--local-var-positions current-node))))))
 
+
+;; Inline var
+
+(defun js2r-inline-var ()
+  (interactive)
+  (js2r--guard)
+  (save-excursion
+    (let ((current-node (js2r--name-node-at-point)))
+      (unless (js2r--local-name-node-p current-node)
+        (error "Point is not on a local identifier"))
+      (let* ((definer (js2r--var-defining-node current-node))
+             (definer-start (js2-node-abs-pos definer))
+             (var-init-node (js2-node-parent definer))
+             (initializer (js2-var-init-node-initializer
+                           var-init-node)))
+        (unless initializer
+          (error "Var is not initialized when defined."))
+        (let* ((var-len (js2-node-len current-node))
+               (init-beg (js2-node-abs-pos initializer))
+               (init-end (+ init-beg (js2-node-len initializer)))
+               (contents (buffer-substring init-beg init-end)))
+          (mapc (lambda (beg)
+                  (when (not (= beg definer-start))
+                    (goto-char beg)
+                    (delete-char var-len)
+                    (insert contents)))
+                (js2r--local-var-positions current-node))
+          (js2r--delete-var-init-node var-init-node)
+          )))))
+
+
+(defun js2r--was-single-var ()
+  (or (string= "var ;" (current-line-contents))
+      (string= "," (current-line-contents))))
+
+(defun js2r--was-starting-var ()
+  (looking-back "var "))
+
+(defun js2r--was-ending-var ()
+  (looking-at ";"))
+
+(defun js2r--delete-var-init-node (node)
+  (goto-char (js2-node-abs-pos node))
+  (delete-char (js2-node-len node))
+  (cond
+   ((js2r--was-single-var)
+    (kill-whole-line))
+
+   ((js2r--was-starting-var)
+    (delete-char 1)
+    (if (looking-at " ")
+        (delete-char 1)
+      (join-line -1)))
+
+   ((js2r--was-ending-var)
+    (if (looking-back ", ")
+        (delete-char -1)
+      (join-line)
+      (delete-char 1))
+    (delete-char -1))
+
+   (t (delete-char 2)
+  )))
+
+;; two cases
+;;   - it's the only var -> remove the line
+;;   - there are several vars -> remove the node then clean up commas
+
+
 ;; Extract variable
 
 (defun js2r--start-of-parent-stmt ()
@@ -99,7 +182,7 @@
       (backward-char 2)
       (js2-name-node-name (js2r--name-node-at-point)))))
 
-(defun js2r-extract-variable (start end)
+(defun js2r-extract-var (start end)
   (interactive "r")
   (unless (use-region-p)
     (error "Mark the expression you want to extract first."))

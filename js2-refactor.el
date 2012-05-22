@@ -51,7 +51,9 @@
 ;;  * `co` is `contract-object`: Converts a multiline object literal to one line.
 ;;  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
 ;;  * `ig` is `inject-global-in-iife`: Creates a shortcut for a marked global by injecting it in the wrapping immediately invoked function expression
-;;  * `ev` is `extract-variable`: Takes a marked expression and replaces it with a var.
+;;  * `ag` is `add-to-globals-annotation`: Creates a `/*global */` annotation if it is missing, and adds the var at point to it.
+;;  * `ev` is `extract-var`: Takes a marked expression and replaces it with a var.
+;;  * `iv` is `inline-var`: Replaces all instances of a variable with its initial value.
 ;;  * `rv` is `rename-var`: Renames the variable on point and all occurrences in its lexical scope.
 ;;
 ;; There are also some minor conveniences bundled:
@@ -96,13 +98,14 @@
 (require 'js2r-iife)
 
 (define-key js2-mode-map (kbd "C-c RET wi") 'js-wrap-buffer-in-iife)
-(define-key js2-mode-map (kbd "C-c RET ig") 'js-inject-global-in-iife)
+(define-key js2-mode-map (kbd "C-c RET ig") 'js2r-inject-global-in-iife)
 
 
 ;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-vars)
 
-(define-key js2-mode-map (kbd "C-c RET ev") 'js2r-extract-variable)
+(define-key js2-mode-map (kbd "C-c RET ev") 'js2r-extract-var)
+(define-key js2-mode-map (kbd "C-c RET iv") 'js2r-inline-var)
 (define-key js2-mode-map (kbd "C-c RET rv") 'js2r-rename-var)
 (define-key js2-mode-map (kbd "C-c RET ag") 'js2r-add-to-globals-annotation)
 

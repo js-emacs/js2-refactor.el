@@ -28,8 +28,9 @@ All refactorings start with `C-c C-m` and then a two-letter mnemonic shortcut.
  * `co` is `contract-object`: Converts a multiline object literal to one line.
  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
  * `ig` is `inject-global-in-iife`: Creates a shortcut for a marked global by injecting it in the wrapping immediately invoked function expression
- * `ag` is `add-to-globals-annotation`: Adds the var at point it to the lint /\*globals\*/ annotation.
- * `ev` is `extract-variable`: Takes a marked expression and replaces it with a var.
+ * `ag` is `add-to-globals-annotation`: Creates a `/*global */` annotation if it is missing, and adds the var at point to it.
+ * `ev` is `extract-var`: Takes a marked expression and replaces it with a var.
+ * `iv` is `inline-var`: Replaces all instances of a variable with its initial value.
  * `rv` is `rename-var`: Renames the variable on point and all occurrences in its lexical scope.
 
 There are also some minor conveniences bundled:
@@ -40,11 +41,11 @@ There are also some minor conveniences bundled:
 
 ## Bugs
 
-* **Undoing past an extract-variable messes up the buffer.** It's definitely
-  because of mark-multiple being used in an interactive command that also
-  modifies the buffer. The contents of master is mirrored. One possible solution
-  is to modify mark-multiple to be more like multiple-cursors. Other solutions
-  are most welcome.
+ * **Undoing past an extract-variable messes up the buffer.** It's definitely
+   because of mark-multiple being used in an interactive command that also
+   modifies the buffer. The contents of master is mirrored. One possible solution
+   is to modify mark-multiple to be more like multiple-cursors. Other solutions
+   are most welcome.
 
 ## Todo
 
