@@ -25,6 +25,9 @@
 ;; This is a collection of small refactoring functions to further the idea of a
 ;; JavaScript IDE in Emacs that started with js2-mode.
 ;;
+;; Functions that start with js2r- require js2-mode.
+;; Functions that start with js- can be used independently of js2-mode.
+;;
 ;; ## Installation
 ;;
 ;; Start by installing the dependencies:
@@ -74,6 +77,7 @@
 ;;; Code:
 
 (require 'js2-mode)
+(require 'js2-refactor-core)
 
 ;;; Settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -98,8 +102,8 @@
 ;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-vars)
 
-(define-key js2-mode-map (kbd "C-c RET ev") 'js2-extract-variable)
-(define-key js2-mode-map (kbd "C-c RET rv") 'js2-rename-var)
+(define-key js2-mode-map (kbd "C-c RET ev") 'js2r-extract-variable)
+(define-key js2-mode-map (kbd "C-c RET rv") 'js2r-rename-var)
 (define-key js2-mode-map (kbd "C-c RET ag") 'js2r-add-to-globals-annotation)
 
 

@@ -48,33 +48,44 @@
               (goto-char (js2-node-abs-pos node))
               (looking-back "\\.[\n\t ]*")))))
 
-(defun js2-rename-var ()
+(defun js2r--local-var-positions (var-node)
+  (unless (js2r--local-name-node-p var-node)
+    (error "Node is not on a local identifier"))
+  (let* ((name (js2-name-node-name var-node))
+         (scope (js2-node-get-enclosing-scope var-node))
+         (scope (js2-get-defining-scope scope name))
+         (current-start (js2-node-abs-pos var-node))
+         (current-end (+ current-start (js2-node-len var-node)))
+         (result nil))
+    (js2-visit-ast
+     scope
+     (lambda (node end-p)
+       (when (and (not end-p)
+                  (js2r--local-name-node-p node)
+                  (string= name (js2-name-node-name node)))
+         (add-to-list 'result (js2-node-abs-pos node)))
+       t))
+    result))
+
+(defun js2r-rename-var ()
   "Renames the variable on point and all occurrences in its lexical scope."
   (interactive)
+  (js2r--guard)
   (let ((current-node (js2r--name-node-at-point)))
     (unless (js2r--local-name-node-p current-node)
       (error "Point is not on a local identifier"))
-    (let* ((name (js2-name-node-name current-node))
-           (scope (js2-node-get-enclosing-scope current-node))
-           (scope (js2-get-defining-scope scope name))
+    (let* ((len (js2-node-len current-node))
            (current-start (js2-node-abs-pos current-node))
-           (current-end (+ current-start (js2-node-len current-node))))
+           (current-end (+ current-start len)))
       (push-mark current-end)
       (goto-char current-start)
       (activate-mark)
       (mm/create-master current-start current-end)
       (js2-with-unmodifying-text-property-changes
-        (js2-visit-ast
-         scope
-         (lambda (node end-p)
-           (when (and (not end-p)
-                      (not (eq node current-node))
-                      (js2r--local-name-node-p node)
-                      (string= name (js2-name-node-name node)))
-             (let* ((start (js2-node-abs-pos node))
-                    (end (+ start (js2-node-len node))))
-               (mm/add-mirror start end)))
-           t))))))
+        (mapc (lambda (beg)
+                (when (not (= beg current-start))
+                  (mm/add-mirror beg (+ beg len))))
+              (js2r--local-var-positions current-node))))))
 
 ;; Extract variable
 
@@ -88,7 +99,7 @@
       (backward-char 2)
       (js2-name-node-name (js2r--name-node-at-point)))))
 
-(defun js2-extract-variable (start end)
+(defun js2r-extract-variable (start end)
   (interactive "r")
   (unless (use-region-p)
     (error "Mark the expression you want to extract first."))

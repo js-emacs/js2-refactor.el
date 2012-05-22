@@ -35,8 +35,7 @@
 (defun js-inject-global-in-iife ()
   "Create shortcut for marked global by injecting it in the wrapping IIFE"
   (interactive)
-  (when js2-parsed-errors
-    (error "Can't refactor while buffer has parse errors."))
+  (js2r--guard)
   (save-excursion
     (let* ((name-pos (js2r--selected-name-positions))
            (name-beg (car name-pos))
