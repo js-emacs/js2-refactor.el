@@ -184,6 +184,11 @@
       (backward-char 2)
       (js2-name-node-name (js2r--name-node-at-point)))))
 
+(defun js2r--line-above-is-blank ()
+  (save-excursion
+    (previous-line)
+    (string= "" (current-line-contents))))
+
 (defun js2r-extract-var (start end)
   (interactive "r")
   (unless (use-region-p)
@@ -201,9 +206,10 @@
     (setq beg (point))
     (insert name)
     (insert (concat " = " expression ";"))
-    (newline)
-    (when (string-match-p "^function " expression)
+    (when (or (js2r--line-above-is-blank)
+              (string-match-p "^function " expression))
       (newline))
+    (newline)
     (goto-char varpos)
     (indent-region beg (point))
     (push-mark (+ (length name) varpos) t t)
