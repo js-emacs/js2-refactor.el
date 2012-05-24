@@ -10,6 +10,12 @@
         (error "Point is not on an identifier.")
       current-node)))
 
+(defun js2r--local-name-node-at-point ()
+  (let ((current-node (js2r--name-node-at-point)))
+    (unless (js2r--local-name-node-p current-node)
+      (error "Point is not on a local identifier"))
+    current-node))
+
 (defun js2r--local-name-node-p (node)
   (and (js2-name-node-p node)
        (not (save-excursion ; not key in object literal { key: value }
@@ -85,21 +91,19 @@
   "Renames the variable on point and all occurrences in its lexical scope."
   (interactive)
   (js2r--guard)
-  (let ((current-node (js2r--name-node-at-point)))
-    (unless (js2r--local-name-node-p current-node)
-      (error "Point is not on a local identifier"))
-    (let* ((len (js2-node-len current-node))
-           (current-start (js2-node-abs-pos current-node))
-           (current-end (+ current-start len)))
-      (push-mark current-end)
-      (goto-char current-start)
-      (activate-mark)
-      (mm/create-master current-start current-end)
-      (js2-with-unmodifying-text-property-changes
-        (mapc (lambda (beg)
-                (when (not (= beg current-start))
-                  (mm/add-mirror beg (+ beg len))))
-              (js2r--local-var-positions current-node))))))
+  (let* ((current-node (js2r--local-name-node-at-point))
+         (len (js2-node-len current-node))
+         (current-start (js2-node-abs-pos current-node))
+         (current-end (+ current-start len)))
+    (push-mark current-end)
+    (goto-char current-start)
+    (activate-mark)
+    (mm/create-master current-start current-end)
+    (js2-with-unmodifying-text-property-changes
+      (mapc (lambda (beg)
+              (when (not (= beg current-start))
+                (mm/add-mirror beg (+ beg len))))
+            (js2r--local-var-positions current-node)))))
 
 
 ;; Inline var
@@ -108,28 +112,26 @@
   (interactive)
   (js2r--guard)
   (save-excursion
-    (let ((current-node (js2r--name-node-at-point)))
-      (unless (js2r--local-name-node-p current-node)
-        (error "Point is not on a local identifier"))
-      (let* ((definer (js2r--var-defining-node current-node))
-             (definer-start (js2-node-abs-pos definer))
-             (var-init-node (js2-node-parent definer))
-             (initializer (js2-var-init-node-initializer
-                           var-init-node)))
-        (unless initializer
-          (error "Var is not initialized when defined."))
-        (let* ((var-len (js2-node-len current-node))
-               (init-beg (js2-node-abs-pos initializer))
-               (init-end (+ init-beg (js2-node-len initializer)))
-               (contents (buffer-substring init-beg init-end)))
-          (mapc (lambda (beg)
-                  (when (not (= beg definer-start))
-                    (goto-char beg)
-                    (delete-char var-len)
-                    (insert contents)))
-                (js2r--local-var-positions current-node))
-          (js2r--delete-var-init-node var-init-node)
-          )))))
+    (let* ((current-node (js2r--local-name-node-at-point))
+           (definer (js2r--var-defining-node current-node))
+           (definer-start (js2-node-abs-pos definer))
+           (var-init-node (js2-node-parent definer))
+           (initializer (js2-var-init-node-initializer
+                         var-init-node)))
+      (unless initializer
+        (error "Var is not initialized when defined."))
+      (let* ((var-len (js2-node-len current-node))
+             (init-beg (js2-node-abs-pos initializer))
+             (init-end (+ init-beg (js2-node-len initializer)))
+             (contents (buffer-substring init-beg init-end)))
+        (mapc (lambda (beg)
+                (when (not (= beg definer-start))
+                  (goto-char beg)
+                  (delete-char var-len)
+                  (insert contents)))
+              (js2r--local-var-positions current-node))
+        (js2r--delete-var-init-node var-init-node)
+        ))))
 
 
 (defun js2r--was-single-var ()
@@ -165,7 +167,7 @@
     (delete-char -1))
 
    (t (delete-char 2)
-  )))
+      )))
 
 ;; two cases
 ;;   - it's the only var -> remove the line
@@ -215,8 +217,5 @@
     (push-mark (+ (length name) varpos) t t)
     (mm/create-master varpos (+ (length name) varpos))
     (mm/add-mirror beg (+ (length name) beg))))
-
-;; todo: mark-multiple should switch to multiple-cursors after first change
-;;       also: always delete everything, not rely on region to do that.
 
 (provide 'js2r-vars)
