@@ -32,6 +32,7 @@ All refactorings start with `C-c C-m` and then a two-letter mnemonic shortcut.
  * `ev` is `extract-var`: Takes a marked expression and replaces it with a var.
  * `iv` is `inline-var`: Replaces all instances of a variable with its initial value.
  * `rv` is `rename-var`: Renames the variable on point and all occurrences in its lexical scope.
+ * `vt` is `var-to-this`: Changes local `var a` to be `this.a` instead.
 
 There are also some minor conveniences bundled:
 

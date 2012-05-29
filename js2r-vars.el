@@ -105,6 +105,19 @@
                 (mm/add-mirror beg (+ beg len))))
             (js2r--local-var-positions current-node)))))
 
+;; Change local variable to use this. instead
+
+(defun js2r-var-to-this ()
+  "Changes the variable on point to use this.var instead."
+  (interactive)
+  (js2r--guard)
+  (save-excursion
+    (mapc (lambda (beg)
+            (goto-char beg)
+            (when (looking-back "var ")
+              (delete-char -4))
+            (insert "this."))
+          (js2r--local-var-positions (js2r--local-name-node-at-point)))))
 
 ;; Inline var
 
