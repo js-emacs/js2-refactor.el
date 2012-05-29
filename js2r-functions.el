@@ -5,6 +5,8 @@
 (defun js2r-arguments-to-object ()
   (interactive)
   (js2r--guard)
+  (unless (fboundp 'yas/expand-snippet)
+    (error "js2r-arguments-to-object requires yasnippet to run."))
   (unless (and (looking-at "(")
                (js2-call-node-p (js2-node-at-point)))
     (error "Place point right before the opening paren in the call."))
