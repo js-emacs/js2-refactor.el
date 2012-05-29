@@ -1,3 +1,37 @@
+
+;; Convert from regular arguments to object literal of named arguments.
+;; Requires yasnippets
+
+(defun js2r-arguments-to-object ()
+  (interactive)
+  (js2r--guard)
+  (unless (and (looking-at "(")
+               (js2-call-node-p (js2-node-at-point)))
+    (error "Place point right before the opening paren in the call."))
+  (let ((args (js2-call-node-args (js2-node-at-point))))
+    (when (null args)
+      (error "No arguments to convert."))
+    (let (arg key result)
+      (dotimes (i (length args) result)
+        (setq arg (nth i args))
+        (setq key (if (js2-name-node-p arg)
+                      (js2-name-node-name arg)
+                    "key"))
+        (setq result
+              (concat result
+                      (format "    ${%d:%s}: %s,\n"
+                              (1+ i)
+                              key
+                              (buffer-substring (js2-node-abs-pos arg)
+                                                (js2-node-abs-end arg)))
+                      )))
+      (yas/expand-snippet (concat "({\n" (substring result 0 -2) "\n})")
+                          (point)
+                          (save-excursion (forward-list) (point))))))
+
+
+;; Toggle between function name() {} and var name = function ();
+
 (defun js2r-toggle-function-expression-and-declaration ()
   (interactive)
   (save-excursion
