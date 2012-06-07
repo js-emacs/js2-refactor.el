@@ -70,6 +70,16 @@ This project is still in its infancy, and everything isn't quite sorted out
 yet. If you're eager to contribute, please add an issue here on github and we
 can discuss your changes a little before diving into the elisp. :-)
 
+To fetch the test dependencies:
+
+    $ cd /path/to/multiple-cursors
+    $ git submodule init
+    $ git submodule update
+
+Run the tests with:
+
+    $ ./util/ecukes/ecukes features
+
 ## License
 
 Copyright (C) 2012 Magnar Sveen
