@@ -21,6 +21,7 @@
  (transient-mark-mode 1)
  (cua-mode 0)
  (delete-selection-mode 0)
+ (set-default 'indent-tabs-mode nil)
  (setq set-mark-default-inactive nil)
  (deactivate-mark))
 

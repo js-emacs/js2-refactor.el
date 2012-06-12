@@ -118,6 +118,11 @@
 (define-key js2-mode-map (kbd "C-c RET ao") 'js2r-arguments-to-object)
 
 
+;;; Conditionals ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'js2r-conditionals)
+
+(define-key js2-mode-map (kbd "C-c RET 3i") 'js2r-ternary-to-if)
+
 ;;; Conveniences ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-conveniences)
 

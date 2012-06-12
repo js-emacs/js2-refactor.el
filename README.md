@@ -34,6 +34,7 @@ All refactorings start with `C-c C-m` and then a two-letter mnemonic shortcut.
  * `rv` is `rename-var`: Renames the variable on point and all occurrences in its lexical scope.
  * `vt` is `var-to-this`: Changes local `var a` to be `this.a` instead.
  * `ao` is `arguments-to-object`: Replaces arguments to a function call with an object literal of named arguments. Requires yasnippets.
+ * `3i` is `ternary-to-if`: Converts ternary operator to if-statement.
 
 There are also some minor conveniences bundled:
 
