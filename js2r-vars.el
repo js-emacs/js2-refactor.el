@@ -231,4 +231,27 @@
     (mm/create-master varpos (+ (length name) varpos))
     (mm/add-mirror beg (+ (length name) beg))))
 
+;; Split var declaration
+
+(defun js2r-split-var-declaration ()
+  (interactive)
+  (js2r--guard)
+  (save-excursion
+    (let* ((declaration (or (js2r--closest #'js2-var-decl-node-p) (error "No var declaration at point.")))
+           (kids (js2-var-decl-node-kids declaration))
+           (stmt (js2-node-parent-stmt declaration)))
+      (goto-char (js2-node-abs-end stmt))
+      (mapc (lambda (kid)
+              (insert "var " (js2-node-string kid) ";")
+              (newline)
+              (if (save-excursion
+                    (goto-char (js2-node-abs-end kid))
+                    (looking-at ", *\n *\n"))
+                  (newline)))
+            kids)
+      (delete-char -1) ;; delete final newline
+      (let ((end (point)))
+        (js2r--goto-and-delete-node stmt)
+        (indent-region (point) end)))))
+
 (provide 'js2r-vars)

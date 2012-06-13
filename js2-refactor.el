@@ -109,7 +109,7 @@
 (define-key js2-mode-map (kbd "C-c RET rv") 'js2r-rename-var)
 (define-key js2-mode-map (kbd "C-c RET vt") 'js2r-var-to-this)
 (define-key js2-mode-map (kbd "C-c RET ag") 'js2r-add-to-globals-annotation)
-
+(define-key js2-mode-map (kbd "C-c RET sv") 'js2r-split-var-declaration)
 
 ;;; Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-functions)

@@ -35,6 +35,7 @@ All refactorings start with `C-c C-m` and then a two-letter mnemonic shortcut.
  * `vt` is `var-to-this`: Changes local `var a` to be `this.a` instead.
  * `ao` is `arguments-to-object`: Replaces arguments to a function call with an object literal of named arguments. Requires yasnippets.
  * `3i` is `ternary-to-if`: Converts ternary operator to if-statement.
+ * `sv` is `split-var-declaration`: Splits a `var` with multiple vars declared, into several `var` statements.
 
 There are also some minor conveniences bundled:
 

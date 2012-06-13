@@ -11,4 +11,8 @@
 (defun js2r--closest (p)
   (js2r--closest-node-where p (js2-node-at-point)))
 
+(defun js2r--goto-and-delete-node (node)
+  (goto-char (js2-node-abs-pos node))
+  (delete-char (js2-node-len node)))
+
 (provide 'js2-refactor-core)
