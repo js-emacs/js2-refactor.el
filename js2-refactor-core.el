@@ -9,7 +9,12 @@
     (js2r--closest-node-where p (js2-node-parent node))))
 
 (defun js2r--closest (p)
-  (js2r--closest-node-where p (js2-node-at-point)))
+  (save-excursion
+    (cond
+     ((bolp) (back-to-indentation))
+     ((looking-at ";") (forward-char -1))
+     ((looking-back ";") (forward-char -2)))
+    (js2r--closest-node-where p (js2-node-at-point))))
 
 (defun js2r--goto-and-delete-node (node)
   (goto-char (js2-node-abs-pos node))
