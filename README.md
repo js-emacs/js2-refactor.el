@@ -36,6 +36,7 @@ All refactorings start with `C-c C-m` and then a two-letter mnemonic shortcut.
  * `ao` is `arguments-to-object`: Replaces arguments to a function call with an object literal of named arguments. Requires yasnippets.
  * `3i` is `ternary-to-if`: Converts ternary operator to if-statement.
  * `sv` is `split-var-declaration`: Splits a `var` with multiple vars declared, into several `var` statements.
+ * `uw` is `unwrap`: Replaces the parent statement with the selected region.
 
 There are also some minor conveniences bundled:
 

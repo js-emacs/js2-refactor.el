@@ -20,4 +20,25 @@
   (goto-char (js2-node-abs-pos node))
   (delete-char (js2-node-len node)))
 
+
+(defun js2r--path-to-root (node)
+  (when node
+    (cons node (js2r--path-to-root (js2-node-parent node)))))
+
+(defun js2r--first-common-ancestor (node1 node2)
+  (if (eq node1 node2)
+      node1
+    (let ((path1 (reverse (js2r--path-to-root node1)))
+          (path2 (reverse (js2r--path-to-root node2)))
+          (last-common nil))
+      (while (eq (car path1) (car path2))
+        (setq last-common (car path1))
+        (setq path1 (cdr path1))
+        (setq path2 (cdr path2)))
+      last-common)))
+
+(defun js2r--first-common-ancestor-in-region (beg end)
+  (js2r--first-common-ancestor (js2-node-at-point beg)
+                               (js2-node-at-point end)))
+
 (provide 'js2-refactor-core)
