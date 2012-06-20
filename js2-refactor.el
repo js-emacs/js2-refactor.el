@@ -25,9 +25,6 @@
 ;; This is a collection of small refactoring functions to further the idea of a
 ;; JavaScript IDE in Emacs that started with js2-mode.
 ;;
-;; Functions that start with js2r- require js2-mode.
-;; Functions that start with js- can be used independently of js2-mode.
-;;
 ;; ## Installation
 ;;
 ;; Start by installing the dependencies:
@@ -90,14 +87,14 @@
 ;;; Formatting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-formatting)
 
-(define-key js2-mode-map (kbd "C-c RET eo") 'js-expand-object)
-(define-key js2-mode-map (kbd "C-c RET co") 'js-contract-object)
+(define-key js2-mode-map (kbd "C-c RET eo") 'js2r-expand-object)
+(define-key js2-mode-map (kbd "C-c RET co") 'js2r-contract-object)
 
 
 ;;; Immediately invoked function expressions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-iife)
 
-(define-key js2-mode-map (kbd "C-c RET wi") 'js-wrap-buffer-in-iife)
+(define-key js2-mode-map (kbd "C-c RET wi") 'js2r-wrap-buffer-in-iife)
 (define-key js2-mode-map (kbd "C-c RET ig") 'js2r-inject-global-in-iife)
 
 
@@ -131,8 +128,8 @@
 (require 'js2r-conveniences)
 
 ;; Make sure commas are placed correctly when moving a line in a literal
-(define-key js2-mode-map (kbd "<C-S-down>") 'js-move-line-down)
-(define-key js2-mode-map (kbd "<C-S-up>") 'js-move-line-up)
+(define-key js2-mode-map (kbd "<C-S-down>") 'js2r-move-line-down)
+(define-key js2-mode-map (kbd "<C-S-up>") 'js2r-move-line-up)
 
 
 (provide 'js2-refactor)

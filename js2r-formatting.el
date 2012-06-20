@@ -1,19 +1,19 @@
-(defun js--looking-at-object-start ()
+(defun js2r--looking-at-object-start ()
   (and (looking-at "{")
        (not (looking-back ")[\s\n]*"))))
 
-(defun js--goto-closest-object-start ()
-  (while (not (js--looking-at-object-start))
+(defun js2r--goto-closest-object-start ()
+  (while (not (js2r--looking-at-object-start))
     (if (eq (car (syntax-ppss)) 0)
         (error "Cursor is not on an object")
       (goto-char (nth 1 (syntax-ppss))))))
 
-(defun js--ensure-newline ()
+(defun js2r--ensure-newline ()
   (if (and (not (looking-at "\s*\n"))
            (not (looking-back "\n\s*")))
       (newline-and-indent)))
 
-(defun js--ensure-just-one-space ()
+(defun js2r--ensure-just-one-space ()
   (interactive)
   (while (or (looking-at "\s*\n")
              (looking-back "\n\s*"))
@@ -25,12 +25,12 @@
     (just-one-space))
   (just-one-space))
 
-(defmacro js--create-object-whitespace-traverser (name func)
+(defmacro js2r--create-object-whitespace-traverser (name func)
   `(defun ,name ()
      (interactive)
      (save-excursion
-       (if (not (js--looking-at-object-start))
-           (js--goto-closest-object-start))
+       (if (not (js2r--looking-at-object-start))
+           (js2r--goto-closest-object-start))
        (let ((end (make-marker)))
          (set-marker end (save-excursion
                            (forward-list)
@@ -49,10 +49,10 @@
          (backward-char)
          ,func))))
 
-(js--create-object-whitespace-traverser js-expand-object
-                                        (js--ensure-newline))
+(js2r--create-object-whitespace-traverser js2r-expand-object
+                                        (js2r--ensure-newline))
 
-(js--create-object-whitespace-traverser js-contract-object
-                                        (js--ensure-just-one-space))
+(js2r--create-object-whitespace-traverser js2r-contract-object
+                                        (js2r--ensure-just-one-space))
 
 (provide 'js2r-formatting)

@@ -1,4 +1,3 @@
-
 ;; Convert from regular arguments to object literal of named arguments.
 ;; Requires yasnippets
 

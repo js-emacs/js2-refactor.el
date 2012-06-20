@@ -1,10 +1,10 @@
-(defvar js--iife-regexp "^(function (")
+(defvar js2r--iife-regexp "^(function (")
 
-(defun js-wrap-buffer-in-iife ()
+(defun js2r-wrap-buffer-in-iife ()
   "Wrap the entire buffer in an immediately invoked function expression"
   (interactive)
   (save-excursion
-    (when (ignore-errors (search-backward-regexp js--iife-regexp))
+    (when (ignore-errors (search-backward-regexp js2r--iife-regexp))
       (error "Buffer already contains an immediately invoked function expression."))
     (goto-char (point-min))
     (insert "(function () {\n")
@@ -43,7 +43,7 @@
            (name (buffer-substring-no-properties name-beg name-end))
            (short (buster--global-shortcut name))
            beg end)
-      (unless (search-backward-regexp js--iife-regexp)
+      (unless (search-backward-regexp js2r--iife-regexp)
         (error "No immediately invoked function expression found."))
       (deactivate-mark)
       (forward-char 11)
