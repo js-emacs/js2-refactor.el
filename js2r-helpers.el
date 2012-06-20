@@ -47,4 +47,4 @@
   (js2r--first-common-ancestor (js2-node-at-point beg)
                                (js2-node-at-point end)))
 
-(provide 'js2-refactor-core)
+(provide 'js2r-helpers)

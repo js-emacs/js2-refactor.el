@@ -79,7 +79,7 @@
 ;;; Code:
 
 (require 'js2-mode)
-(require 'js2-refactor-core)
+(require 'js2r-helpers)
 
 ;;; Settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
