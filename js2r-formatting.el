@@ -38,6 +38,8 @@
          (forward-char)
          ,func
          (while (< (point) end)
+           (while (js2r--point-inside-string-p)
+             (forward-char))
            (when (looking-at ",")
              (forward-char)
              ,func)

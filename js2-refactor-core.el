@@ -2,6 +2,12 @@
   (when js2-parsed-errors
     (error "Can't refactor while buffer has parse errors.")))
 
+(defun js2r--current-quotes-char ()
+  "The char that is the current quote delimiter"
+  (nth 3 (syntax-ppss)))
+
+(defalias 'js2r--point-inside-string-p 'js2r--current-quotes-char)
+
 (defun js2r--closest-node-where (p node)
   (if (or (null node)
           (apply p node nil))
