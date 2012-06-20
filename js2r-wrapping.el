@@ -2,9 +2,11 @@
   (interactive "r")
   (js2r--guard)
   (unless (use-region-p)
-    (error "Select the code that you want keep when unwrapping."))
+    (let ((stmt (js2-node-parent-stmt (js2-node-at-point))))
+      (setq beg (js2-node-abs-pos stmt))
+      (setq end (js2-node-abs-end stmt))))
   (let* ((ancestor (js2-node-parent-stmt
-                    (js2r--first-common-ancestor-in-region (point) (mark))))
+                    (js2r--first-common-ancestor-in-region beg end)))
          (abeg (js2-node-abs-pos ancestor))
          (aend (js2-node-abs-end ancestor)))
     (save-excursion
