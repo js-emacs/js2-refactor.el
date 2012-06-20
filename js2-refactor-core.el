@@ -26,6 +26,24 @@
   (goto-char (js2-node-abs-pos node))
   (delete-char (js2-node-len node)))
 
+(defun js2r--string-replace (from to string &optional re)
+  "Replace all occurrences of FROM with TO in STRING.
+All arguments are strings.
+When optional fourth argument is non-nil, treat the from as a regular expression."
+  (let ((pos 0)
+        (res "")
+        (from (if re from (regexp-quote from))))
+    (while (< pos (length string))
+      (if (setq beg (string-match from string pos))
+          (progn
+            (setq res (concat res
+                              (substring string pos (match-beginning 0))
+                              to))
+            (setq pos (match-end 0)))
+        (progn
+          (setq res (concat res (substring string pos (length string))))
+          (setq pos (length string)))))
+    res))
 
 (defun js2r--path-to-root (node)
   (when node

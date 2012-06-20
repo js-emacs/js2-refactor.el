@@ -1,3 +1,4 @@
+(require 'yasnippet)
 
 ;; Convert from regular arguments to object literal of named arguments.
 ;; Requires yasnippets
@@ -31,6 +32,36 @@
                           (point)
                           (save-excursion (forward-list) (point))))))
 
+
+;; Extract function
+
+(defun js2r-extract-function ()
+  (interactive)
+  (js2r--guard)
+  (unless (fboundp 'yas/expand-snippet)
+    (error "js2r-extract-function requires yasnippet to run."))
+  (let ((contents (buffer-substring (point) (mark)))
+        (containing-func (js2r--closest 'js2-function-node-p)))
+    (deactivate-mark)
+    (yas/expand-snippet (concat
+                         "function ${1:name}() {\n"
+                         "  " contents "\n"
+                         "}\n"
+                         "\n"
+                         (js2r--string-replace contents "$1();$0"
+                                               (js2-node-string containing-func)))
+                        (js2-node-abs-pos containing-func)
+                        (js2-node-abs-end containing-func))
+    ))
+
+;; for å finne names: må finne en common root for alle expressions i region.
+;; så bruke js2-visit-ast på den, men filtrere på expressions som er innenfor region.
+;; det er alle navnene. så finne containing scope for de.
+;; sammenligne med containing-func
+;; fjerne de som defineres i region?
+
+;; må oppføre seg ganske annerledes for statements og expressions?
+;;  expressions skal i hvert fall returne
 
 ;; Toggle between function name() {} and var name = function ();
 

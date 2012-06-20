@@ -111,11 +111,14 @@
 (define-key js2-mode-map (kbd "C-c RET ag") 'js2r-add-to-globals-annotation)
 (define-key js2-mode-map (kbd "C-c RET sv") 'js2r-split-var-declaration)
 
+
 ;;; Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-functions)
 
 (define-key js2-mode-map (kbd "C-c RET tf") 'js2r-toggle-function-expression-and-declaration)
 (define-key js2-mode-map (kbd "C-c RET ao") 'js2r-arguments-to-object)
+(define-key js2-mode-map (kbd "C-c RET ef") 'js2r-extract-function)
+
 
 ;;; Wrapping ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-wrapping)
@@ -126,6 +129,7 @@
 (require 'js2r-conditionals)
 
 (define-key js2-mode-map (kbd "C-c RET 3i") 'js2r-ternary-to-if)
+
 
 ;;; Conveniences ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-conveniences)
