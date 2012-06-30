@@ -19,7 +19,8 @@
     (cond
      ((bolp) (back-to-indentation))
      ((looking-at ";") (forward-char -1))
-     ((looking-back ";") (forward-char -2)))
+     ((looking-back ";") (forward-char -2))
+     ((looking-back "}") (forward-char -1)))
     (js2r--closest-node-where p (js2-node-at-point))))
 
 (defun js2r--goto-and-delete-node (node)
