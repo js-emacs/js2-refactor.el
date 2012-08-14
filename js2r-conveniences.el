@@ -5,16 +5,16 @@
   (interactive)
   (let ((col (current-column)))
     (save-excursion
-      (next-line)
+      (forward-line)
       (transpose-lines 1))
-    (next-line)
+    (forward-line)
     (move-to-column col)))
 
 (defun move-line-up ()
   (interactive)
   (let ((col (current-column)))
     (save-excursion
-      (next-line)
+      (forward-line)
       (transpose-lines -1))
     (move-to-column col)))
 
@@ -35,12 +35,12 @@
 
 (defun js2r--next-line-is-a-list-item ()
   (save-excursion
-    (next-line)
+    (forward-line)
     (js2r--current-line-is-a-list-item)))
 
 (defun js2r--previous-line-is-a-list-item ()
   (save-excursion
-    (previous-line)
+    (forward-line -1)
     (js2r--current-line-is-a-list-item)))
 
 (defun js2r--current-line-has-comma ()
@@ -50,7 +50,7 @@
 
 (defun js2r--previous-line-has-comma ()
   (save-excursion
-    (previous-line)
+    (forward-line -1)
     (js2r--current-line-has-comma)))
 
 (defun js2r--move-line-down-as-list-item ()
@@ -59,7 +59,7 @@
       (save-excursion
         (end-of-line)
         (delete-char -1)
-        (previous-line)
+        (forward-line -1)
         (end-of-line)
         (insert ","))))
 
@@ -69,7 +69,7 @@
       (save-excursion
         (end-of-line)
         (insert ",")
-        (next-line)
+        (forward-line)
         (end-of-line)
         (delete-char -1))))
 
