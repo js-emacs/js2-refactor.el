@@ -70,12 +70,12 @@
       (beginning-of-buffer)
       (when (not (string-match "^/\\* global " (current-line-contents)))
         (newline)
-        (previous-line)
+        (forward-line -1)
         (insert "/* global */")
         (newline)
-        (previous-line))
+        (forward-line -1))
       (while (not (string-match "*/" (current-line-contents)))
-        (next-line))
+        (forward-line))
       (end-of-line)
       (delete-char -2)
       (unless (looking-back "global ")
@@ -201,7 +201,7 @@
 
 (defun js2r--line-above-is-blank ()
   (save-excursion
-    (previous-line)
+    (forward-line -1)
     (string= "" (current-line-contents))))
 
 (defun js2r-extract-var (start end)

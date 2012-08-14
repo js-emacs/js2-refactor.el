@@ -5,16 +5,16 @@
   (interactive)
   (let ((col (current-column)))
     (save-excursion
-      (next-line)
+      (forward-line)
       (transpose-lines 1))
-    (next-line)
+    (forward-line)
     (move-to-column col)))
 
 (defun move-line-up ()
   (interactive)
   (let ((col (current-column)))
     (save-excursion
-      (next-line)
+      (forward-line)
       (transpose-lines -1))
     (move-to-column col)))
 
@@ -33,14 +33,14 @@
   (and (js--current-line-is-prefixed-with-list-item-start)
        (js--current-line-is-postfixed-with-list-item-end)))
 
-(defun js--next-line-is-a-list-item ()
+(defun js--forward-line-is-a-list-item ()
   (save-excursion
-    (next-line)
+    (forward-line)
     (js--current-line-is-a-list-item)))
 
 (defun js--previous-line-is-a-list-item ()
   (save-excursion
-    (previous-line)
+    (forward-line -1)
     (js--current-line-is-a-list-item)))
 
 (defun js--current-line-has-comma ()
@@ -50,7 +50,7 @@
 
 (defun js--previous-line-has-comma ()
   (save-excursion
-    (previous-line)
+    (forward-line -1)
     (js--current-line-has-comma)))
 
 (defun js--move-line-down-as-list-item ()
@@ -59,7 +59,7 @@
       (save-excursion
         (end-of-line)
         (delete-char -1)
-        (previous-line)
+        (forward-line -1)
         (end-of-line)
         (insert ","))))
 
@@ -69,14 +69,14 @@
       (save-excursion
         (end-of-line)
         (insert ",")
-        (next-line)
+        (forward-line)
         (end-of-line)
         (delete-char -1))))
 
 (defun js-move-line-down ()
   (interactive)
   (if (and (js--current-line-is-a-list-item)
-           (js--next-line-is-a-list-item))
+           (js--forward-line-is-a-list-item))
       (js--move-line-down-as-list-item)
     (move-line-down)))
 
