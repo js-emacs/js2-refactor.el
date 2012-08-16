@@ -118,6 +118,7 @@
 (require 'js2r-wrapping)
 
 (define-key js2-mode-map (kbd "C-c RET uw") 'js2r-unwrap)
+(define-key js2-mode-map (kbd "C-c RET wl") 'js2r-wrap-in-for-loop)
 
 ;;; Conditionals ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'js2r-conditionals)
