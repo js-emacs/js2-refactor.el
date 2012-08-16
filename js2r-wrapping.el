@@ -16,4 +16,11 @@
       (delete-char (- beg abeg)))
     (indent-region (point-min) (point-max))))
 
+(defun js2r-wrap-in-for-loop (beg end)
+  (interactive "r")
+  (let ((s (buffer-substring beg end)))
+    (yas/expand-snippet (concat
+                         "for (var i = 0, l = ${1:length}; i < l; i++) {\n" s "$0\n}")
+                        beg end)))
+
 (provide 'js2r-wrapping)
