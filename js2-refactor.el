@@ -1,9 +1,10 @@
-;; js2-refactor.el --- The beginnings of a JavaScript refactoring library in emacs.
+;;; js2-refactor.el --- The beginnings of a JavaScript refactoring library in emacs.
 
 ;; Copyright (C) 2012 Magnar Sveen
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region
+;; Package-Requires: ((js2-mode "20101228") (mark-multiple "1.0.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -134,3 +135,4 @@
 
 
 (provide 'js2-refactor)
+;;; js2-refactor.el ends here
