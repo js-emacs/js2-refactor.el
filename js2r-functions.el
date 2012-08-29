@@ -1,6 +1,9 @@
 ;; Convert from regular arguments to object literal of named arguments.
 ;; Requires yasnippets
 
+(require 'cl)
+(require 'bang)
+
 (defun js2r-arguments-to-object ()
   (interactive)
   (js2r--guard)
@@ -30,6 +33,80 @@
                           (point)
                           (save-excursion (forward-list) (point))))))
 
+;; Extract Function (not to be confused with a future Extract Method)
+
+(defun js2r-extract-function (name)
+  (interactive "sName of new function: ")
+  (js2r--guard)
+  (unless (use-region-p)
+    (error "Mark the expressions to extract first."))
+  (save-excursion
+    (let* ((fn (js2r--function-around-region))
+           (exprs (js2r--marked-expressions-in-fn fn))
+           (vars (!mapcat 'js2r--name-node-decendants exprs))
+           (local (remove-if-not (apply-partially 'js2r--local-to-fn-p fn) vars))
+           (names (!uniq (!map 'js2-name-node-name local)))
+           (declared-in-exprs (!map 'js2r--var-init-node-target-name
+                                    (!mapcat 'js2r--var-init-node-decendants exprs)))
+           (params (!difference names declared-in-exprs))
+           (params-string (mapconcat 'identity (reverse params) ", "))
+           (last (car (last exprs)))
+           (beg (js2-node-abs-pos (car exprs)))
+           (end (js2-node-abs-end last))
+           (contents (buffer-substring beg end)))
+      (goto-char beg)
+      (delete-region beg end)
+      (when (js2-return-node-p last)
+        (insert "return "))
+      (insert name "(" params-string ");")
+      (goto-char (js2-node-abs-pos fn))
+      (unless (js2r--looking-at-function-declaration)
+        (goto-char (js2-node-abs-pos (js2r--closest-node-where 'js2-expr-stmt-node-p fn))))
+      (let ((start (point)))
+        (insert "function " name "(" params-string ") {\n" contents "\n}\n\n")
+        (indent-region start (1+ (point)))))))
+
+(defun js2r--var-init-node-target-name (node)
+  (js2-name-node-name
+   (js2-var-init-node-target node)))
+
+(defun js2r--function-around-region ()
+  (or
+   (js2r--closest-node-where 'js2-function-node-p
+                             (js2r--first-common-ancestor-in-region
+                              (region-beginning)
+                              (region-end)))
+   (error "This only works when you mark stuff inside a function")))
+
+(defun js2r--marked-expressions-in-fn (fn)
+  (remove-if-not 'js2r--node-is-marked
+                 (js2-block-node-kids
+                  (js2-function-node-body fn))))
+
+(defun js2r--node-is-marked (node)
+  (and
+   (<= (region-beginning) (js2-node-abs-end node))
+   (>= (region-end) (js2-node-abs-pos node))))
+
+(defun js2r--name-node-decendants (node)
+  (remove-if-not 'js2-name-node-p (js2r--decendants node)))
+
+(defun js2r--var-init-node-decendants (node)
+  (remove-if-not 'js2-var-init-node-p (js2r--decendants node)))
+
+(defun js2r--decendants (node)
+  (lexical-let (vars)
+    (js2-visit-ast node
+                   '(lambda (node end-p)
+                      (unless end-p
+                        (setq vars (cons node vars)))))
+    vars))
+
+(defun js2r--local-to-fn-p (fn name-node)
+  (let* ((name (js2-name-node-name name-node))
+         (scope (js2-node-get-enclosing-scope name-node))
+         (scope (js2-get-defining-scope scope name)))
+    (eq fn scope)))
 
 ;; Toggle between function name() {} and var name = function ();
 

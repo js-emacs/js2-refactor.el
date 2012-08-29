@@ -24,6 +24,7 @@ Then add this to your emacs settings:
 
 All refactorings start with `C-c C-m` and then a two-letter mnemonic shortcut.
 
+ * `ef` is `extract-function`: Extracts the marked expressions out into a new named function.
  * `eo` is `expand-object`: Converts a one line object literal to multiline.
  * `co` is `contract-object`: Converts a multiline object literal to one line.
  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
