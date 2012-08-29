@@ -156,3 +156,30 @@ Feature: Extract function
         return name(num);
     }
     """
+
+  Scenario: Nested expressions
+    Given I insert:
+    """
+    function abc(num) {
+        var inc = 1;
+        if (true) {
+            return num + inc;
+        }
+    }
+    """
+    And I turn on js2-mode
+    When I select "return"
+    And I press "C-c RET ef name RET"
+    Then I should see:
+    """
+    function name(num, inc) {
+        return num + inc;
+    }
+
+    function abc(num) {
+        var inc = 1;
+        if (true) {
+            return name(num, inc);
+        }
+    }
+    """

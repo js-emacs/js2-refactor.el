@@ -41,8 +41,10 @@
   (unless (use-region-p)
     (error "Mark the expressions to extract first."))
   (save-excursion
-    (let* ((fn (js2r--function-around-region))
-           (exprs (js2r--marked-expressions-in-fn fn))
+    (let* ((parent (js2r--first-common-ancestor-in-region (region-beginning) (region-end)))
+           (block (js2r--closest-node-where 'js2-block-node-p parent))
+           (fn (js2r--closest-node-where 'js2-function-node-p block))
+           (exprs (js2r--marked-expressions-in-block block))
            (vars (!mapcat 'js2r--name-node-decendants exprs))
            (local (remove-if-not (apply-partially 'js2r--local-to-fn-p fn) vars))
            (names (!uniq (!map 'js2-name-node-name local)))
@@ -78,10 +80,8 @@
                               (region-end)))
    (error "This only works when you mark stuff inside a function")))
 
-(defun js2r--marked-expressions-in-fn (fn)
-  (remove-if-not 'js2r--node-is-marked
-                 (js2-block-node-kids
-                  (js2-function-node-body fn))))
+(defun js2r--marked-expressions-in-block (fn)
+  (remove-if-not 'js2r--node-is-marked (js2-block-node-kids fn)))
 
 (defun js2r--node-is-marked (node)
   (and
