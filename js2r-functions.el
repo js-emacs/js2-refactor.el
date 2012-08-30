@@ -33,10 +33,28 @@
                           (point)
                           (save-excursion (forward-list) (point))))))
 
-;; Extract Function (not to be confused with a future Extract Method)
+;; Extract Function and Extract Method
 
 (defun js2r-extract-function (name)
   (interactive "sName of new function: ")
+  (js2r--extract-fn
+   name
+   #'(lambda ()
+       (unless (js2r--looking-at-function-declaration)
+         (goto-char (js2-node-abs-pos (js2r--closest 'js2-expr-stmt-node-p)))))
+   "%s(%s);"
+   "function %s(%s) {\n%s\n}\n\n"))
+
+(defun js2r-extract-method (name)
+  (interactive "sName of new method: ")
+  (js2r--extract-fn
+   name
+   #'(lambda ()
+       (goto-char (js2-node-abs-pos (js2r--closest 'js2-object-prop-node-p))))
+   "this.%s(%s);"
+   "%s: function (%s) {\n%s\n},\n\n"))
+
+(defun js2r--extract-fn (name goto-position call-template function-template)
   (js2r--guard)
   (unless (use-region-p)
     (error "Mark the expressions to extract first."))
@@ -60,12 +78,11 @@
       (delete-region beg end)
       (when (js2-return-node-p last)
         (insert "return "))
-      (insert name "(" params-string ");")
+      (insert (format call-template name params-string))
       (goto-char (js2-node-abs-pos fn))
-      (unless (js2r--looking-at-function-declaration)
-        (goto-char (js2-node-abs-pos (js2r--closest-node-where 'js2-expr-stmt-node-p fn))))
+      (funcall goto-position)
       (let ((start (point)))
-        (insert "function " name "(" params-string ") {\n" contents "\n}\n\n")
+        (insert (format function-template name params-string contents))
         (indent-region start (1+ (point)))))))
 
 (defun js2r--var-init-node-target-name (node)

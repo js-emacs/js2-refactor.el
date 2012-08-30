@@ -183,3 +183,28 @@ Feature: Extract function
         }
     }
     """
+
+  Scenario: Extract method
+    Given I insert:
+    """
+    var obj = {
+        abc: function () {
+            console.log("abc");
+        }
+    }
+    """
+    And I turn on js2-mode
+    When I select "console.log"
+    And I press "C-c RET em name RET"
+    Then I should see:
+    """
+    var obj = {
+        name: function () {
+            console.log("abc");
+        },
+
+        abc: function () {
+            this.name();
+        }
+    }
+    """
