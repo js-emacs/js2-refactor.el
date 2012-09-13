@@ -13,6 +13,8 @@ It should only be set using dynamic scope with a let, like:
   (apply 'concatenate 'list list))
 
 (defalias '!map 'mapcar)
+(defalias '!select 'remove-if-not)
+(defalias '!partial 'apply-partially)
 
 (defun !mapcat (fn list)
   (!concat (!map fn list)))
@@ -27,7 +29,7 @@ or with `!compare-fn' if that's non-nil."
       (setq list (cdr list)))
     (reverse result)))
 
-(defun !union (list list2)
+(defun !intersection (list list2)
   "Return a new list containing only the elements that are members of both LIST and LIST2.
 The test for equality is done with `equal',
 or with `!compare-fn' if that's non-nil."

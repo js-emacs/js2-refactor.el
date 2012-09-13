@@ -132,6 +132,34 @@ Feature: Extract function
     }
     """
 
+  Scenario: Keep reference to var if in use
+    Given I insert:
+    """
+    function abc(num) {
+        var inc = 1;
+        inc = inc + 7;
+        return num + inc;
+    }
+    """
+    And I turn on js2-mode
+    When I go to the front of the word "var"
+    And I set the mark
+    And I go to the end of the word "7"
+    And I press "C-c RET ef name RET"
+    Then I should see:
+    """
+    function name() {
+        var inc = 1;
+        inc = inc + 7;
+        return inc;
+    }
+
+    function abc(num) {
+        var inc = name();
+        return num + inc;
+    }
+    """
+
   Scenario: Included parameters
     Given I insert:
     """
