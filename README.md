@@ -1,4 +1,4 @@
-# js2-refactor.el
+# js2-refactor.el [![Build Status](https://secure.travis-ci.org/magnars/js2-refactor.el.png)](http://travis-ci.org/magnars/js2-refactor.el)
 
 The beginnings of a JavaScript refactoring library in emacs.
 
