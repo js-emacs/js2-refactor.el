@@ -5,6 +5,7 @@
   (setq js2-refactor-util-path (expand-file-name "util" project-directory)))
 
 (add-to-list 'load-path js2-refactor-root-path)
+(add-to-list 'load-path js2-refactor-util-path)
 (add-to-list 'load-path (expand-file-name "espuds" js2-refactor-util-path))
 (add-to-list 'load-path (expand-file-name "vendor" js2-refactor-util-path))
 
