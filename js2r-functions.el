@@ -64,7 +64,7 @@
            (fn (js2r--closest-node-where 'js2-function-node-p block))
            (exprs (js2r--marked-expressions-in-block block))
            (vars (!mapcat 'js2r--name-node-decendants exprs))
-           (local (!select (!partial 'js2r--local-to-fn-p fn) vars))
+           (local (!!filter (js2r--local-to-fn-p fn it) vars))
            (names (!uniq (!map 'js2-name-node-name local)))
            (declared-in-exprs (!map 'js2r--var-init-node-target-name (!mapcat 'js2r--var-init-node-decendants exprs)))
            (outside-exprs (!difference (js2-block-node-kids block) exprs))
