@@ -10,6 +10,7 @@ JavaScript IDE in Emacs that started with js2-mode.
 Start by installing the dependencies:
 
  * js2-mode https://github.com/mooz/js2-mode/
+ * bang https://github.com/magnars/bang.el
  * mark-multiple https://github.com/magnars/mark-multiple.el
 
 It is also recommended to get
@@ -19,6 +20,10 @@ vars, method calls and functions for refactorings.
 Then add this to your emacs settings:
 
     (require 'js2-refactor)
+
+Note: I am working on a smoother installation path through package.el,
+but I haven't had the time to whip this project into that sort of
+structure - yet.
 
 ## Usage
 
