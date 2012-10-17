@@ -68,10 +68,10 @@
   (let ((var (word-at-point)))
     (save-excursion
       (beginning-of-buffer)
-      (when (not (string-match "^/\\* global " (current-line-contents)))
+      (when (not (string-match "^/\\*global " (current-line-contents)))
         (newline)
         (forward-line -1)
-        (insert "/* global */")
+        (insert "/*global */")
         (newline)
         (forward-line -1))
       (while (not (string-match "*/" (current-line-contents)))
