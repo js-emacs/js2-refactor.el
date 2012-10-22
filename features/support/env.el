@@ -9,7 +9,7 @@
 (add-to-list 'load-path (expand-file-name "espuds" js2-refactor-util-path))
 (add-to-list 'load-path (expand-file-name "vendor" js2-refactor-util-path))
 
-(require 'bang)
+(require 'dash)
 (require 'mark-multiple)
 (require 'js2-refactor)
 (require 'espuds)
