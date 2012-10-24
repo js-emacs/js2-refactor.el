@@ -2,6 +2,10 @@
   (when js2-parsed-errors
     (error "Can't refactor while buffer has parse errors.")))
 
+(defun js2r--guard-yas ()
+  (unless (fboundp 'yas/expand-snippet)
+    (error "This command requires yasnippet to run.")))
+
 (defun js2r--current-quotes-char ()
   "The char that is the current quote delimiter"
   (nth 3 (syntax-ppss)))
