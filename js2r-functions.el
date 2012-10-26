@@ -15,15 +15,15 @@
     (when (null args)
       (error "No arguments to convert."))
     (let (arg key result)
-      (dotimes (i (length args) result)
-        (setq arg (nth i args))
+      (--dotimes (length args)
+        (setq arg (nth it args))
         (setq key (if (js2-name-node-p arg)
                       (js2-name-node-name arg)
                     "key"))
         (setq result
               (concat result
                       (format "    ${%d:%s}: %s,\n"
-                              (1+ i)
+                              (1+ it)
                               key
                               (buffer-substring (js2-node-abs-pos arg)
                                                 (js2-node-abs-end arg)))
@@ -104,7 +104,7 @@
    (error "This only works when you mark stuff inside a function")))
 
 (defun js2r--marked-expressions-in-block (fn)
-  (remove-if-not 'js2r--node-is-marked (js2-block-node-kids fn)))
+  (-select 'js2r--node-is-marked (js2-block-node-kids fn)))
 
 (defun js2r--node-is-marked (node)
   (and
@@ -112,10 +112,10 @@
    (>= (region-end) (js2-node-abs-pos node))))
 
 (defun js2r--name-node-decendants (node)
-  (remove-if-not 'js2-name-node-p (js2r--decendants node)))
+  (-select 'js2-name-node-p (js2r--decendants node)))
 
 (defun js2r--var-init-node-decendants (node)
-  (remove-if-not 'js2-var-init-node-p (js2r--decendants node)))
+  (-select 'js2-var-init-node-p (js2r--decendants node)))
 
 (defun js2r--decendants (node)
   (lexical-let (vars)
