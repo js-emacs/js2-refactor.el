@@ -12,13 +12,14 @@
   (let ((fn (js2r--closest-node-where 'js2r--is-local-function (js2-node-at-point))))
     (unless fn
       (error "Can only introduce parameter in local functions."))
-    (let ((name (read-string "Parameter name: "))
-          (val (buffer-substring beg end))
-          (usages (js2r--function-usages fn)))
-      (delete-region beg end)
-      (insert name)
-      (js2r--add-parameter name fn)
-      (-each usages (-partial 'js2r--add-parameter val)))))
+    (save-excursion
+      (let ((name (read-string "Parameter name: "))
+            (val (buffer-substring beg end))
+            (usages (js2r--function-usages fn)))
+        (delete-region beg end)
+        (insert name)
+        (js2r--add-parameter name fn)
+        (-each usages (-partial 'js2r--add-parameter val))))))
 
 (defun js2r--function-usages (fn)
   (let ((name-node (or (js2-function-node-name fn)
