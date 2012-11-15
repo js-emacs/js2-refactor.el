@@ -4,6 +4,66 @@
 (require 'cl)
 (require 'dash)
 
+;; Introduce parameter in local function
+
+(defun js2r-introduce-parameter (beg end)
+  (interactive "r")
+  (js2r--guard)
+  (let ((fn (js2r--closest-node-where 'js2r--is-local-function (js2-node-at-point))))
+    (unless fn
+      (error "Can only introduce parameter in local functions."))
+    (let ((name (read-string "Parameter name: "))
+          (val (buffer-substring beg end))
+          (usages (js2r--function-usages fn)))
+      (delete-region beg end)
+      (insert name)
+      (js2r--add-parameter name fn)
+      (-each usages (-partial 'js2r--add-parameter val)))))
+
+(defun js2r--function-usages (fn)
+  (let ((name-node (or (js2-function-node-name fn)
+                       (js2-var-init-node-target (js2-node-parent fn)))))
+    (remove name-node (js2r--local-usages-of-name-node name-node))))
+
+(defun js2r--add-parameter (name node)
+  (save-excursion
+    (js2r--goto-closing-paren node)
+    (unless (looking-back "(")
+      (insert ", "))
+    (insert name)))
+
+(defun js2r--goto-closing-paren (node)
+  (goto-char (js2-node-abs-pos node))
+  (search-forward "(")
+  (forward-char -1)
+  (forward-list)
+  (forward-char -1))
+
+(defun js2r--is-local-function (node)
+  (or (js2r--is-var-function-expression node)
+      (js2r--is-function-declaration node)))
+
+(defun js2r--is-method (node)
+  (and (js2-function-node-p node)
+       (js2-object-prop-node-p (js2-node-parent node))))
+
+(defun js2r--is-var-function-expression (node)
+  (and (js2-function-node-p node)
+       (js2-var-init-node-p (js2-node-parent node))))
+
+(defun js2r--is-assigned-function-expression (node)
+  (and (js2-function-node-p node)
+       (js2-assign-node-p (js2-node-parent node))))
+
+(defun js2r--is-function-declaration (node)
+  (let ((parent (js2-node-parent node)))
+    (and (js2-function-node-p node)
+         (not (js2-assign-node-p parent))
+         (not (js2-var-init-node-p parent))
+         (not (js2-object-prop-node-p parent)))))
+
+;; Change from a list of arguments to a parameter object
+
 (defun js2r-arguments-to-object ()
   (interactive)
   (js2r--guard)

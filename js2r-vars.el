@@ -1,4 +1,5 @@
 (require 'mark-multiple)
+(require 'dash)
 
 ;; Helpers
 
@@ -25,14 +26,14 @@
               (goto-char (js2-node-abs-pos node))
               (looking-back "\\.[\n\t ]*")))))
 
-(defun js2r--local-var-positions (var-node)
-  (unless (js2r--local-name-node-p var-node)
+(defun js2r--local-usages-of-name-node (name-node)
+  (unless (js2r--local-name-node-p name-node)
     (error "Node is not on a local identifier"))
-  (let* ((name (js2-name-node-name var-node))
-         (scope (js2-node-get-enclosing-scope var-node))
+  (let* ((name (js2-name-node-name name-node))
+         (scope (js2-node-get-enclosing-scope name-node))
          (scope (js2-get-defining-scope scope name))
-         (current-start (js2-node-abs-pos var-node))
-         (current-end (+ current-start (js2-node-len var-node)))
+         (current-start (js2-node-abs-pos name-node))
+         (current-end (+ current-start (js2-node-len name-node)))
          (result nil))
     (js2-visit-ast
      scope
@@ -40,9 +41,12 @@
        (when (and (not end-p)
                   (js2r--local-name-node-p node)
                   (string= name (js2-name-node-name node)))
-         (add-to-list 'result (js2-node-abs-pos node)))
+         (add-to-list 'result node))
        t))
     result))
+
+(defun js2r--local-var-positions (name-node)
+  (-map 'js2-node-abs-pos (js2r--local-usages-of-name-node name-node)))
 
 (defun js2r--var-defining-node (var-node)
   (unless (js2r--local-name-node-p var-node)

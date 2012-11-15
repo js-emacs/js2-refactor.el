@@ -121,6 +121,7 @@
 
 (define-key js2-mode-map (kbd "C-c RET ef") 'js2r-extract-function)
 (define-key js2-mode-map (kbd "C-c RET em") 'js2r-extract-method)
+(define-key js2-mode-map (kbd "C-c RET ip") 'js2r-introduce-parameter)
 (define-key js2-mode-map (kbd "C-c RET tf") 'js2r-toggle-function-expression-and-declaration)
 (define-key js2-mode-map (kbd "C-c RET ao") 'js2r-arguments-to-object)
 
