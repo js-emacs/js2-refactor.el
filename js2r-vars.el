@@ -1,4 +1,4 @@
-(require 'mark-multiple)
+(require 'multiple-cursors-core)
 (require 'dash)
 
 ;; Helpers
@@ -102,12 +102,17 @@
     (push-mark current-end)
     (goto-char current-start)
     (activate-mark)
-    (mm/create-master current-start current-end)
-    (js2-with-unmodifying-text-property-changes
-      (mapc (lambda (beg)
-              (when (not (= beg current-start))
-                (mm/add-mirror beg (+ beg len))))
-            (js2r--local-var-positions current-node)))))
+    (save-excursion
+      (js2-with-unmodifying-text-property-changes
+       (mapc (lambda (beg)
+               (when (not (= beg current-start))
+                 (goto-char beg)
+                 (set-mark (+ beg len))
+                 (mc/create-fake-cursor-at-point)))
+             (js2r--local-var-positions current-node)))))
+  (mc/maybe-multiple-cursors-mode))
+
+(add-to-list 'mc--default-cmds-to-run-once 'js2r-rename-var)
 
 ;; Change local variable to use this. instead
 
@@ -232,8 +237,11 @@
     (goto-char varpos)
     (indent-region beg (point))
     (push-mark (+ (length name) varpos) t t)
-    (mm/create-master varpos (+ (length name) varpos))
-    (mm/add-mirror beg (+ (length name) beg))))
+    (save-excursion
+      (goto-char beg)
+      (set-mark (+ (length name) beg))
+      (mc/create-fake-cursor-at-point)))
+  (mc/maybe-multiple-cursors-mode))
 
 ;; Split var declaration
 

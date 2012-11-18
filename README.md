@@ -11,7 +11,7 @@ Start by installing the dependencies:
 
  * js2-mode https://github.com/mooz/js2-mode/
  * dash https://github.com/magnars/dash.el
- * mark-multiple https://github.com/magnars/mark-multiple.el
+ * multiple-cursors https://github.com/magnars/multiple-cursors.el
 
 It is also recommended to get
 [expand-region](https://github.com/magnars/expand-region.el) to more easily mark
@@ -51,14 +51,6 @@ There are also some minor conveniences bundled:
  * `C-S-down` and `C-S-up` moves the current line up or down. If the line is an
    element in an object or array literal, it makes sure that the commas are
    still correctly placed.
-
-## Bugs
-
- * **Undoing past an extract-variable messes up the buffer.** It's definitely
-   because of mark-multiple being used in an interactive command that also
-   modifies the buffer. The contents of master is mirrored. One possible solution
-   is to modify mark-multiple to be more like multiple-cursors. Other solutions
-   are most welcome.
 
 ## Todo
 
