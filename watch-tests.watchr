@@ -7,18 +7,12 @@ end
 
 def run_all_tests
   system('clear')
-  result = run "./util/ecukes/ecukes"
-  puts result
-end
-
-def run_test(file)
-  system('clear')
-  result = run "./util/ecukes/ecukes #{file}"
+  result = run "make"
   puts result
 end
 
 run_all_tests
-watch('.*.feature') { |file| run_test file }
+watch('.*.feature') { run_all_tests }
 watch('.*.el') { run_all_tests }
 
 # Ctrl-\
