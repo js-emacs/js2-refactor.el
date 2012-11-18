@@ -10,15 +10,15 @@
 (add-to-list 'load-path (expand-file-name "vendor" js2-refactor-util-path))
 
 (require 'dash)
-(require 'multiple-cursors)
+(require 'multiple-cursors-core)
 (require 'js2-refactor)
 (require 'espuds)
 (require 'ert)
 
 (Before
- (mm/clear-all)
  (switch-to-buffer
   (get-buffer-create "*js2-refactor*"))
+ (multiple-cursors-mode 0)
  (erase-buffer)
  (transient-mark-mode 1)
  (cua-mode 0)
