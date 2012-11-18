@@ -7,7 +7,8 @@ before_install:
           emacs-snapshot-el emacs-snapshot-gtk emacs-snapshot;
     fi
   - curl -fsSkL https://raw.github.com/rejeep/carton/master/go | sh
-  - /home/travis/.carton/bin/carton
+  - export PATH="/home/travis/.carton/bin:$PATH"
+  - carton
 env:
   - EMACS=emacs-snapshot
 script:
