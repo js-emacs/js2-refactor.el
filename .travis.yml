@@ -9,7 +9,6 @@ before_install:
   - curl -fsSkL https://raw.github.com/rejeep/carton/master/go | sh
   - /home/travis/.carton/bin/carton
 env:
-  - EMACS=emacs
   - EMACS=emacs-snapshot
 script:
   ./run-travis-ci.sh
