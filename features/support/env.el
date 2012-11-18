@@ -10,7 +10,7 @@
 (add-to-list 'load-path (expand-file-name "vendor" js2-refactor-util-path))
 
 (require 'dash)
-(require 'mark-multiple)
+(require 'multiple-cursors)
 (require 'js2-refactor)
 (require 'espuds)
 (require 'ert)
