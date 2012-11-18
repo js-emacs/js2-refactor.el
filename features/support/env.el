@@ -16,9 +16,9 @@
 (require 'ert)
 
 (Before
+ (mm/clear-all)
  (switch-to-buffer
   (get-buffer-create "*js2-refactor*"))
- (multiple-cursors-mode 0)
  (erase-buffer)
  (transient-mark-mode 1)
  (cua-mode 0)

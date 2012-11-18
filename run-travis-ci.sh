@@ -17,4 +17,4 @@ echo "EMACS =" $(which $EMACS)
 $EMACS --version
 echo
 
-make
+exec ./util/ecukes/ecukes

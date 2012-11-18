@@ -6,10 +6,8 @@ before_install:
       sudo apt-get install -qq
           emacs-snapshot-el emacs-snapshot-gtk emacs-snapshot;
     fi
-  - curl -fsSkL https://raw.github.com/rejeep/carton/master/go | sh
-  - export PATH="/home/travis/.carton/bin:$PATH"
-  - carton
 env:
+  - EMACS=emacs
   - EMACS=emacs-snapshot
 script:
   ./run-travis-ci.sh
