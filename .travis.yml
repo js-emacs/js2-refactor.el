@@ -12,9 +12,10 @@ before_install:
       sudo apt-get install -qq
           emacs24 emacs24-el emacs24-common-non-dfsg;
     fi
+  - curl -fsSkL https://raw.github.com/rejeep/carton/master/go | sh
 env:
-  - EMACS=emacs
-  - EMACS=emacs24
-  - EMACS=emacs-snapshot
+  - ECUKES_EMACS=emacs EMACS=emacs
+  - ECUKES_EMACS=emacs24 EMACS=emacs24
+  - ECUKES_EMACS=emacs-snapshot EMACS=emacs-snapshot
 script:
   ./run-travis-ci.sh
