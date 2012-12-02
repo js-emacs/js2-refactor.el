@@ -46,18 +46,22 @@ fi
 if [ "$1" == "-h" -o "$1" == "--help" ] ; then
   cat $ECUKES_HOME/templates/usage.tpl
 elif [ "$1" == "--new" ] ; then
-  $ECUKES_EMACS --script "$ECUKES_NEW" --eval "(ecukes-new)"
+  "$ECUKES_EMACS" --script "$ECUKES_NEW" --eval "(ecukes-new)"
 elif [ "$1" == "--script" ] ; then
-  $ECUKES_EMACS --script "$ECUKES_EL" "${@:2}"
+  "$ECUKES_EMACS" --script "$ECUKES_EL" "${@:2}"
 else
   export ECUKES_OUTFILE=$(mktemp /tmp/ecukes.XXX)
   
   if [[ "$1" == "--win" ]]; then
-    $ECUKES_EMACS --load "$ECUKES_EL" -Q "$@"
+    "$ECUKES_EMACS" --load "$ECUKES_EL" -Q "$@"
   else
-    $ECUKES_EMACS -nw --load "$ECUKES_EL" -Q "$@"
+    "$ECUKES_EMACS" -nw --load "$ECUKES_EL" -Q "$@"
   fi
+
+  STATUS=$?
 
   cat $ECUKES_OUTFILE
   rm -f $ECUKES_OUTFILE
+
+  exit $STATUS
 fi
