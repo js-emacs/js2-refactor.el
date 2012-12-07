@@ -1,3 +1,15 @@
+;; Split a string
+
+(defun js2r-split-string ()
+  (interactive)
+  (when (js2r--point-inside-string-p)
+    (if (looking-back " \"")
+        (progn
+          (forward-char -2)
+          (insert "  +")
+          (forward-char -2))
+      (insert "\" + \""))))
+
 ;; Make sure commas are placed correctly when moving a line up or down
 ;; in an object or array literal.
 
