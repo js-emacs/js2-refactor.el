@@ -51,6 +51,7 @@
 ;;  * `ef` is `extract-function`: Extracts the marked expressions out into a new named function.
 ;;  * `em` is `extract-method`: Extracts the marked expressions out into a new named method in an object literal.
 ;;  * `ip` is `introduce-parameter`: Changes the marked expression to a parameter in a local function.
+;;  * `lp` is `localize-parameter`: Changes a parameter to a local var in a local function.
 ;;  * `eo` is `expand-object`: Converts a one line object literal to multiline.
 ;;  * `co` is `contract-object`: Converts a multiline object literal to one line.
 ;;  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
@@ -143,6 +144,7 @@
 (define-key js2-mode-map (kbd "C-c RET ef") 'js2r-extract-function)
 (define-key js2-mode-map (kbd "C-c RET em") 'js2r-extract-method)
 (define-key js2-mode-map (kbd "C-c RET ip") 'js2r-introduce-parameter)
+(define-key js2-mode-map (kbd "C-c RET lp") 'js2r-localize-parameter)
 (define-key js2-mode-map (kbd "C-c RET tf") 'js2r-toggle-function-expression-and-declaration)
 (define-key js2-mode-map (kbd "C-c RET ao") 'js2r-arguments-to-object)
 
