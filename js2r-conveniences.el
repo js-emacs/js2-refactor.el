@@ -8,7 +8,9 @@
           (forward-char -2)
           (insert "  +")
           (forward-char -2))
-      (insert "\" + \""))))
+      (if (looking-at (regexp-quote "\" + \""))
+          (delete-char 5)
+        (insert "\" + \"")))))
 
 ;; Make sure commas are placed correctly when moving a line up or down
 ;; in an object or array literal.
