@@ -19,7 +19,8 @@
         (delete-region beg end)
         (insert name)
         (js2r--add-parameter name fn)
-        (-each usages (-partial 'js2r--add-parameter val))))))
+        (-each usages (-partial 'js2r--add-parameter val))
+        (query-replace val name nil (js2-node-abs-pos fn) (js2r--fn-body-end fn))))))
 
 (defun js2r--function-usages (fn)
   (let ((name-node (or (js2-function-node-name fn)
@@ -39,6 +40,14 @@
   (forward-char -1)
   (forward-list)
   (forward-char -1))
+
+(defun js2r--fn-body-end (fn)
+  (save-excursion
+    (goto-char (js2-node-abs-pos fn))
+    (search-forward "{")
+    (forward-char -1)
+    (forward-list)
+    (point)))
 
 (defun js2r--is-local-function (node)
   (or (js2r--is-var-function-expression node)
