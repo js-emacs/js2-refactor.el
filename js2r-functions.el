@@ -93,6 +93,8 @@
 (defun js2r-introduce-parameter (beg end)
   (interactive "r")
   (js2r--guard)
+  (unless (use-region-p)
+    (error "Mark the expressions to introduce as parameter first."))
   (let ((fn (js2r--closest-node-where 'js2r--is-local-function (js2-node-at-point))))
     (unless fn
       (error "Can only introduce parameter in local functions."))
@@ -100,10 +102,12 @@
       (let ((name (read-string "Parameter name: "))
             (val (buffer-substring beg end))
             (usages (js2r--function-usages fn)))
-        (delete-region beg end)
+        (goto-char beg)
+        (save-excursion
+          (-each usages (-partial 'js2r--add-parameter val)))
+        (delete-char (- end beg))
         (insert name)
         (js2r--add-parameter name fn)
-        (-each usages (-partial 'js2r--add-parameter val))
         (query-replace val name nil (js2-node-abs-pos fn) (js2r--fn-body-end fn))))))
 
 (defun js2r--function-usages (fn)
