@@ -32,6 +32,7 @@ All refactorings start with `C-c C-m` and then a two-letter mnemonic shortcut.
  * `ef` is `extract-function`: Extracts the marked expressions out into a new named function.
  * `em` is `extract-method`: Extracts the marked expressions out into a new named method in an object literal.
  * `ip` is `introduce-parameter`: Changes the marked expression to a parameter in a local function.
+ * `lp` is `localize-parameter`: Changes a parameter to a local var in a local function.
  * `eo` is `expand-object`: Converts a one line object literal to multiline.
  * `co` is `contract-object`: Converts a multiline object literal to one line.
  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
