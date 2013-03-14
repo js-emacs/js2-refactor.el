@@ -1,6 +1,6 @@
 # js2-refactor.el [![Build Status](https://secure.travis-ci.org/magnars/js2-refactor.el.png)](http://travis-ci.org/magnars/js2-refactor.el)
 
-The beginnings of a JavaScript refactoring library in emacs.
+A JavaScript refactoring library for emacs.
 
 This is a collection of small refactoring functions to further the idea of a
 JavaScript IDE in Emacs that started with js2-mode.
@@ -74,19 +74,20 @@ This project is still in its infancy, and everything isn't quite sorted out
 yet. If you're eager to contribute, please add an issue here on github and we
 can discuss your changes a little before diving into the elisp. :-)
 
-To fetch the test dependencies:
+To fetch the test dependencies, install
+[carton](https://github.com/rejeep/carton) if you haven't already,
+then:
 
-    $ cd /path/to/multiple-cursors
-    $ git submodule init
-    $ git submodule update
+    $ cd /path/to/expand-region
+    $ carton
 
 Run the tests with:
 
-    $ ./util/ecukes/ecukes features
+    $ ./run-tests.sh
 
 ## License
 
-Copyright (C) 2012 Magnar Sveen
+Copyright (C) 2012-2013 Magnar Sveen
 
 Author: Magnar Sveen <magnars@gmail.com>
 Keywords: javascript refactorings

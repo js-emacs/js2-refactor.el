@@ -3,8 +3,7 @@
 ;; Copyright (C) 2012 Magnar Sveen
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
-;; Keywords: marking region
-;; Package-Requires: ((js2-mode "20101228") (multiple-cursors "1.0.0") (dash "1.0.0"))
+;; Keywords: conveniences
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

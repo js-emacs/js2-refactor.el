@@ -1,7 +1,4 @@
 Feature: Rename variable
-  In order to quickly replace a ternary operator with if
-  As an Emacs user with js2-refactor
-  I want the editor to do it for me
 
   Scenario: Replace simple ternary with if
     When I insert "console.log(a ? 1 : 2);"

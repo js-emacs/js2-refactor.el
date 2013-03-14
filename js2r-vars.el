@@ -103,13 +103,12 @@
     (goto-char current-start)
     (activate-mark)
     (save-excursion
-      (js2-with-unmodifying-text-property-changes
-       (mapc (lambda (beg)
-               (when (not (= beg current-start))
-                 (goto-char beg)
-                 (set-mark (+ beg len))
-                 (mc/create-fake-cursor-at-point)))
-             (js2r--local-var-positions current-node)))))
+      (mapc (lambda (beg)
+              (when (not (= beg current-start))
+                (goto-char beg)
+                (set-mark (+ beg len))
+                (mc/create-fake-cursor-at-point)))
+            (js2r--local-var-positions current-node))))
   (mc/maybe-multiple-cursors-mode))
 
 (add-to-list 'mc--default-cmds-to-run-once 'js2r-rename-var)

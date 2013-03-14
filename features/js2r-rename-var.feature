@@ -1,7 +1,4 @@
 Feature: Rename variable
-  In order to quickly rename a local variable
-  As an Emacs user with js2-refactor
-  I want to change all occurrences of the variable at once
 
   Scenario: Rename a single name
     Given delete-selection-mode is active

@@ -1,7 +1,4 @@
 Feature: Split var declaration
-  In order to quickly split a multi-var declaration into separate ones
-  As an Emacs user with js2-refactor
-  I want the editor to do it for me
 
   Scenario: Split simple var
     When I insert "var a, b, c;"
