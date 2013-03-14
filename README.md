@@ -5,15 +5,33 @@ A JavaScript refactoring library for emacs.
 This is a collection of small refactoring functions to further the idea of a
 JavaScript IDE in Emacs that started with js2-mode.
 
+## Breaking change in 0.6.0
+
+You now choose your own keybinding scheme. If you just want what you had
+before this change, add this to your init:
+
+    (js2r-add-keybindings-with-prefix "C-c C-m")
+
+See **Setup keybindings** below for more.
+
 ## Installation
 
-Start by installing the dependencies:
+I highly recommended installing js2-refactor through elpa.
+
+It's available on [melpa](http://melpa.milkbox.net/):
+
+    M-x package-install js2-refactor
+
+You can also install the dependencies on your own, and just dump
+js2-refactor in your path somewhere:
 
  * js2-mode https://github.com/mooz/js2-mode/
  * dash https://github.com/magnars/dash.el
+ * s https://github.com/magnars/s.el
  * multiple-cursors https://github.com/magnars/multiple-cursors.el
+ * yasnippet https://github.com/capitaomorte/yasnippet
 
-It is also recommended to get
+I also recommend that you get
 [expand-region](https://github.com/magnars/expand-region.el) to more easily mark
 vars, method calls and functions for refactorings.
 
@@ -21,13 +39,26 @@ Then add this to your emacs settings:
 
     (require 'js2-refactor)
 
-Note: I am working on a smoother installation path through package.el,
-but I haven't had the time to whip this project into that sort of
-structure - yet.
+## Setup keybindings
 
-## Usage
+All functions in js2-refactor have a two-letter mnemonic shortcut. For
+instance, extract-function is `ef`. You get to choose how those are bound.
+Here's how:
 
-All refactorings start with `C-c C-m` and then a two-letter mnemonic shortcut.
+    (js2r-add-keybindings-with-prefix "C-c C-m")
+    ;; eg. extract function with `C-c C-m ef`.
+
+If you would rather have a modifier key, instead of a prefix, do:
+
+    (js2r-add-keybindings-with-modifier "C-s-")
+    ;; eg. extract function with `C-s-e C-s-f`.
+
+If neither of these appeal to your sense of keyboard layout aesthetics, feel free
+to pick and choose your own keybindings with a smattering of:
+
+    (define-key js2-mode-map (kbd "C-c C-e C-f") 'js2r-extract-function)
+
+## Refactorings
 
  * `ef` is `extract-function`: Extracts the marked expressions out into a new named function.
  * `em` is `extract-method`: Extracts the marked expressions out into a new named method in an object literal.
@@ -42,7 +73,7 @@ All refactorings start with `C-c C-m` and then a two-letter mnemonic shortcut.
  * `iv` is `inline-var`: Replaces all instances of a variable with its initial value.
  * `rv` is `rename-var`: Renames the variable on point and all occurrences in its lexical scope.
  * `vt` is `var-to-this`: Changes local `var a` to be `this.a` instead.
- * `ao` is `arguments-to-object`: Replaces arguments to a function call with an object literal of named arguments. Requires yasnippets.
+ * `ao` is `arguments-to-object`: Replaces arguments to a function call with an object literal of named arguments.
  * `3i` is `ternary-to-if`: Converts ternary operator to if-statement.
  * `sv` is `split-var-declaration`: Splits a `var` with multiple vars declared, into several `var` statements.
  * `uw` is `unwrap`: Replaces the parent statement with the selected region.

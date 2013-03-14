@@ -11,6 +11,9 @@
 (require 'espuds)
 (require 'ert)
 
+(Setup
+ (js2r-add-keybindings-with-prefix "C-c C-m"))
+
 (Before
  (switch-to-buffer
   (get-buffer-create "*js2-refactor*"))

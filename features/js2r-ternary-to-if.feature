@@ -4,7 +4,7 @@ Feature: Rename variable
     When I insert "console.log(a ? 1 : 2);"
     And I turn on js2-mode
     And I go to character "?"
-    And I press "C-c RET 3i"
+    And I press "C-c C-m 3i"
     Then I should see:
     """
     if (a) {
@@ -18,7 +18,7 @@ Feature: Rename variable
     When I insert "var x = abc ? 1 : 2;"
     And I turn on js2-mode
     And I go to character "b"
-    And I press "C-c RET 3i"
+    And I press "C-c C-m 3i"
     Then I should see:
     """
     if (abc) {
@@ -37,7 +37,7 @@ Feature: Rename variable
     """
     And I turn on js2-mode
     And I go to character "?"
-    And I press "C-c RET 3i"
+    And I press "C-c C-m 3i"
     Then I should see:
     """
     if (this.url) {
@@ -61,7 +61,7 @@ Feature: Rename variable
     """
     And I turn on js2-mode
     And I go to character "?"
-    And I press "C-c RET 3i"
+    And I press "C-c C-m 3i"
     Then I should see:
     """
     if (this.a) {

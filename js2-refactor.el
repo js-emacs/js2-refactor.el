@@ -106,65 +106,51 @@
 
 (require 'js2-mode)
 (require 'js2r-helpers)
+(require 'js2r-formatting)
+(require 'js2r-iife)
+(require 'js2r-vars)
+(require 'js2r-functions)
+(require 'js2r-wrapping)
+(require 'js2r-conditionals)
+(require 'js2r-conveniences)
 
 ;;; Settings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar js2r-use-strict nil
   "When non-nil, js2r inserts strict declarations in IIFEs.")
 
+;;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Formatting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'js2r-formatting)
+(defun js2r--add-keybindings (key-fn)
+  (define-key js2-mode-map (funcall key-fn "eo") 'js2r-expand-object)
+  (define-key js2-mode-map (funcall key-fn "co") 'js2r-contract-object)
+  (define-key js2-mode-map (funcall key-fn "wi") 'js2r-wrap-buffer-in-iife)
+  (define-key js2-mode-map (funcall key-fn "ig") 'js2r-inject-global-in-iife)
+  (define-key js2-mode-map (funcall key-fn "ev") 'js2r-extract-var)
+  (define-key js2-mode-map (funcall key-fn "iv") 'js2r-inline-var)
+  (define-key js2-mode-map (funcall key-fn "rv") 'js2r-rename-var)
+  (define-key js2-mode-map (funcall key-fn "vt") 'js2r-var-to-this)
+  (define-key js2-mode-map (funcall key-fn "ag") 'js2r-add-to-globals-annotation)
+  (define-key js2-mode-map (funcall key-fn "sv") 'js2r-split-var-declaration)
+  (define-key js2-mode-map (funcall key-fn "ef") 'js2r-extract-function)
+  (define-key js2-mode-map (funcall key-fn "em") 'js2r-extract-method)
+  (define-key js2-mode-map (funcall key-fn "ip") 'js2r-introduce-parameter)
+  (define-key js2-mode-map (funcall key-fn "lp") 'js2r-localize-parameter)
+  (define-key js2-mode-map (funcall key-fn "tf") 'js2r-toggle-function-expression-and-declaration)
+  (define-key js2-mode-map (funcall key-fn "ao") 'js2r-arguments-to-object)
+  (define-key js2-mode-map (funcall key-fn "uw") 'js2r-unwrap)
+  (define-key js2-mode-map (funcall key-fn "wl") 'js2r-wrap-in-for-loop)
+  (define-key js2-mode-map (funcall key-fn "3i") 'js2r-ternary-to-if)
+  (define-key js2-mode-map (kbd "<C-S-down>") 'js2r-move-line-down)
+  (define-key js2-mode-map (kbd "<C-S-up>") 'js2r-move-line-up))
 
-(define-key js2-mode-map (kbd "C-c RET eo") 'js2r-expand-object)
-(define-key js2-mode-map (kbd "C-c RET co") 'js2r-contract-object)
+;;;###autoload
+(defun js2r-add-keybindings-with-prefix (prefix)
+  (js2r--add-keybindings (-partial 'js2r--key-pairs-with-prefix prefix)))
 
-
-;;; Immediately invoked function expressions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'js2r-iife)
-
-(define-key js2-mode-map (kbd "C-c RET wi") 'js2r-wrap-buffer-in-iife)
-(define-key js2-mode-map (kbd "C-c RET ig") 'js2r-inject-global-in-iife)
-
-
-;;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'js2r-vars)
-
-(define-key js2-mode-map (kbd "C-c RET ev") 'js2r-extract-var)
-(define-key js2-mode-map (kbd "C-c RET iv") 'js2r-inline-var)
-(define-key js2-mode-map (kbd "C-c RET rv") 'js2r-rename-var)
-(define-key js2-mode-map (kbd "C-c RET vt") 'js2r-var-to-this)
-(define-key js2-mode-map (kbd "C-c RET ag") 'js2r-add-to-globals-annotation)
-(define-key js2-mode-map (kbd "C-c RET sv") 'js2r-split-var-declaration)
-
-;;; Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'js2r-functions)
-
-(define-key js2-mode-map (kbd "C-c RET ef") 'js2r-extract-function)
-(define-key js2-mode-map (kbd "C-c RET em") 'js2r-extract-method)
-(define-key js2-mode-map (kbd "C-c RET ip") 'js2r-introduce-parameter)
-(define-key js2-mode-map (kbd "C-c RET lp") 'js2r-localize-parameter)
-(define-key js2-mode-map (kbd "C-c RET tf") 'js2r-toggle-function-expression-and-declaration)
-(define-key js2-mode-map (kbd "C-c RET ao") 'js2r-arguments-to-object)
-
-;;; Wrapping ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'js2r-wrapping)
-
-(define-key js2-mode-map (kbd "C-c RET uw") 'js2r-unwrap)
-(define-key js2-mode-map (kbd "C-c RET wl") 'js2r-wrap-in-for-loop)
-
-;;; Conditionals ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'js2r-conditionals)
-
-(define-key js2-mode-map (kbd "C-c RET 3i") 'js2r-ternary-to-if)
-
-;;; Conveniences ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'js2r-conveniences)
-
-;; Make sure commas are placed correctly when moving a line in a literal
-(define-key js2-mode-map (kbd "<C-S-down>") 'js2r-move-line-down)
-(define-key js2-mode-map (kbd "<C-S-up>") 'js2r-move-line-up)
-
+;;;###autoload
+(defun js2r-add-keybindings-with-modifier (modifier)
+  (js2r--add-keybindings (-partial 'js2r--key-pairs-with-modifier modifier)))
 
 (provide 'js2-refactor)
 ;;; js2-refactor.el ends here

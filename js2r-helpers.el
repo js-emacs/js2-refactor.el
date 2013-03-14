@@ -1,3 +1,22 @@
+(require 'dash)
+(require 's)
+
+(defun js2r--fix-special-modifier-combinations (key)
+  (case key
+    ("C-s-i" "s-TAB")
+    ("C-s-m" "s-RET")
+    (otherwise key)))
+
+(defun js2r--key-pairs-with-modifier (modifier keys)
+  (->> (string-to-list keys)
+    (--map (js2r--fix-special-modifier-combinations
+            (concat modifier (char-to-string it))))
+    (s-join " ")
+    (read-kbd-macro)))
+
+(defun js2r--key-pairs-with-prefix (prefix keys)
+  (read-kbd-macro (concat prefix " " keys)))
+
 (defun js2r--guard ()
   (when js2-parsed-errors
     (error "Can't refactor while buffer has parse errors.")))

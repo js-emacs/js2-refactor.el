@@ -5,7 +5,7 @@ Feature: Rename variable
     When I insert "var abc = 123;"
     And I turn on js2-mode
     And I go to the front of the word "abc"
-    And I press "C-c RET rv"
+    And I press "C-c C-m rv"
     And I type "def"
     Then I should see "var def = 123;"
 
@@ -15,7 +15,7 @@ Feature: Rename variable
     And I turn on js2-mode
     And I go to character ";"
     And I press "C-b"
-    And I press "C-c RET rv"
+    And I press "C-c C-m rv"
     And I type "ghi"
     Then I should see "var ghi = 123, def = ghi;"
 
@@ -25,7 +25,7 @@ Feature: Rename variable
     And I turn on js2-mode
     And I go to the end of the word "alert"
     And I press "C-f"
-    And I press "C-c RET rv"
+    And I press "C-c C-m rv"
     And I type "ghi"
     Then I should see "function test(ghi) { alert(ghi); }"
 
@@ -35,7 +35,7 @@ Feature: Rename variable
     And I turn on js2-mode
     And I go to the end of the word "var"
     And I press "C-f"
-    And I press "C-c RET rv"
+    And I press "C-c C-m rv"
     And I type "ghi"
     Then I should see "var ghi = { abc: 123 };"
 
@@ -45,6 +45,6 @@ Feature: Rename variable
     And I turn on js2-mode
     And I go to the end of the word "var"
     And I press "C-f"
-    And I press "C-c RET rv"
+    And I press "C-c C-m rv"
     And I type "ghi"
     Then I should see "var ghi = this.abc;"

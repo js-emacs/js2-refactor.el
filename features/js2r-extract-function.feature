@@ -9,7 +9,7 @@ Feature: Extract function
     """
     And I turn on js2-mode
     When I select "console.log"
-    And I press "C-c RET ef name RET"
+    And I press "C-c C-m ef name RET"
     Then I should see:
     """
     function name() {
@@ -30,7 +30,7 @@ Feature: Extract function
     """
     And I turn on js2-mode
     When I select "console.log"
-    And I press "C-c RET ef name RET"
+    And I press "C-c C-m ef name RET"
     Then I should see:
     """
     function name() {
@@ -53,7 +53,7 @@ Feature: Extract function
     """
     And I turn on js2-mode
     When I select "console.log"
-    And I press "C-c RET ef name RET"
+    And I press "C-c C-m ef name RET"
     Then I should see:
     """
     function name() {
@@ -76,7 +76,7 @@ Feature: Extract function
     """
     And I turn on js2-mode
     When I select "return"
-    And I press "C-c RET ef name RET"
+    And I press "C-c C-m ef name RET"
     Then I should see:
     """
     function name() {
@@ -97,7 +97,7 @@ Feature: Extract function
     """
     And I turn on js2-mode
     When I select "return"
-    And I press "C-c RET ef name RET"
+    And I press "C-c C-m ef name RET"
     Then I should see:
     """
     function name(num) {
@@ -119,7 +119,7 @@ Feature: Extract function
     """
     And I turn on js2-mode
     When I select "return"
-    And I press "C-c RET ef name RET"
+    And I press "C-c C-m ef name RET"
     Then I should see:
     """
     function name(num, inc) {
@@ -145,7 +145,7 @@ Feature: Extract function
     When I go to the front of the word "var"
     And I set the mark
     And I go to the end of the word "7"
-    And I press "C-c RET ef name RET"
+    And I press "C-c C-m ef name RET"
     Then I should see:
     """
     function name() {
@@ -172,7 +172,7 @@ Feature: Extract function
     When I go to the front of the word "var"
     And I set the mark
     And I go to the end of the word "return"
-    And I press "C-c RET ef name RET"
+    And I press "C-c C-m ef name RET"
     Then I should see:
     """
     function name(num) {
@@ -197,7 +197,7 @@ Feature: Extract function
     """
     And I turn on js2-mode
     When I select "return"
-    And I press "C-c RET ef name RET"
+    And I press "C-c C-m ef name RET"
     Then I should see:
     """
     function name(num, inc) {
@@ -223,7 +223,7 @@ Feature: Extract function
     """
     And I turn on js2-mode
     When I select "console.log"
-    And I press "C-c RET em name RET"
+    And I press "C-c C-m em name RET"
     Then I should see:
     """
     var obj = {
