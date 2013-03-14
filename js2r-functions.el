@@ -1,6 +1,3 @@
-;; Convert from regular arguments to object literal of named arguments.
-;; Requires yasnippets
-
 (require 'cl)
 (require 'dash)
 
@@ -282,7 +279,7 @@
   (-select 'js2-var-init-node-p (js2r--decendants node)))
 
 (defun js2r--decendants (node)
-  (lexical-let (vars)
+  (let (vars)
     (js2-visit-ast node
                    '(lambda (node end-p)
                       (unless end-p
