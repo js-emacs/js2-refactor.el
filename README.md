@@ -16,7 +16,7 @@ See **Setup keybindings** below for more.
 
 ## Installation
 
-I highly recommended installing js2-refactor through elpa.
+I highly recommend installing js2-refactor through elpa.
 
 It's available on [melpa](http://melpa.milkbox.net/):
 
