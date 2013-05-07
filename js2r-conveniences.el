@@ -1,3 +1,51 @@
+;; Console.log stuff at point (or region)
+
+(defun js2r-log-this ()
+  (interactive)
+  (js2r--guard)
+  (let* ((log-info (js2r--figure-out-what-to-log-where))
+         (stmt (car log-info))
+         (pos (cdr log-info)))
+    (save-excursion
+      (goto-char pos)
+      (when (looking-at "[;{]")
+        (forward-char 1))
+      (newline-and-indent)
+      (insert "console.log(\"" stmt " = \", " stmt ");"))))
+
+(defun js2r--figure-out-what-to-log-where ()
+  (let ((parent-stmt (js2-node-parent-stmt (js2-node-at-point))))
+
+    (if (use-region-p)
+        (cons (buffer-substring (region-beginning) (region-end))
+              (js2r--find-suitable-log-position-around parent-stmt))
+
+      (let* ((node (js2r--name-node-at-point))
+             (parent (js2-node-parent node)))
+
+        (cond
+
+         ((js2-function-node-p parent)
+          (cons (js2-name-node-name node)
+                (js2-node-abs-pos (js2-function-node-body parent))))
+
+         ((js2-prop-get-node-p parent)
+          (cons (buffer-substring (js2-node-abs-pos parent) (js2-node-abs-end parent))
+                (js2r--find-suitable-log-position-around parent-stmt)))
+
+         (:else
+          (cons (js2-name-node-name node)
+                (js2r--find-suitable-log-position-around parent-stmt))))))))
+
+(defun js2r--find-suitable-log-position-around (parent-stmt)
+  (if (js2-return-node-p parent-stmt)
+      (save-excursion
+        (goto-char (js2-node-abs-pos parent-stmt))
+        (beginning-of-line)
+        (forward-char -1)
+        (point))
+    (js2-node-abs-end parent-stmt)))
+
 ;; Split a string
 
 (defun js2r-split-string ()

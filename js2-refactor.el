@@ -141,6 +141,7 @@
   (define-key js2-mode-map (funcall key-fn "uw") 'js2r-unwrap)
   (define-key js2-mode-map (funcall key-fn "wl") 'js2r-wrap-in-for-loop)
   (define-key js2-mode-map (funcall key-fn "3i") 'js2r-ternary-to-if)
+  (define-key js2-mode-map (funcall key-fn "lt") 'js2r-log-this)
   (define-key js2-mode-map (kbd "<C-S-down>") 'js2r-move-line-down)
   (define-key js2-mode-map (kbd "<C-S-up>") 'js2r-move-line-up))
 
