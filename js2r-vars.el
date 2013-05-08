@@ -120,12 +120,17 @@
   (interactive)
   (js2r--guard)
   (save-excursion
-    (mapc (lambda (beg)
-            (goto-char beg)
-            (when (looking-back "var ")
-              (delete-char -4))
-            (insert "this."))
-          (js2r--local-var-positions (js2r--local-name-node-at-point)))))
+    (let ((node (js2-node-at-point)))
+      (when (js2-var-decl-node-p node)
+        (let ((kids (js2-var-decl-node-kids node)))
+          (when (cdr kids)
+            (error "Currently does not support converting multivar statements."))
+          (goto-char (js2-node-abs-pos (car kids))))))
+    (--each (js2r--local-var-positions (js2r--local-name-node-at-point))
+      (goto-char it)
+      (when (looking-back "var ")
+        (delete-char -4))
+      (insert "this."))))
 
 ;; Inline var
 
