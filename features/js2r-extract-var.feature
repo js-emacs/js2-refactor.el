@@ -1,8 +1,5 @@
 Feature: Extract var
 
-  Background:
-    Given delete-selection-mode is active
-
   Scenario: Extracting region
     When I insert "abc(1 + 2 + 3, 4 + 5);"
     And I turn on js2-mode
@@ -10,6 +7,7 @@ Feature: Extract var
     And I set the mark
     And I go to the end of the word "2"
     And I press "C-c C-m ev"
+    And I press "C-u DEL"
     And I type "three"
     Then I should see:
     """
@@ -22,6 +20,7 @@ Feature: Extract var
     And I turn on js2-mode
     And I go to the front of the word "2"
     And I press "C-c C-m ev"
+    And I press "C-u DEL"
     And I type "six"
     Then I should see:
     """
@@ -39,6 +38,7 @@ Feature: Extract var
     And I turn on js2-mode
     And I go to the front of the word "abc"
     And I press "C-c C-m ev"
+    And I press "C-u DEL"
     And I type "def"
     Then I should see:
     """
@@ -58,6 +58,7 @@ Feature: Extract var
     And I turn on js2-mode
     And I go to the front of the word "def"
     And I press "C-c C-m ev"
+    And I press "C-u DEL"
     And I type "ghi"
     Then I should see:
     """
@@ -75,6 +76,7 @@ Feature: Extract var
     And I turn on js2-mode
     And I go to the front of the word "def"
     And I press "C-c C-m ev"
+    And I press "C-u DEL"
     And I type "jkl"
     Then I should see:
     """
