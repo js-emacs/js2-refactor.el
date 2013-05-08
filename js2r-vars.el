@@ -219,9 +219,15 @@
 
 (defun js2r--expression-p (node)
   (or (js2-call-node-p node)
+      (js2-string-node-p node)
       (js2r--argument-p node)
       (and (js2-prop-get-node-p node)
            (not (js2-call-node-p (js2-node-parent node))))))
+
+(defun js2r--single-complete-expression-between-p (beg end)
+  (let ((ancestor (js2r--first-common-ancestor-in-region beg (- end 1))))
+    (and (= beg (js2-node-abs-pos ancestor))
+         (= end (js2-node-abs-end ancestor)))))
 
 (defun js2r-extract-var ()
   (interactive)
@@ -237,10 +243,8 @@
 
 (defun js2r--extract-var-between (beg end)
   (interactive "r")
-  (let ((ancestor (js2r--first-common-ancestor-in-region beg (- end 1))))
-    (unless (and (= beg (js2-node-abs-pos ancestor))
-                 (= end (js2-node-abs-end ancestor)))
-      (error "Can only extract single, complete expressions to var.")))
+  (unless (js2r--single-complete-expression-between-p beg end)
+    (error "Can only extract single, complete expressions to var."))
 
   (let ((deactivate-mark nil)
         (expression (buffer-substring beg end))
