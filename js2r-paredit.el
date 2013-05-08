@@ -3,6 +3,7 @@
 (defun js2r--slurpable-node-p (node)
   (or (js2-function-node-p node)
       (js2-if-node-p node)
+      (js2-for-node-p node)
       (js2-while-node-p node)))
 
 (defun js2r--standalone-node-p (node)
