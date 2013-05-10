@@ -26,4 +26,5 @@
  (setq set-mark-default-inactive nil)
  (deactivate-mark))
 
-(After)
+(After
+ (yas/exit-all-snippets))

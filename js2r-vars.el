@@ -3,16 +3,18 @@
 
 ;; Helpers
 
-(defun js2r--name-node-at-point ()
-  (let ((current-node (js2-node-at-point)))
+(defun js2r--name-node-at-point (&optional pos)
+  (setq pos (or pos (point)))
+  (let ((current-node (js2-node-at-point pos)))
     (unless (js2-name-node-p current-node)
       (setq current-node (js2-node-at-point (- (point) 1))))
     (if (not (and current-node (js2-name-node-p current-node)))
         (error "Point is not on an identifier.")
       current-node)))
 
-(defun js2r--local-name-node-at-point ()
-  (let ((current-node (js2r--name-node-at-point)))
+(defun js2r--local-name-node-at-point (&optional pos)
+  (setq pos (or pos (point)))
+  (let ((current-node (js2r--name-node-at-point pos)))
     (unless (js2r--local-name-node-p current-node)
       (error "Point is not on a local identifier"))
     current-node))
