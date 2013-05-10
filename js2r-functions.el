@@ -36,7 +36,7 @@
          (index (or (js2r--param-index-for name fn)
                     (error "%S isn't a parameter to this function." name)))
          (usages (js2r--function-usages fn))
-         (examples (--map (js2r--argument index it) usages))
+         (examples (-distinct (--map (js2r--argument index it) usages)))
          (value (js2r--choose-one "Value: " examples)))
     (js2r--localize-parameter fn usages index name value)))
 
