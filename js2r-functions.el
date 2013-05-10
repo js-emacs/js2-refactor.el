@@ -1,5 +1,6 @@
 (require 'cl)
 (require 'dash)
+(require 'yasnippet)
 
 ;; Turn parameter into local var in local function
 
@@ -168,7 +169,6 @@
 (defun js2r-arguments-to-object ()
   (interactive)
   (js2r--guard)
-  (js2r--guard-yas)
   (unless (and (looking-at "(")
                (js2-call-node-p (js2-node-at-point)))
     (error "Place point right before the opening paren in the call."))

@@ -1,3 +1,5 @@
+(require 'yasnippet)
+
 (defvar js2r--space-str " \t\n")
 
 (defun js2r--skip-region-whitespace ()
@@ -35,7 +37,6 @@
 
 (defun js2r-wrap-in-for-loop (beg end)
   (interactive "r")
-  (js2r--guard-yas)
   (js2r--skip-region-whitespace)
   (setq beg (min (point) (mark)))
   (setq end (max (point) (mark)))
