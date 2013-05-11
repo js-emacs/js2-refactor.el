@@ -67,4 +67,33 @@
   (js2r--first-common-ancestor (js2-node-at-point beg)
                                (js2-node-at-point end)))
 
+;; executing a list of changes
+;; ensures changes are executed from last to first
+
+(defun js2r--by-end-descending (change1 change2)
+  (> (plist-get change1 :end)
+     (plist-get change2 :end)))
+
+(defun js2r--any-overlapping-changes (sorted-changes)
+  (--any?
+   (let ((one (car it))
+         (two (cadr it)))
+     (< (plist-get one :beg)
+        (plist-get two :end)))
+   (-partition-in-steps 2 1 sorted-changes)))
+
+(defun js2r--execute-changes (changes)
+  (when changes
+   (let ((sorted-changes (sort changes 'js2r--by-end-descending)))
+     (when (js2r--any-overlapping-changes sorted-changes)
+       (error "These changes overlap, cannot execute properly."))
+     (let ((abs-end (set-marker (make-marker) (1+ (plist-get (car sorted-changes) :end))))
+           (abs-beg (plist-get (car (last sorted-changes)) :beg)))
+       (--each sorted-changes
+         (goto-char (plist-get it :beg))
+         (delete-char (- (plist-get it :end) (plist-get it :beg)))
+         (insert (plist-get it :contents)))
+       (indent-region abs-beg abs-end)
+       (set-marker abs-end nil)))))
+
 (provide 'js2r-helpers)

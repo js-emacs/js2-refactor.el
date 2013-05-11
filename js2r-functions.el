@@ -54,9 +54,10 @@
   (js2-call-node-p (js2-node-parent node)))
 
 (defun js2r--local-fn-from-name-node (name-node)
-  (js2-node-parent
-   (--first (js2-function-node-p (js2-node-parent it))
-            (js2r--local-usages-of-name-node name-node))))
+  (->> name-node
+    (js2r--local-usages-of-name-node)
+    (-map 'js2-node-parent)
+    (-first 'js2-function-node-p)))
 
 (defun js2r--param-index-for (name fn)
   (car (--keep (when (equal name (js2-name-node-name it)) it-index)
@@ -174,55 +175,81 @@
                  (or (js2-function-node-p node)
                      (js2-call-node-p node)))
       (error "Place point right before the opening paren in the call or function."))
+    (-when-let* ((target (and (js2-call-node-p node)
+                              (js2-call-node-target node)))
+                 (fn (and (js2-name-node-p target)
+                          (js2r--local-fn-from-name-node target))))
+      (setq node fn))
     (if (js2-function-node-p node)
         (js2r--arguments-to-object-for-function node)
-      (js2r--arguments-to-object-for-call node))))
+      (js2r--arguments-to-object-for-call-to-unknown-function node))))
 
 (defun js2r--arguments-to-object-for-function (function-node)
   (let ((params (js2-function-node-params function-node)))
     (when (null params)
       (error "No params to convert."))
-
     (save-excursion
-      (let* ((local-param-name-nodes (--mapcat (-> it
-                                                 (js2-node-abs-pos)
-                                                 (js2r--local-name-node-at-point)
-                                                 (js2r--local-usages-of-name-node))
-                                               params))
-             (local-param-name-usages (--remove (js2-function-node-p (js2-node-parent it))
-                                                local-param-name-nodes))
-             (local-param-name-positions (-map 'js2-node-abs-pos local-param-name-usages))
-             (reverse-sorted-positions (sort local-param-name-positions '>)))
-        (--each reverse-sorted-positions
-          (goto-char it)
-          (insert "params."))))
-    (save-excursion
-      (delete-region (point)
-                     (progn (forward-list)
-                            (point)))
-      (insert "(params)"))))
+      (js2r--execute-changes
+       (-concat
+        ;; change parameter list to just (params)
+        (list
+         (list :beg (+ (js2-node-abs-pos function-node) (js2-function-node-lp function-node))
+               :end (+ (js2-node-abs-pos function-node) (js2-function-node-rp function-node) 1)
+               :contents "(params)"))
 
-(defun js2r--arguments-to-object-for-call (call-node)
+        ;; add params. in front of function local param usages
+        (let* ((local-param-name-nodes (--mapcat (-> it
+                                                   (js2-node-abs-pos)
+                                                   (js2r--local-name-node-at-point)
+                                                   (js2r--local-usages-of-name-node))
+                                                 params))
+               (local-param-name-usages (--remove (js2-function-node-p (js2-node-parent it))
+                                                  local-param-name-nodes))
+               (local-param-name-positions (-map 'js2-node-abs-pos local-param-name-usages)))
+          (--map
+           (list :beg it :end it :contents "params.")
+           local-param-name-positions))
+
+        ;; update usages of function
+        (let ((names (-map 'js2-name-node-name params))
+              (usages (js2r--function-usages function-node)))
+          (--map
+           (js2r--changes/arguments-to-object it names)
+           usages)))))))
+
+(defun js2r--changes/arguments-to-object (call-node names)
   (let ((args (js2-call-node-args call-node)))
+    (list :beg (+ (js2-node-abs-pos call-node) (js2-call-node-lp call-node))
+          :end (+ (js2-node-abs-pos call-node) (js2-call-node-rp call-node) 1)
+          :contents (js2r--create-object-with-arguments names args))))
+
+(defun js2r--arguments-to-object-for-call-to-unknown-function (call-node)
+  (let* ((args (js2-call-node-args call-node))
+         (names (--map-indexed
+                 (format "${%d:%s}"
+                         (1+ it-index)
+                         (if (js2-name-node-p it)
+                             (js2-name-node-name it)
+                           "key"))
+                 args)))
     (when (null args)
       (error "No arguments to convert."))
-    (let (arg key result)
-      (--dotimes (length args)
-        (setq arg (nth it args))
-        (setq key (if (js2-name-node-p arg)
-                      (js2-name-node-name arg)
-                    "key"))
-        (setq result
-              (concat result
-                      (format "    ${%d:%s}: %s,\n"
-                              (1+ it)
-                              key
-                              (buffer-substring (js2-node-abs-pos arg)
-                                                (js2-node-abs-end arg)))
-                      )))
-      (yas/expand-snippet (concat "({\n" (substring result 0 -2) "\n})")
-                          (point)
-                          (save-excursion (forward-list) (point))))))
+    (yas/expand-snippet (js2r--create-object-with-arguments names args)
+                        (point)
+                        (save-excursion (forward-list) (point)))))
+
+(defun js2r--create-object-with-arguments (names args)
+  (let (arg key result)
+    (--dotimes (length args)
+      (setq arg (nth it args))
+      (setq key (nth it names))
+      (setq result
+            (concat result
+                    (format "    %s: %s,\n"
+                            key
+                            (buffer-substring (js2-node-abs-pos arg)
+                                              (js2-node-abs-end arg))))))
+    (concat "({\n" (substring result 0 -2) "\n})")))
 
 ;; Extract Function and Extract Method
 

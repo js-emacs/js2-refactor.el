@@ -72,3 +72,70 @@ Feature: Arguments to object
         };
     }
     """
+
+  Scenario: Converting both, from function
+    Given I insert:
+    """
+    function add(a, b) {
+        return a + b;
+    }
+    add(1, 3);
+    add("abc", {
+        a: 2,
+        b: 3
+    });
+    """
+    And I turn on js2-mode
+    When I go to the end of the word "add"
+    And I press "C-c C-m ao"
+    Then I should see:
+    """
+    function add(params) {
+        return params.a + params.b;
+    }
+    add({
+        a: 1,
+        b: 3
+    });
+    add({
+        a: "abc",
+        b: {
+            a: 2,
+            b: 3
+        }
+    });
+    """
+
+  Scenario: Converting both, from call node
+    Given I insert:
+    """
+    function add(a, b) {
+        return a + b;
+    }
+    add(1, 3);
+    add("abc", {
+        a: 2,
+        b: 3
+    });
+    """
+    And I turn on js2-mode
+    When I go to the front of the word "abc"
+    And I press "C-b C-b"
+    And I press "C-c C-m ao"
+    Then I should see:
+    """
+    function add(params) {
+        return params.a + params.b;
+    }
+    add({
+        a: 1,
+        b: 3
+    });
+    add({
+        a: "abc",
+        b: {
+            a: 2,
+            b: 3
+        }
+    });
+    """
