@@ -139,3 +139,27 @@ Feature: Arguments to object
         }
     });
     """
+
+  Scenario: Converting both, constructor
+    Given I insert:
+    """
+    function Add(a, b) {
+        this.a = a;
+        this.b = b;
+    }
+    var a = new Add(1, 3);
+    """
+    And I turn on js2-mode
+    When I go to the end of the word "new Add"
+    And I press "C-c C-m ao"
+    Then I should see:
+    """
+    function Add(params) {
+        this.a = params.a;
+        this.b = params.b;
+    }
+    var a = new Add({
+        a: 1,
+        b: 3
+    });
+    """

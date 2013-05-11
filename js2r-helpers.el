@@ -67,6 +67,31 @@
   (js2r--first-common-ancestor (js2-node-at-point beg)
                                (js2-node-at-point end)))
 
+;; abstract away node type on some common property getters
+(defun js2r--node-target (node)
+  (cond
+   ((js2-call-node-p node) (js2-call-node-target node))
+   ((js2-new-node-p node) (js2-new-node-target node))
+   (:else nil)))
+
+(defun js2r--node-args (node)
+  (cond
+   ((js2-call-node-p node) (js2-call-node-args node))
+   ((js2-new-node-p node) (js2-new-node-args node))
+   (:else nil)))
+
+(defun js2r--node-lp (node)
+  (cond
+   ((js2-call-node-p node) (js2-call-node-lp node))
+   ((js2-new-node-p node) (js2-new-node-lp node))
+   (:else nil)))
+
+(defun js2r--node-rp (node)
+  (cond
+   ((js2-call-node-p node) (js2-call-node-rp node))
+   ((js2-new-node-p node) (js2-new-node-rp node))
+   (:else nil)))
+
 ;; executing a list of changes
 ;; ensures changes are executed from last to first
 
