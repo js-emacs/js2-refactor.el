@@ -89,11 +89,19 @@
 
 ;; Introduce parameter in local function
 
-(defun js2r-introduce-parameter (beg end)
-  (interactive "r")
+(defun js2r-introduce-parameter ()
+  (interactive)
   (js2r--guard)
-  (unless (use-region-p)
-    (error "Mark the expressions to introduce as parameter first."))
+  (if (use-region-p)
+      (js2r--introduce-parameter-between (region-beginning) (region-end))
+    (let ((node (js2r--closest 'js2r--expression-p)))
+      (js2r--introduce-parameter-between (js2-node-abs-pos node)
+                                         (js2-node-abs-end node)))))
+
+(defun js2r--introduce-parameter-between (beg end)
+  (unless (js2r--single-complete-expression-between-p beg end)
+    (error "Can only introduce single, complete expressions as parameter."))
+
   (let ((fn (js2r--closest-node-where 'js2r--is-local-function (js2-node-at-point))))
     (unless fn
       (error "Can only introduce parameter in local functions."))

@@ -103,3 +103,26 @@ Feature: JS Slurp
     }
     jkl();
     """
+
+  Scenario: Slurping into else-statements
+    When I insert:
+    """
+    if (abc) {
+        bah();
+    } else {
+    }
+    ghi();
+    jkl();
+    """
+    And I turn on js2-mode
+    And I go to the front of the word "else"
+    And I press "C-c C-m sl"
+    Then I should see:
+    """
+    if (abc) {
+        bah();
+    } else {
+        ghi();
+    }
+    jkl();
+    """

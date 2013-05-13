@@ -92,6 +92,26 @@
    ((js2-new-node-p node) (js2-new-node-rp node))
    (:else nil)))
 
+;; finding expressions and arguments
+
+(defun js2r--argument-p (node)
+  (let ((parent (js2-node-parent node)))
+    (and (js2-call-node-p parent)
+         (member node (js2-call-node-args parent)))))
+
+(defun js2r--expression-p (node)
+  (or (js2-call-node-p node)
+      (js2-string-node-p node)
+      (js2r--argument-p node)
+      (and (js2-prop-get-node-p node)
+           (not (js2-call-node-p (js2-node-parent node))))))
+
+(defun js2r--single-complete-expression-between-p (beg end)
+  (let ((ancestor (js2r--first-common-ancestor-in-region beg (- end 1))))
+    (and (= beg (js2-node-abs-pos ancestor))
+         (= end (js2-node-abs-end ancestor)))))
+
+
 ;; executing a list of changes
 ;; ensures changes are executed from last to first
 

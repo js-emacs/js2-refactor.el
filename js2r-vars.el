@@ -219,23 +219,6 @@
     (forward-line -1)
     (string= "" (current-line-contents))))
 
-(defun js2r--argument-p (node)
-  (let ((parent (js2-node-parent node)))
-    (and (js2-call-node-p parent)
-         (member node (js2-call-node-args parent)))))
-
-(defun js2r--expression-p (node)
-  (or (js2-call-node-p node)
-      (js2-string-node-p node)
-      (js2r--argument-p node)
-      (and (js2-prop-get-node-p node)
-           (not (js2-call-node-p (js2-node-parent node))))))
-
-(defun js2r--single-complete-expression-between-p (beg end)
-  (let ((ancestor (js2r--first-common-ancestor-in-region beg (- end 1))))
-    (and (= beg (js2-node-abs-pos ancestor))
-         (= end (js2-node-abs-end ancestor)))))
-
 (defun js2r-extract-var ()
   (interactive)
   (js2r--guard)
@@ -244,9 +227,6 @@
     (let ((node (js2r--closest 'js2r--expression-p)))
       (js2r--extract-var-between (js2-node-abs-pos node)
                                  (js2-node-abs-end node)))))
-
-(defun js2r--node-contains-other (parent child)
-  (member child (js2r--decendants parent)))
 
 (defun js2r--extract-var-between (beg end)
   (interactive "r")
