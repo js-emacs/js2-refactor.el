@@ -140,13 +140,15 @@
   (if (and (js2r--current-line-is-a-list-item)
            (js2r--next-line-is-a-list-item))
       (js2r--move-line-down-as-list-item)
-    (move-line-down)))
+    (move-line-down))
+  (funcall indent-line-function))
 
 (defun js2r-move-line-up ()
   (interactive)
   (if (and (js2r--current-line-is-a-list-item)
            (js2r--previous-line-is-a-list-item))
       (js2r--move-line-up-as-list-item)
-    (move-line-up)))
+    (move-line-up))
+  (funcall indent-line-function))
 
 (provide 'js2r-conveniences)
