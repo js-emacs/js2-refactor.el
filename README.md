@@ -79,6 +79,7 @@ to pick and choose your own keybindings with a smattering of:
  * `uw` is `unwrap`: Replaces the parent statement with the selected region.
  * `lt` is `log-this`: Adds a console.log statement for what is at point (or region).
  * `sl` is `forward-slurp`: Moves the next statement into current function, if-statement, for-loop or while-loop.
+ * `ba` is `forward-barf`: Moves the last child out of current function, if-statement, for-loop or while-loop.
 
 There are also some minor conveniences bundled:
 

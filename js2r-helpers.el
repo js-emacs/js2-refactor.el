@@ -92,6 +92,13 @@
    ((js2-new-node-p node) (js2-new-node-rp node))
    (:else nil)))
 
+(defun js2r--node-kids (node)
+  (cond
+   ((js2-function-node-p node) (js2-block-node-kids (js2-function-node-body node)))
+   ((js2-if-node-p node) (js2-scope-kids (js2-if-node-then-part node)))
+   ((js2-for-node-p node) (js2-block-node-kids (js2-for-node-body node)))
+   ((js2-while-node-p node) (js2-block-node-kids (js2-while-node-body node)))))
+
 ;; finding expressions and arguments
 
 (defun js2r--argument-p (node)
@@ -129,16 +136,16 @@
 
 (defun js2r--execute-changes (changes)
   (when changes
-   (let ((sorted-changes (sort changes 'js2r--by-end-descending)))
-     (when (js2r--any-overlapping-changes sorted-changes)
-       (error "These changes overlap, cannot execute properly."))
-     (let ((abs-end (set-marker (make-marker) (1+ (plist-get (car sorted-changes) :end))))
-           (abs-beg (plist-get (car (last sorted-changes)) :beg)))
-       (--each sorted-changes
-         (goto-char (plist-get it :beg))
-         (delete-char (- (plist-get it :end) (plist-get it :beg)))
-         (insert (plist-get it :contents)))
-       (indent-region abs-beg abs-end)
-       (set-marker abs-end nil)))))
+    (let ((sorted-changes (sort changes 'js2r--by-end-descending)))
+      (when (js2r--any-overlapping-changes sorted-changes)
+        (error "These changes overlap, cannot execute properly."))
+      (let ((abs-end (set-marker (make-marker) (1+ (plist-get (car sorted-changes) :end))))
+            (abs-beg (plist-get (car (last sorted-changes)) :beg)))
+        (--each sorted-changes
+          (goto-char (plist-get it :beg))
+          (delete-char (- (plist-get it :end) (plist-get it :beg)))
+          (insert (plist-get it :contents)))
+        (indent-region abs-beg abs-end)
+        (set-marker abs-end nil)))))
 
 (provide 'js2r-helpers)
