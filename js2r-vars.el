@@ -71,7 +71,7 @@
 
 (defun js2r-add-to-globals-annotation ()
   (interactive)
-  (let ((var (word-at-point)))
+  (let ((var (thing-at-point 'symbol)))
     (save-excursion
       (beginning-of-buffer)
       (when (not (string-match "^/\\*global " (current-line-contents)))
