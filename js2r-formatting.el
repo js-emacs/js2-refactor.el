@@ -1,13 +1,3 @@
-(defun js2r--looking-at-object-start ()
-  (and (looking-at "{")
-       (not (looking-back ")[\s\n]*"))))
-
-(defun js2r--goto-closest-object-start ()
-  (while (not (js2r--looking-at-object-start))
-    (if (eq (car (syntax-ppss)) 0)
-        (error "Cursor is not on an object")
-      (goto-char (nth 1 (syntax-ppss))))))
-
 (defun js2r--ensure-newline ()
   (if (and (not (looking-at "\s*\n"))
            (not (looking-back "\n\s*")))
@@ -30,7 +20,7 @@
 	goto-closest-start-func subexpr-str)
   "Build a function to expand or contract a given type of
    bracketed expression, i.e., function body, object literal, or
-   array.
+   array (any of which may be nested).
    Parameters:
        name:                    name of the function to be built
        ws-fix-func:             function to adjust whitespace at point
@@ -59,13 +49,21 @@
            (when (looking-at ,subexpr-str)
              (forward-char)
              ,ws-fix-func)
-           (if (looking-at "\\s(")  ; FIXME: This might be more elegant if
-				    ; abstracted out into a "looking-at-list-start"
-				    ; function.
+           (if (looking-at "\\s(")
                (forward-list)
              (forward-char)))
          (backward-char)
          ,ws-fix-func))))
+
+(defun js2r--looking-at-object-start ()
+  (and (looking-at "{")
+       (not (looking-back ")[\s\n]*"))))
+
+(defun js2r--goto-closest-object-start ()
+  (while (not (js2r--looking-at-object-start))
+    (if (eq (car (syntax-ppss)) 0)
+        (error "Cursor is not on an object")
+      (goto-char (nth 1 (syntax-ppss))))))
 
 (js2r--create-bracketed-whitespace-traverser js2r-expand-object
 					     (js2r--ensure-newline)
@@ -99,13 +97,19 @@
 					     (js2r--looking-at-array-start)
 					     (js2r--goto-closest-array-start)
 					     ",")
+
 (defun js2r--looking-at-function-start ()
   (and (looking-at "{")
-       ;; FIXME: Look backward for the "function" keyword, separated
-       ;; from the open paren by, at most, a valid identifier and
-       ;; whitespace.  Right now this will try to expand anything
-       ;; surrounded by braces, e.g., a "for" loop body.
-       (looking-back ")[\s\n]*")))
+       (looking-back
+	;; This horrible-looking regexp is actually pretty simple.  It
+	;; matches "function <optional_name> (<optional
+	;; keywords,...>)" allowing for whitespace.
+	(concat "function[\s\n]*"
+		"\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)?"
+		"\(\\\([a-zA-Z_$][a-zA-Z_$0-9]"
+		"*[\s\n]*[\s\n]*,[\s\n]*\\\)*[\s\n]*"
+		"\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)"
+		"*[\s\n]*\)[\s\n]*"))))
 
 (defun js2r--goto-closest-function-start ()
   (while (not (js2r--looking-at-function-start))
@@ -124,12 +128,5 @@
 					     (js2r--looking-at-function-start)
 					     (js2r--goto-closest-function-start)
 					     ";")
-
-
-(js2r--create-object-whitespace-traverser js2r-expand-object
-                                        (js2r--ensure-newline))
-
-(js2r--create-object-whitespace-traverser js2r-contract-object
-                                        (js2r--ensure-just-one-space))
 
 (provide 'js2r-formatting)
