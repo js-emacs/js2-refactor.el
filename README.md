@@ -66,6 +66,10 @@ to pick and choose your own keybindings with a smattering of:
  * `lp` is `localize-parameter`: Changes a parameter to a local var in a local function.
  * `eo` is `expand-object`: Converts a one line object literal to multiline.
  * `co` is `contract-object`: Converts a multiline object literal to one line.
+ * `eu` is `expand-function`: Converts a one line function to multiline (expecting semicolons as statement delimiters).
+ * `cu` is `contract-function`: Converts a multiline function to one line (expecting semicolons as statement delimiters).
+ * `ea` is `expand-array`: Converts a one line array to multiline.
+ * `ca` is `contract-array`: Converts a multiline array to one line.
  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
  * `ig` is `inject-global-in-iife`: Creates a shortcut for a marked global by injecting it in the wrapping immediately invoked function expression
  * `ag` is `add-to-globals-annotation`: Creates a `/*global */` annotation if it is missing, and adds the var at point to it.
@@ -91,8 +95,11 @@ There are also some minor conveniences bundled:
 
 A list of some wanted improvements for the current refactorings.
 
- * expand- and contract-object: should work for arrays.
- * expand- and contract-object: should work for simple functions.
+ * expand- and contract-array: should work recursively with nested
+   object literals and nested arrays.
+ * expand- and contract-function: should deal better with nested
+   object literals, array declarations, and statements terminated only
+   by EOLs (without semicolons).
  * wrap-buffer-in-iife: should skip comments and namespace initializations at buffer start.
  * extract-variable: could end with a query-replace of the expression in its scope.
 

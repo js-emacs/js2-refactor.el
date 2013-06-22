@@ -53,6 +53,10 @@
 ;;  * `lp` is `localize-parameter`: Changes a parameter to a local var in a local function.
 ;;  * `eo` is `expand-object`: Converts a one line object literal to multiline.
 ;;  * `co` is `contract-object`: Converts a multiline object literal to one line.
+;;  * `eu` is `expand-function`: Converts a one line function to multiline (expecting semicolons as statement delimiters).
+;;  * `cu` is `contract-function`: Converts a multiline function to one line (expecting semicolons as statement delimiters).
+;;  * `ea` is `expand-array`: Converts a one line array to multiline.
+;;  * `ca` is `contract-array`: Converts a multiline array to one line.
 ;;  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
 ;;  * `ig` is `inject-global-in-iife`: Creates a shortcut for a marked global by injecting it in the wrapping immediately invoked function expression
 ;;  * `ag` is `add-to-globals-annotation`: Creates a `/*global */` annotation if it is missing, and adds the var at point to it.
@@ -75,8 +79,8 @@
 
 ;; A list of some wanted improvements for the current refactorings.
 
-;;  * expand- and contract-object: should work for arrays.
-;;  * expand- and contract-object: should work for simple functions.
+;;  * expand- and contract-array: should work recursively with nested object literals and nested arrays.
+;;  * expand- and contract-function: should deal better with nested object literals, array declarations, and statements terminated only by EOLs (without semicolons).
 ;;  * wrap-buffer-in-iife: should skip comments and namespace initializations at buffer start.
 ;;  * extract-variable: could end with a query-replace of the expression in its scope.
 
@@ -125,6 +129,10 @@
 (defun js2r--add-keybindings (key-fn)
   (define-key js2-mode-map (funcall key-fn "eo") 'js2r-expand-object)
   (define-key js2-mode-map (funcall key-fn "co") 'js2r-contract-object)
+  (define-key js2-mode-map (funcall key-fn "eu") 'js2r-expand-function)
+  (define-key js2-mode-map (funcall key-fn "cu") 'js2r-contract-function)
+  (define-key js2-mode-map (funcall key-fn "ea") 'js2r-expand-array)
+  (define-key js2-mode-map (funcall key-fn "ca") 'js2r-contract-array)
   (define-key js2-mode-map (funcall key-fn "wi") 'js2r-wrap-buffer-in-iife)
   (define-key js2-mode-map (funcall key-fn "ig") 'js2r-inject-global-in-iife)
   (define-key js2-mode-map (funcall key-fn "ev") 'js2r-extract-var)
