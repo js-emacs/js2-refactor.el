@@ -102,14 +102,15 @@
   (and (looking-at "{")
        (looking-back
 	;; This horrible-looking regexp is actually pretty simple.  It
-	;; matches "function <optional_name> (<optional
-	;; keywords,...>)" allowing for whitespace.
+	;; matches "function <optional_name> (<optional_parameters,...>)"
+	;; allowing for whitespace.  TODO: support Unicode in function and
+	;; parameter names.
 	(concat "function[\s\n]*"
 		"\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)?"
-		"\(\\\([a-zA-Z_$][a-zA-Z_$0-9]"
-		"*[\s\n]*[\s\n]*,[\s\n]*\\\)*[\s\n]*"
-		"\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)"
-		"*[\s\n]*\)[\s\n]*"))))
+		"\(\\\([a-zA-Z_$][a-zA-Z_$0-9]*"
+		"[\s\n]*,[\s\n]*\\\)*[\s\n]*"
+		"\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)*"
+		"[\s\n]*\)[\s\n]*"))))
 
 (defun js2r--goto-closest-function-start ()
   (while (not (js2r--looking-at-function-start))
@@ -123,6 +124,10 @@
 					     (js2r--goto-closest-function-start)
 					     ";")
 
+;; TODO: It'd be great if js2r-contract-function could recognize
+;; newlines that are implied statement terminators and insert
+;; semicolons correctly, but that would probably mean not using the
+;; same macro as the other "contract" function definitions.
 (js2r--create-bracketed-whitespace-traverser js2r-contract-function
 					     (js2r--ensure-just-one-space)
 					     (js2r--looking-at-function-start)
