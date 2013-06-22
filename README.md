@@ -103,9 +103,10 @@ A list of some wanted improvements for the current refactorings.
  * wrap-buffer-in-iife: should skip comments and namespace initializations at buffer start.
  * extract-variable: could end with a query-replace of the expression in its scope.
 
-## Contributions
+## Contributors
 
 * [Matt Briggs](https://github.com/mbriggs) contributed `js2r-add-to-globals-annotation`
+* [Alex Chamberlain](https://github.com/apchamberlain) contributed contracting and expanding arrays and functions.
 
 Thanks!
 
