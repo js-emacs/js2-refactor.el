@@ -219,6 +219,7 @@
     (forward-line -1)
     (string= "" (current-line-contents))))
 
+;;;###autoload
 (defun js2r-extract-var ()
   (interactive)
   (js2r--guard)
@@ -227,6 +228,8 @@
     (let ((node (js2r--closest 'js2r--expression-p)))
       (js2r--extract-var-between (js2-node-abs-pos node)
                                  (js2-node-abs-end node)))))
+
+(add-to-list 'mc--default-cmds-to-run-once 'js2r-extract-var)
 
 (defun js2r--extract-var-between (beg end)
   (interactive "r")
