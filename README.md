@@ -117,11 +117,11 @@ yet. If you're eager to contribute, please add an issue here on github and we
 can discuss your changes a little before diving into the elisp. :-)
 
 To fetch the test dependencies, install
-[carton](https://github.com/rejeep/carton) if you haven't already,
+[cask](https://github.com/rejeep/cask.el) if you haven't already,
 then:
 
     $ cd /path/to/expand-region
-    $ carton
+    $ cask
 
 Run the tests with:
 

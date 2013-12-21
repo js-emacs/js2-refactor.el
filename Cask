@@ -1,4 +1,4 @@
-(source "melpa" "http://melpa.milkbox.net/packages/")
+(source melpa)
 
 (package "js2-refactor" "0.6.1" "A JavaScript refactoring library for emacs.")
 
