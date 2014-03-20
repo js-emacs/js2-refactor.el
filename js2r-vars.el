@@ -177,8 +177,7 @@
   (delete-char (js2-node-len node))
   (cond
    ((js2r--was-single-var)
-    (beginning-of-line)
-    (delete-char (save-excursion (end-of-line) (current-column)))
+    (delete-region (point-at-bol) (point-at-eol))
     (delete-blank-lines))
 
    ((js2r--was-starting-var)
