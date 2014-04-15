@@ -11,8 +11,8 @@
       (and (js2-function-node-p node)
            (eq 'FUNCTION_STATEMENT (js2-function-node-form node)))))
 
-(defun js2r-forward-slurp ()
-  (interactive)
+(defun js2r-forward-slurp (&optional arg)
+  (interactive "p")
   (js2r--guard)
   (let* ((nesting (js2r--closest 'js2r--nesting-node-p))
          (standalone (if (js2r--standalone-node-p nesting)
@@ -20,7 +20,16 @@
                        (js2-node-parent-stmt nesting)))
          (next-sibling (js2-node-next-sibling standalone))
          (beg (js2-node-abs-pos next-sibling))
-         (end (1+ (js2-node-abs-end next-sibling))) ;; include whitespace after statement
+         (last-sibling (if (wholenump arg)
+                           (loop with result = next-sibling
+                                 for i downfrom arg
+                                 while (> i 1)
+                                 do
+                                 (setq result (js2-node-next-sibling result))
+                                 finally
+                                 return result)
+                         next-sibling))
+         (end (1+ (js2-node-abs-end last-sibling))) ;; include whitespace after statement
          (text (buffer-substring beg end)))
     (save-excursion
       (delete-region beg end)
@@ -31,8 +40,8 @@
       (insert text)
       (indent-region beg end))))
 
-(defun js2r-forward-barf ()
-  (interactive)
+(defun js2r-forward-barf (&optional arg)
+  (interactive "p")
   (js2r--guard)
   (let* ((nesting (js2r--closest 'js2r--nesting-node-p))
          (standalone (if (js2r--standalone-node-p nesting)
@@ -42,8 +51,17 @@
          (last-child (car (last (if (js2-if-node-p nesting)
                                     (js2-scope-kids (js2r--closest 'js2-scope-p))
                                   (js2r--node-kids nesting)))))
+         (first-barf-child (if (wholenump arg)
+                               (loop with result = last-child
+                                     for i downfrom arg
+                                     while (> i 1)
+                                     do
+                                     (setq result (js2-node-prev-sibling result))
+                                     finally
+                                     return result)
+                             last-child))
          (last-child-beg (save-excursion
-                           (goto-char (js2-node-abs-pos last-child))
+                           (goto-char (js2-node-abs-pos first-barf-child))
                            (skip-syntax-backward " ")
                            (while (looking-back "\n") (backward-char))
                            (point)))
