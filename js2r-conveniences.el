@@ -83,13 +83,13 @@
 (defun js2r--current-line-is-prefixed-with-list-item-start ()
   (save-excursion
     (back-to-indentation)
-    (looking-back "\\({\\|\\[\\|,\\)\\(\s\\|\n\\)*"))) ; { or [ or , then space
+    (looking-back "\\({\\|\\[\\|,\\)\\(\s\\|\n\\|\t\\)*"))) ; { or [ or , then space
 
 (defun js2r--current-line-is-postfixed-with-list-item-end ()
   (save-excursion
     (end-of-line)
     (or (looking-back ",\s*") ; line ends in comma
-        (looking-at "\\(\s\\|\n\\)*\\(\\]\\|}\\)")))) ; space then ] or }
+        (looking-at "\\(\s\\|\n\\|\t\\)*\\(\\]\\|}\\)")))) ; space then ] or }
 
 (defun js2r--current-line-is-a-list-item ()
   (and (js2r--current-line-is-prefixed-with-list-item-start)
