@@ -6,10 +6,26 @@
       (js2-for-node-p node)
       (js2-while-node-p node)))
 
+(defun js2r--balanced-node-p (node)
+  (or (js2r--nesting-node-p node)
+      (js2-array-node-p node)
+      (js2-object-node-p node)
+      (js2-string-node-p node)))
+
 (defun js2r--standalone-node-p (node)
   (or (js2-stmt-node-p node)
       (and (js2-function-node-p node)
            (eq 'FUNCTION_STATEMENT (js2-function-node-form node)))))
+
+(defun js2r-kill ()
+  (interactive)
+  (js2r--guard)
+  (let* ((node (js2r--closest #'js2r--balanced-node-p))
+         (beg (point))
+         (end (and node (1- (js2-node-abs-end node))))) 
+    (if (and node (js2-same-line end))
+        (kill-region beg end)
+      (kill-line))))
 
 (defun js2r-forward-slurp ()
   (interactive)
