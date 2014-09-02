@@ -17,6 +17,24 @@ Feature: Killing lines
     //}
     """
 
+  Scenario: Killing a with parse errors
+    When I insert:
+    """
+    function foo(
+        bar();
+    }
+    """
+    And I turn on js2-mode
+    And I go to the front of the word "function"
+    And I press "C-c C-m k"
+    Then I should see:
+    """
+    
+        bar();
+    }
+    """
+
+
   Scenario: Killing in a string
     When I insert:
     """

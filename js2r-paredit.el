@@ -19,7 +19,13 @@
 
 (defun js2r-kill ()
   (interactive)
-  (js2r--guard)
+  (if js2-parsed-errors 
+      (progn
+        (message "Buffer has parse errors. Killing the line.")
+        (kill-line))
+    (js2r--kill-exp)))
+
+(defun js2r--kill-exp ()
   (let* ((node (js2r--closest #'js2r--balanced-node-p))
          (beg (point))
          (end (and node (1- (js2-node-abs-end node))))) 
