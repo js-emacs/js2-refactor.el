@@ -17,7 +17,7 @@ Feature: Killing lines
     //}
     """
 
-  Scenario: Killing a with parse errors
+  Scenario: Killing a line with parse errors
     When I insert:
     """
     function foo(

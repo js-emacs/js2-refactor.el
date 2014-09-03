@@ -30,8 +30,7 @@ Falls back to `kill-line` if the buffer has parse errors."
   "Kill a line, but respecting the closest sexp, delimited with
   \")}]\"."
   (condition-case error
-      (let* ((node (js2-node-at-point))
-             (beg (point))
+      (let* ((beg (point))
              (end (save-excursion
                     (up-list)
                     (forward-char -1)
@@ -50,13 +49,12 @@ array, literal object or string node)."
       (progn
         (message "Buffer has parse errors. Killing the line.")
         (kill-line))
-    (let ((node (js2-node-at-point)))
-      (let* ((node (js2r--closest #'js2r--balanced-node-p))
-             (beg (point))
-             (end (and node (1- (js2-node-abs-end node))))) 
-        (if (and node (js2-same-line end))
-            (kill-region beg end)
-          (kill-line))))))
+    (let* ((node (js2r--closest #'js2r--balanced-node-p))
+           (beg (point))
+           (end (and node (1- (js2-node-abs-end node))))) 
+      (if (and node (js2-same-line end))
+          (kill-region beg end)
+        (kill-line)))))
 
 (defun js2r-forward-slurp ()
   (interactive)
