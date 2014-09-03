@@ -20,15 +20,11 @@
   "Kill a line like `kill-line` but tries to respect the AST.
 Falls back to `kill-line` if the buffer has parse errors."
   (interactive)
-  (if js2-parsed-errors 
-      (progn
-        (message "Buffer has parse errors. Killing the line.")
-        (kill-line))
-    (let ((node (js2-node-at-point)))
-     (cond 
-      ((js2-comment-node-p node) (kill-line))
-      ((js2r--balanced-node-p node) (js2r--kill-line-in-balanced-exp))
-      (t (js2r--kill-line-in-sexp))))))
+  (let ((node (js2-node-at-point)))
+    (cond 
+     ((js2-comment-node-p node) (kill-line))
+     ((js2r--balanced-node-p node) (js2r--kill-line-in-balanced-exp))
+     (t (js2r--kill-line-in-sexp)))))
 
 (defun js2r--kill-line-in-sexp ()
   "Kill a line, but respecting the closest sexp, delimited with
@@ -50,12 +46,17 @@ Falls back to `kill-line` if the buffer has parse errors."
 (defun js2r--kill-line-in-balanced-exp ()
   "Kill a line, but respecting the closest balanced node (an
 array, literal object or string node)."
-  (let* ((node (js2r--closest #'js2r--balanced-node-p))
-         (beg (point))
-         (end (and node (1- (js2-node-abs-end node))))) 
-    (if (and node (js2-same-line end))
-        (kill-region beg end)
-      (kill-line))))
+  (if js2-parsed-errors 
+      (progn
+        (message "Buffer has parse errors. Killing the line.")
+        (kill-line))
+    (let ((node (js2-node-at-point)))
+      (let* ((node (js2r--closest #'js2r--balanced-node-p))
+             (beg (point))
+             (end (and node (1- (js2-node-abs-end node))))) 
+        (if (and node (js2-same-line end))
+            (kill-region beg end)
+          (kill-line))))))
 
 (defun js2r-forward-slurp ()
   (interactive)
