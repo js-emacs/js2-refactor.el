@@ -131,7 +131,7 @@ Run the tests with:
 
 ## License
 
-Copyright (C) 2012-2013 Magnar Sveen
+Copyright (C) 2012-2014 Magnar Sveen
 
 Author: Magnar Sveen <magnars@gmail.com>
 Keywords: javascript refactorings
