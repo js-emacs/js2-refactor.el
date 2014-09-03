@@ -210,3 +210,24 @@ Feature: Killing lines
     """
     var 
     """
+
+  Scenario: Killing in with nested balanced nodes
+    When I insert:
+    """
+    [
+        'foo', 
+        'bar', 
+        'baz'
+    ]
+    """
+    And I turn on js2-mode
+    And I go to line "3"
+    And I press "C-c C-m k"
+    Then I should see:
+    """
+    [
+        'foo', 
+
+        'baz'
+    ]
+    """
