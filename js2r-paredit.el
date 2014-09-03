@@ -49,7 +49,7 @@ array, literal object or string node)."
       (progn
         (message "Buffer has parse errors. Killing the line.")
         (kill-line))
-    (let* ((node (js2r--closest #'js2r--balanced-node-p))
+    (let* ((node (js2-node-at-point))
            (beg (point))
            (end (and node (1- (js2-node-abs-end node))))) 
       (if (and node (js2-same-line end))
