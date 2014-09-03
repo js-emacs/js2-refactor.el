@@ -74,6 +74,7 @@
 ;;  * `C-S-down` and `C-S-up` moves the current line up or down. If the line is an
 ;;    element in an object or array literal, it makes sure that the commas are
 ;;    still correctly placed.
+;;  * `C-c C-m k` `kill-line`: Like `kill-line` but respecting the AST.
 
 ;; ## Todo
 
@@ -153,6 +154,7 @@
   (define-key js2-mode-map (funcall key-fn "lt") 'js2r-log-this)
   (define-key js2-mode-map (funcall key-fn "sl") 'js2r-forward-slurp)
   (define-key js2-mode-map (funcall key-fn "ba") 'js2r-forward-barf)
+  (define-key js2-mode-map (funcall key-fn "k") 'js2r-kill)
   (define-key js2-mode-map (kbd "<C-S-down>") 'js2r-move-line-down)
   (define-key js2-mode-map (kbd "<C-S-up>") 'js2r-move-line-up))
 
