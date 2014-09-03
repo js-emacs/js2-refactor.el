@@ -17,6 +17,8 @@
            (eq 'FUNCTION_STATEMENT (js2-function-node-form node)))))
 
 (defun js2r-kill ()
+  "Kill a line like `kill-line` but tries to respect the AST.
+Falls back to `kill-line` if the buffer has parse errors."
   (interactive)
   (if js2-parsed-errors 
       (progn
@@ -29,6 +31,8 @@
       (t (js2r--kill-sexp))))))
 
 (defun js2r--kill-sexp ()
+  "Kill a line, but respecting the closest sexp, delimited with
+  \")}]\"."
   (condition-case error
       (let* ((node (js2-node-at-point))
              (beg (point))
@@ -44,6 +48,8 @@
      (kill-line))))
 
 (defun js2r--kill-in-balanced-exp ()
+  "Kill a line, but respecting the closest balanced node (an
+array, literal object or string node)."
   (let* ((node (js2r--closest #'js2r--balanced-node-p))
          (beg (point))
          (end (and node (1- (js2-node-abs-end node))))) 
