@@ -27,10 +27,10 @@ Falls back to `kill-line` if the buffer has parse errors."
     (let ((node (js2-node-at-point)))
      (cond 
       ((js2-comment-node-p node) (kill-line))
-      ((js2r--balanced-node-p node) (js2r--kill-in-balanced-exp))
-      (t (js2r--kill-sexp))))))
+      ((js2r--balanced-node-p node) (js2r--kill-line-in-balanced-exp))
+      (t (js2r--kill-line-in-sexp))))))
 
-(defun js2r--kill-sexp ()
+(defun js2r--kill-line-in-sexp ()
   "Kill a line, but respecting the closest sexp, delimited with
   \")}]\"."
   (condition-case error
@@ -47,7 +47,7 @@ Falls back to `kill-line` if the buffer has parse errors."
      (message "Unbalanced parentheses. Killing the line.")
      (kill-line))))
 
-(defun js2r--kill-in-balanced-exp ()
+(defun js2r--kill-line-in-balanced-exp ()
   "Kill a line, but respecting the closest balanced node (an
 array, literal object or string node)."
   (let* ((node (js2r--closest #'js2r--balanced-node-p))
