@@ -7,8 +7,7 @@
       (js2-while-node-p node)))
 
 (defun js2r--balanced-node-p (node)
-  (or (js2r--nesting-node-p node)
-      (js2-array-node-p node)
+  (or (js2-array-node-p node)
       (js2-object-node-p node)
       (js2-string-node-p node)))
 
@@ -23,9 +22,28 @@
       (progn
         (message "Buffer has parse errors. Killing the line.")
         (kill-line))
-    (js2r--kill-exp)))
+    (let ((node (js2-node-at-point)))
+     (cond 
+      ((js2-comment-node-p node) (kill-line))
+      ((js2r--balanced-node-p node) (js2r--kill-in-balanced-exp))
+      (t (js2r--kill-sexp))))))
 
-(defun js2r--kill-exp ()
+(defun js2r--kill-sexp ()
+  (condition-case error
+      (let* ((node (js2-node-at-point))
+             (beg (point))
+             (end (save-excursion
+                    (up-list)
+                    (forward-char -1)
+                    (point))))
+        (if (js2-same-line end)
+            (kill-region beg end)
+          (kill-line)))
+    (scan-error 
+     (message "Unbalanced parentheses. Killing the line.")
+     (kill-line))))
+
+(defun js2r--kill-in-balanced-exp ()
   (let* ((node (js2r--closest #'js2r--balanced-node-p))
          (beg (point))
          (end (and node (1- (js2-node-abs-end node))))) 

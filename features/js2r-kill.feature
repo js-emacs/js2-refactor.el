@@ -154,3 +154,29 @@ Feature: Killing lines
     """
     var foo = function() { return }; bar;
     """
+
+  Scenario: Killing in the parameters of a function
+    When I insert:
+    """
+    function a(foo, bar) { return bar;}
+    """
+    And I turn on js2-mode
+    And I go to the end of the word "foo"
+    And I press "C-c C-m k"
+    Then I should see:
+    """
+    function a(foo) { return bar;}
+    """
+
+  Scenario: Killing in front of a function
+    When I insert:
+    """
+    function a(foo, bar) { return bar;}
+    """
+    And I turn on js2-mode
+    And I go to the front of the word "function"
+    And I press "C-c C-m k"
+    Then I should see:
+    """
+    
+    """
