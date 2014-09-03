@@ -125,6 +125,23 @@ Feature: Killing lines
     }
     """
 
+  Scenario: Killing in an if statement with else branch
+    When I insert:
+    """
+    function foo() {
+        if (foo) {return 2;} else {return 1;}
+    }
+    """
+    And I turn on js2-mode
+    And I go to the front of the word "return"
+    And I press "C-c C-m k"
+    Then I should see:
+    """
+    function foo() {
+        if (foo) {} else {return 1;}
+    }
+    """
+
   Scenario: Killing in an else branch of an if statement
     When I insert:
     """
@@ -179,4 +196,17 @@ Feature: Killing lines
     Then I should see:
     """
     
+    """
+
+  Scenario: Killing in front of a variable declaration
+    When I insert:
+    """
+    var foo = 3;
+    """
+    And I turn on js2-mode
+    And I go to the front of the word "foo"
+    And I press "C-c C-m k"
+    Then I should see:
+    """
+    var 
     """
