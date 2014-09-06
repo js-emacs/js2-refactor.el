@@ -28,7 +28,9 @@ Falls back to `kill-line` if the buffer has parse errors."
 
 (defun js2r--kill-line-in-sexp ()
   "Kill a line, but respecting the closest sexp, delimited with
-  \")}]\"."
+  \")}]\".
+
+If the parentheses are unbalanced, the line and warn the user."
   (condition-case error
       (let* ((beg (point))
              (end (save-excursion
@@ -44,7 +46,12 @@ Falls back to `kill-line` if the buffer has parse errors."
 
 (defun js2r--kill-line-in-balanced-exp ()
   "Kill a line, but respecting the closest balanced node (an
-array, literal object or string node)."
+array, literal object or string node). 
+
+When the cursor is at the beginning of the node, kill until the
+end of the node (inclusive).
+
+If the buffer has parse errors, kill the line and warn the user."
   (if js2-parsed-errors 
       (progn
         (message "Buffer has parse errors. Killing the line.")
