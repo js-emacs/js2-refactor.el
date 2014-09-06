@@ -50,9 +50,14 @@ array, literal object or string node)."
         (message "Buffer has parse errors. Killing the line.")
         (kill-line))
     (let* ((node (js2-node-at-point))
+           (node-start (js2-node-abs-pos node))
+           (node-end (js2-node-abs-end node))
+           (at-beg-of-point (= (point) node-start))
            (beg (point))
-           (end (and node (1- (js2-node-abs-end node))))) 
-      (if (and node (js2-same-line end))
+           (end (if at-beg-of-point
+                    node-end
+                  (1- node-end)))) 
+      (if (js2-same-line end)
           (kill-region beg end)
         (kill-line)))))
 
