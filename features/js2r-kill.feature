@@ -235,12 +235,13 @@ Feature: Killing lines
   Scenario: Killing a node when in front of it
     When I insert:
     """
-    ['foo']
+    foo(['foo', 'bar'], 2, 3);
     """
     And I turn on js2-mode
     And I place the cursor before "'foo"
     And I press "C-c C-m k"
     Then I should see:
     """
-    []
+    foo([], 2, 3);
     """
+

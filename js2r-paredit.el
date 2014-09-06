@@ -6,11 +6,6 @@
       (js2-for-node-p node)
       (js2-while-node-p node)))
 
-(defun js2r--balanced-node-p (node)
-  (or (js2-array-node-p node)
-      (js2-object-node-p node)
-      (js2-string-node-p node)))
-
 (defun js2r--standalone-node-p (node)
   (or (js2-stmt-node-p node)
       (and (js2-function-node-p node)
@@ -23,14 +18,15 @@ Falls back to `kill-line` if the buffer has parse errors."
   (let ((node (js2-node-at-point)))
     (cond 
      ((js2-comment-node-p node) (kill-line))
-     ((js2r--balanced-node-p node) (js2r--kill-line-in-balanced-exp))
+     ((js2-string-node-p node) (js2r--kill-line-in-string))
      (t (js2r--kill-line-in-sexp)))))
 
 (defun js2r--kill-line-in-sexp ()
   "Kill a line, but respecting the closest sexp, delimited with
   \")}]\".
 
-If the parentheses are unbalanced, the line and warn the user."
+If the parentheses are unbalanced, fallback to `kill-line` and
+warn the user."
   (condition-case error
       (let* ((beg (point))
              (end (save-excursion
@@ -44,29 +40,16 @@ If the parentheses are unbalanced, the line and warn the user."
      (message "Unbalanced parentheses. Killing the line.")
      (kill-line))))
 
-(defun js2r--kill-line-in-balanced-exp ()
-  "Kill a line, but respecting the closest balanced node (an
-array, literal object or string node). 
-
-When the cursor is at the beginning of the node, kill until the
-end of the node (inclusive).
-
-If the buffer has parse errors, kill the line and warn the user."
-  (if js2-parsed-errors 
-      (progn
-        (message "Buffer has parse errors. Killing the line.")
-        (kill-line))
-    (let* ((node (js2-node-at-point))
-           (node-start (js2-node-abs-pos node))
-           (node-end (js2-node-abs-end node))
-           (at-beg-of-point (= (point) node-start))
-           (beg (point))
-           (end (if at-beg-of-point
-                    node-end
-                  (1- node-end)))) 
-      (if (js2-same-line end)
-          (kill-region beg end)
-        (kill-line)))))
+(defun js2r--kill-line-in-string ()
+  "Kill a line in a string node, respecting the node boundaries.
+When at the beginning of the node, kill from outside of it."
+  (let ((node (js2-node-at-point))
+        (beg (point))
+        (node-start (js2-node-abs-pos node))
+        (node-end (js2-node-abs-end node)))
+    (if (= beg node-start)
+        (js2r--kill-line-in-sexp)
+      (kill-region beg (1- node-end)))))
 
 (defun js2r-forward-slurp ()
   (interactive)
