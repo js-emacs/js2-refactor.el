@@ -84,6 +84,7 @@ to pick and choose your own keybindings with a smattering of:
  * `lt` is `log-this`: Adds a console.log statement for what is at point (or region).
  * `sl` is `forward-slurp`: Moves the next statement into current function, if-statement, for-loop or while-loop.
  * `ba` is `forward-barf`: Moves the last child out of current function, if-statement, for-loop or while-loop.
+ * `k` is `kill`: Kills to the end of the line, but does not cross semantic boundaries.
 
 There are also some minor conveniences bundled:
 
@@ -107,6 +108,7 @@ A list of some wanted improvements for the current refactorings.
 
 * [Matt Briggs](https://github.com/mbriggs) contributed `js2r-add-to-globals-annotation`
 * [Alex Chamberlain](https://github.com/apchamberlain) contributed contracting and expanding arrays and functions.
+* [Nicolas Petton](https://github.com/NicolasPetton) contributed `js2r-kill`
 
 Thanks!
 
@@ -129,7 +131,7 @@ Run the tests with:
 
 ## License
 
-Copyright (C) 2012-2013 Magnar Sveen
+Copyright (C) 2012-2014 Magnar Sveen
 
 Author: Magnar Sveen <magnars@gmail.com>
 Keywords: javascript refactorings

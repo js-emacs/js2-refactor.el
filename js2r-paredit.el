@@ -11,6 +11,46 @@
       (and (js2-function-node-p node)
            (eq 'FUNCTION_STATEMENT (js2-function-node-form node)))))
 
+(defun js2r-kill ()
+  "Kill a line like `kill-line` but tries to respect the AST.
+Falls back to `kill-line` if the buffer has parse errors."
+  (interactive)
+  (let ((node (js2-node-at-point)))
+    (cond 
+     ((js2-comment-node-p node) (kill-line))
+     ((js2-string-node-p node) (js2r--kill-line-in-string))
+     (t (js2r--kill-line-in-sexp)))))
+
+(defun js2r--kill-line-in-sexp ()
+  "Kill a line, but respecting the closest sexp, delimited with
+  \")}]\".
+
+If the parentheses are unbalanced, fallback to `kill-line` and
+warn the user."
+  (condition-case error
+      (let* ((beg (point))
+             (end (save-excursion
+                    (up-list)
+                    (forward-char -1)
+                    (point))))
+        (if (js2-same-line end)
+            (kill-region beg end)
+          (kill-line)))
+    (scan-error 
+     (message "Unbalanced parentheses. Killing the line.")
+     (kill-line))))
+
+(defun js2r--kill-line-in-string ()
+  "Kill a line in a string node, respecting the node boundaries.
+When at the beginning of the node, kill from outside of it."
+  (let ((node (js2-node-at-point))
+        (beg (point))
+        (node-start (js2-node-abs-pos node))
+        (node-end (js2-node-abs-end node)))
+    (if (= beg node-start)
+        (js2r--kill-line-in-sexp)
+      (kill-region beg (1- node-end)))))
+
 (defun js2r-forward-slurp (&optional arg)
   (interactive "p")
   (js2r--guard)
