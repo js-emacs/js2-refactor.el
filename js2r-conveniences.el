@@ -46,19 +46,27 @@
         (point))
     (js2-node-abs-end parent-stmt)))
 
-;; Split a string
-
 (defun js2r-split-string ()
+  "Split the string node at point. If the string is already
+split, join it instead."
   (interactive)
   (when (js2r--point-inside-string-p)
-    (if (looking-back " \"")
-        (progn
-          (forward-char -2)
-          (insert "  +")
-          (forward-char -2))
-      (if (looking-at (regexp-quote "\" + \""))
-          (delete-char 5)
-        (insert "\" + \"")))))
+    (let ((delimiter (js2r--string-delimiter (js2-node-at-point))))
+     (if (looking-back " \"")
+         (progn
+           (forward-char -2)
+           (insert "  +")
+           (forward-char -2))
+       (if (looking-at (regexp-quote (format "%s + %s" delimiter delimiter)))
+           (delete-char 5)
+         (insert (format "%s + %s" delimiter delimiter)))))))
+
+(defun js2r--string-delimiter (node)
+  "Return the delimiter character of the string node NODE. It can
+  be a single or double quote."
+  (save-excursion
+    (goto-char (js2-node-abs-pos node))
+    (char-to-string (following-char))))
 
 ;; Make sure commas are placed correctly when moving a line up or down
 ;; in an object or array literal.
