@@ -12,8 +12,17 @@
            (eq 'FUNCTION_STATEMENT (js2-function-node-form node)))))
 
 (defun js2r-kill ()
-  "Kill a line like `kill-line` but tries to respect node boundaries.
-Falls back to `kill-line` if the buffer has parse errors."
+  "Kill a line like `kill-line' but tries to respect node boundaries.
+Falls back to `kill-line' if the buffer has parse errors.
+
+if(|foo) {bar();}       -> if() {bar();}
+
+function foo() {|2 + 3} -> function foo() {}
+
+// some |comment        -> // some
+
+'this is a| string'     -> 'this is a'
+"
   (interactive)
   (if js2-parsed-errors
       (progn
@@ -35,8 +44,10 @@ Falls back to `kill-line` if the buffer has parse errors."
     (kill-forward-chars 1)))
 
 (defun js2r--kill-line-in-sexp ()
-  "Kill a line, but respecting the closest sexp, delimited with
-  \")}]\"."
+  "Kill a line, but only kills until the closest outer sexp on
+  the current line, delimited with \")}]\". If no sexp is found
+  on the current line, falls back to
+  `js2r--kill-line-with-inner-sexp'."
   (condition-case error
       (let* ((beg (point))
              (end (save-excursion
@@ -51,10 +62,10 @@ Falls back to `kill-line` if the buffer has parse errors."
 
 (defun js2r--kill-line-with-inner-sexp ()
   "Kill a line, but respecting inner killed sexps, ensuring that
-  we kill up to the end to the next inner sexp if it starts in
-  the current line.
+we kill up to the end to the next inner sexp if it starts in
+the current line.
 
-If the parentheses are unbalanced, fallback to `kill-line` and
+If the parentheses are unbalanced, fallback to `kill-line' and
 warn the user."
   (condition-case error
       (let* ((beg (point))
