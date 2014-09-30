@@ -12,21 +12,42 @@
            (eq 'FUNCTION_STATEMENT (js2-function-node-form node)))))
 
 (defun js2r-kill ()
-  "Kill a line like `kill-line` but tries to respect the AST.
-Falls back to `kill-line` if the buffer has parse errors."
+  "Kill a line like `kill-line' but tries to respect node boundaries.
+Falls back to `kill-line' if the buffer has parse errors.
+
+if(|foo) {bar();}       -> if() {bar();}
+
+function foo() {|2 + 3} -> function foo() {}
+
+// some |comment        -> // some
+
+'this is a| string'     -> 'this is a'
+"
   (interactive)
+  (if js2-parsed-errors
+      (progn
+        (message "Buffer has parse errors. Killing the line")
+        (kill-line))
+    (js2r--kill-line)))
+
+(defun js2r--kill-line ()
+  "Kill a line, but respecting node boundaries."
   (let ((node (js2-node-at-point)))
-    (cond 
+    (cond
      ((js2-comment-node-p node) (kill-line))
      ((js2-string-node-p node) (js2r--kill-line-in-string))
-     (t (js2r--kill-line-in-sexp)))))
+     (t (js2r--kill-line-in-sexp))))
+  (js2r--cleanup-after-kill))
+
+(defun js2r--cleanup-after-kill ()
+  (while (looking-at ";")
+    (kill-forward-chars 1)))
 
 (defun js2r--kill-line-in-sexp ()
-  "Kill a line, but respecting the closest sexp, delimited with
-  \")}]\".
-
-If the parentheses are unbalanced, fallback to `kill-line` and
-warn the user."
+  "Kill a line, but only kills until the closest outer sexp on
+  the current line, delimited with \")}]\". If no sexp is found
+  on the current line, falls back to
+  `js2r--kill-line-with-inner-sexp'."
   (condition-case error
       (let* ((beg (point))
              (end (save-excursion
@@ -35,10 +56,46 @@ warn the user."
                     (point))))
         (if (js2-same-line end)
             (kill-region beg end)
+          (js2r--kill-line-with-inner-sexp)))
+    (scan-error
+     (js2r--kill-line-with-inner-sexp))))
+
+(defun js2r--kill-line-with-inner-sexp ()
+  "Kill a line, but respecting inner killed sexps, ensuring that
+we kill up to the end to the next inner sexp if it starts in
+the current line.
+
+If the parentheses are unbalanced, fallback to `kill-line' and
+warn the user."
+  (condition-case error
+      (let* ((beg (point))
+             (end (save-excursion
+                    (forward-visible-line 1)
+                    (point)))
+             (beg-of-sexp (save-excursion
+                            (js2r--goto-last-sexp-on-line)
+                            (point)))
+             (end-of-sexp (save-excursion
+                            (goto-char beg-of-sexp)
+                            (forward-list)
+                            (point))))
+        (if (js2-same-line beg-of-sexp)
+            (kill-region beg (max end end-of-sexp))
           (kill-line)))
-    (scan-error 
+    (scan-error
      (message "Unbalanced parentheses. Killing the line.")
      (kill-line))))
+
+(defun js2r--goto-last-sexp-on-line ()
+  "Move the cursor to the opening of the last sexp on the current
+line, or to the end of the line if no sexp is found."
+  (let ((pos (point)))
+    (down-list)
+    (backward-char 1)
+    (forward-list)
+    (if (js2-same-line pos)
+        (js2r--goto-last-sexp-on-line)
+      (backward-list))))
 
 (defun js2r--kill-line-in-string ()
   "Kill a line in a string node, respecting the node boundaries.
