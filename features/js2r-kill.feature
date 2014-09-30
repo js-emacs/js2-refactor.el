@@ -1,6 +1,7 @@
 Feature: Killing lines
 
   Scenario: Killing a comment
+    Given I clear the buffer
     When I insert:
     """
     //function foo() {
@@ -18,6 +19,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing a line with parse errors
+    Given I clear the buffer
     When I insert:
     """
     function foo(
@@ -36,6 +38,7 @@ Feature: Killing lines
 
 
   Scenario: Killing in a string
+    Given I clear the buffer
     When I insert:
     """
     function foo() {
@@ -52,6 +55,7 @@ Feature: Killing lines
     }
     """
   Scenario: Killing in an array
+    Given I clear the buffer
     When I insert:
     """
     function foo() {
@@ -69,6 +73,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing in a multiline array
+    Given I clear the buffer
     When I insert:
     """
     function foo() {
@@ -92,6 +97,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing in an object
+    Given I clear the buffer
     When I insert:
     """
     function foo() {
@@ -109,6 +115,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing in an if statement
+    Given I clear the buffer
     When I insert:
     """
     function foo() {
@@ -126,6 +133,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing in an if statement with else branch
+    Given I clear the buffer
     When I insert:
     """
     function foo() {
@@ -143,6 +151,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing in an else branch of an if statement
+    Given I clear the buffer
     When I insert:
     """
     function foo() {
@@ -160,6 +169,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing in a function
+    Given I clear the buffer
     When I insert:
     """
     var foo = function() { return hello;}; bar;
@@ -173,6 +183,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing in the parameters of a function
+    Given I clear the buffer
     When I insert:
     """
     function a(foo, bar) { return bar;}
@@ -186,6 +197,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing in front of a function
+    Given I clear the buffer
     When I insert:
     """
     function a(foo, bar) { return bar;}
@@ -199,6 +211,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing in front of a variable declaration
+    Given I clear the buffer
     When I insert:
     """
     var foo = 3;
@@ -212,6 +225,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing with nested balanced nodes
+    Given I clear the buffer
     When I insert:
     """
     [
@@ -233,6 +247,7 @@ Feature: Killing lines
     """
 
   Scenario: Killing a node when in front of it
+    Given I clear the buffer
     When I insert:
     """
     foo(['foo', 'bar'], 2, 3);
@@ -245,3 +260,59 @@ Feature: Killing lines
     foo([], 2, 3);
     """
 
+  Scenario Killing multiline functions
+    Given I clear the buffer
+    When I insert:
+    """
+    baz(function(){
+        bar();
+    });
+    """
+    And I turn on js2-mode
+    And I place the cursor before "function"
+    And I press "C-c C-m k"
+    Then I should see:
+    """
+    baz();
+    """
+
+  Scenario Killing multiline statements
+    Given I clear the buffer
+    When I insert:
+    """
+    if(foo > bar) {
+        baz();
+    }
+    blah();
+    """
+    And I turn on js2-mode
+    And I place the cursor before "if"
+    And I press "C-c C-m k"
+    Then I should see:
+    """
+    blah();
+    """
+    And I should not see:
+    """
+    baz();
+    """
+
+
+  Scenario Killing kills trailing semi-colons
+    Given I clear the buffer
+    When I insert:
+    """
+    foo();hello(
+    );
+    """
+    And I turn on js2-mode
+    And I place the cursor before "hello"
+    And I press "C-c C-m k"
+    Then I should see:
+    """
+    foo();
+    """
+    And I should not see:
+    """
+    foo();;
+    """
