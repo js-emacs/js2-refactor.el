@@ -238,7 +238,7 @@
   (let ((deactivate-mark nil)
         (expression (buffer-substring beg end))
         (orig-var-end (make-marker))
-        new-var-end
+        (new-var-end (make-marker))
         (name (or (js2r--object-literal-key-behind beg) "name")))
 
     (delete-region beg end)
@@ -247,7 +247,7 @@
 
     (goto-char (js2r--start-of-parent-stmt))
     (insert "var " name)
-    (setq new-var-end (point))
+    (set-marker new-var-end (point))
     (insert " = " expression ";")
     (when (or (js2r--line-above-is-blank)
               (string-match-p "^function " expression))
@@ -260,7 +260,8 @@
       (mc/create-fake-cursor-at-point))
     (goto-char orig-var-end)
     (set-mark (- (point) (length name)))
-    (set-marker orig-var-end nil))
+    (set-marker orig-var-end nil)
+    (set-marker new-var-end nil))
   (mc/maybe-multiple-cursors-mode))
 
 ;; Split var declaration

@@ -99,7 +99,7 @@ Feature: Extract var
     Then I should see:
     """
     beforeEach(function () {
-      var jkl = 'baz';
-      spyOn(Foo, 'bar').andReturn(jkl);
+        var jkl = 'baz';
+        spyOn(Foo, 'bar').andReturn(jkl);
     });
     """
