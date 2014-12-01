@@ -83,3 +83,23 @@ Feature: Extract var
     var jkl = abc.def;
     jkl.ghi();
     """
+
+  Scenario: Issue 37, wrong place
+    When I insert:
+    """
+    beforeEach(function () {
+      spyOn(Foo, 'bar').andReturn('baz');
+    });
+    """
+    And I turn on js2-mode
+    And I go to the front of the word "baz"
+    And I press "C-c C-m ev"
+    And I press "C-u DEL"
+    And I type "jkl"
+    Then I should see:
+    """
+    beforeEach(function () {
+        var jkl = 'baz';
+        spyOn(Foo, 'bar').andReturn(jkl);
+    });
+    """
