@@ -75,7 +75,7 @@
 ;;  * `C-S-down` and `C-S-up` moves the current line up or down. If the line is an
 ;;    element in an object or array literal, it makes sure that the commas are
 ;;    still correctly placed.
-;;  * `C-c C-m k` `kill-line`: Like `kill-line` but respecting the AST.
+;;  * `k` `kill-line`: Like `kill-line` but respecting the AST.
 
 ;; ## Todo
 
