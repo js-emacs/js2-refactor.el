@@ -1,6 +1,6 @@
 ;;; js2-refactor.el --- The beginnings of a JavaScript refactoring library in emacs.
 
-;; Copyright (C) 2012 Magnar Sveen
+;; Copyright (C) 2012-2015 Magnar Sveen
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: conveniences
@@ -75,7 +75,7 @@
 ;;  * `C-S-down` and `C-S-up` moves the current line up or down. If the line is an
 ;;    element in an object or array literal, it makes sure that the commas are
 ;;    still correctly placed.
-;;  * `C-c C-m k` `kill-line`: Like `kill-line` but respecting the AST.
+;;  * `k` `kill-line`: Like `kill-line` but respecting the AST.
 
 ;; ## Todo
 
@@ -89,7 +89,8 @@
 ;; ## Contributions
 
 ;; * [Matt Briggs](https://github.com/mbriggs) contributed `js2r-add-to-globals-annotation`
-
+;; * [Alex Chamberlain](https://github.com/apchamberlain) contributed contracting and expanding arrays and functions.
+;; * [Nicolas Petton](https://github.com/NicolasPetton) contributed `js2r-kill`
 ;; Thanks!
 
 ;; ## Contribute
@@ -129,6 +130,7 @@
 ;;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun js2r--add-keybindings (key-fn)
+  "Add js2r refactoring keybindings to `js2-mode-map' using KEY-FN to create each keybinding."
   (define-key js2-mode-map (funcall key-fn "eo") 'js2r-expand-object)
   (define-key js2-mode-map (funcall key-fn "co") 'js2r-contract-object)
   (define-key js2-mode-map (funcall key-fn "eu") 'js2r-expand-function)
@@ -162,10 +164,12 @@
 
 ;;;###autoload
 (defun js2r-add-keybindings-with-prefix (prefix)
+  "Add js2r keybindings using the prefix PREFIX."
   (js2r--add-keybindings (-partial 'js2r--key-pairs-with-prefix prefix)))
 
 ;;;###autoload
 (defun js2r-add-keybindings-with-modifier (modifier)
+  "Add js2r keybindings using the modifier MODIFIER."
   (js2r--add-keybindings (-partial 'js2r--key-pairs-with-modifier modifier)))
 
 (provide 'js2-refactor)

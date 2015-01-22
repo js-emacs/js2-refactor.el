@@ -1,3 +1,25 @@
+;;; js2r-vars.el --- Variable declaration manipulation functions for js2-refactor
+
+;; Copyright (C) 2012-2015 Magnar Sveen
+
+;; Author: Magnar Sveen <magnars@gmail.com>
+;; Keywords: conveniences
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Code:
+
 (require 'multiple-cursors-core)
 (require 'dash)
 
@@ -264,9 +286,9 @@
     (set-marker new-var-end nil))
   (mc/maybe-multiple-cursors-mode))
 
-;; Split var declaration
-
 (defun js2r-split-var-declaration ()
+  "Split a variable declaration into separate variable
+declarations for each declared variable."
   (interactive)
   (js2r--guard)
   (save-excursion
@@ -288,3 +310,4 @@
         (indent-region (point) end)))))
 
 (provide 'js2r-vars)
+;;; js2-vars.el ends here
