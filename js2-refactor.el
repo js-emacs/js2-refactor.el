@@ -1,6 +1,6 @@
 ;;; js2-refactor.el --- The beginnings of a JavaScript refactoring library in emacs.
 
-;; Copyright (C) 2012-2014 Magnar Sveen
+;; Copyright (C) 2012-2015 Magnar Sveen
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: conveniences

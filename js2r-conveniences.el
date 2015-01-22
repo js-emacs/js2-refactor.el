@@ -1,6 +1,6 @@
 ;;; js2r-conveniences.el --- Convenience functions for js2-refactor
 
-;; Copyright (C) 2012-2014 Magnar Sveen
+;; Copyright (C) 2012-2015 Magnar Sveen
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: conveniences
