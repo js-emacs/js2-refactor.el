@@ -1,10 +1,32 @@
+;;; js2r-functions.el --- Function manipulation functions for js2-refactor
+
+;; Copyright (C) 2012-2015 Magnar Sveen
+
+;; Author: Magnar Sveen <magnars@gmail.com>
+;; Keywords: conveniences
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Code:
+
+
 (require 'cl)
 (require 'dash)
 (require 'yasnippet)
 
-;; Turn parameter into local var in local function
-
 (defun js2r-localize-parameter ()
+  "Turn parameter into local var in local function."
   (interactive)
   (js2r--guard)
   (if (js2-name-node-p (js2-node-at-point))
@@ -87,9 +109,8 @@
         (completing-read prompt examples)
       (car examples))))
 
-;; Introduce parameter in local function
-
 (defun js2r-introduce-parameter ()
+  "Introduce a parameter in a local function."
   (interactive)
   (js2r--guard)
   (if (use-region-p)
@@ -173,9 +194,8 @@
          (not (js2-var-init-node-p parent))
          (not (js2-object-prop-node-p parent)))))
 
-;; Change from a list of arguments to a parameter object
-
 (defun js2r-arguments-to-object ()
+  "Change from a list of arguments to a parameter object."
   (interactive)
   (js2r--guard)
   (let ((node (js2-node-at-point)))
@@ -259,9 +279,8 @@
                                               (js2-node-abs-end arg))))))
     (concat "({\n" (substring result 0 -2) "\n})")))
 
-;; Extract Function and Extract Method
-
 (defun js2r-extract-function (name)
+  "Extract a function from the closest statement expression from the point."
   (interactive "sName of new function: ")
   (js2r--extract-fn
    name
@@ -272,6 +291,7 @@
    "function %s(%s) {\n%s\n}\n\n"))
 
 (defun js2r-extract-method (name)
+  "Extract a method from the closest statement expression from the point."
   (interactive "sName of new method: ")
   (js2r--extract-fn
    name
@@ -412,3 +432,4 @@
     (insert ";")))
 
 (provide 'js2r-functions)
+;;; js2-functions.el ends here

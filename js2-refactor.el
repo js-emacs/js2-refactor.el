@@ -1,6 +1,6 @@
 ;;; js2-refactor.el --- The beginnings of a JavaScript refactoring library in emacs.
 
-;; Copyright (C) 2012 Magnar Sveen
+;; Copyright (C) 2012-2015 Magnar Sveen
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: conveniences
@@ -67,6 +67,7 @@
 ;;  * `ao` is `arguments-to-object`: Replaces arguments to a function call with an object literal of named arguments. Requires yasnippets.
 ;;  * `3i` is `ternary-to-if`: Converts ternary operator to if-statement.
 ;;  * `sv` is `split-var-declaration`: Splits a `var` with multiple vars declared, into several `var` statements.
+;;  * `ss` is `split-string`: Splits a `string`.
 ;;  * `uw` is `unwrap`: Replaces the parent statement with the selected region.
 
 ;; There are also some minor conveniences bundled:
@@ -74,7 +75,7 @@
 ;;  * `C-S-down` and `C-S-up` moves the current line up or down. If the line is an
 ;;    element in an object or array literal, it makes sure that the commas are
 ;;    still correctly placed.
-;;  * `C-c C-m k` `kill-line`: Like `kill-line` but respecting the AST.
+;;  * `k` `kill-line`: Like `kill-line` but respecting the AST.
 
 ;; ## Todo
 
@@ -88,7 +89,8 @@
 ;; ## Contributions
 
 ;; * [Matt Briggs](https://github.com/mbriggs) contributed `js2r-add-to-globals-annotation`
-
+;; * [Alex Chamberlain](https://github.com/apchamberlain) contributed contracting and expanding arrays and functions.
+;; * [Nicolas Petton](https://github.com/NicolasPetton) contributed `js2r-kill`
 ;; Thanks!
 
 ;; ## Contribute
@@ -128,6 +130,7 @@
 ;;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun js2r--add-keybindings (key-fn)
+  "Add js2r refactoring keybindings to `js2-mode-map' using KEY-FN to create each keybinding."
   (define-key js2-mode-map (funcall key-fn "eo") 'js2r-expand-object)
   (define-key js2-mode-map (funcall key-fn "co") 'js2r-contract-object)
   (define-key js2-mode-map (funcall key-fn "eu") 'js2r-expand-function)
@@ -142,6 +145,7 @@
   (define-key js2-mode-map (funcall key-fn "vt") 'js2r-var-to-this)
   (define-key js2-mode-map (funcall key-fn "ag") 'js2r-add-to-globals-annotation)
   (define-key js2-mode-map (funcall key-fn "sv") 'js2r-split-var-declaration)
+  (define-key js2-mode-map (funcall key-fn "ss") 'js2r-split-string)
   (define-key js2-mode-map (funcall key-fn "ef") 'js2r-extract-function)
   (define-key js2-mode-map (funcall key-fn "em") 'js2r-extract-method)
   (define-key js2-mode-map (funcall key-fn "ip") 'js2r-introduce-parameter)
@@ -160,10 +164,12 @@
 
 ;;;###autoload
 (defun js2r-add-keybindings-with-prefix (prefix)
+  "Add js2r keybindings using the prefix PREFIX."
   (js2r--add-keybindings (-partial 'js2r--key-pairs-with-prefix prefix)))
 
 ;;;###autoload
 (defun js2r-add-keybindings-with-modifier (modifier)
+  "Add js2r keybindings using the modifier MODIFIER."
   (js2r--add-keybindings (-partial 'js2r--key-pairs-with-modifier modifier)))
 
 (provide 'js2-refactor)

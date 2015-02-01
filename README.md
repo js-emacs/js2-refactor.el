@@ -80,6 +80,7 @@ to pick and choose your own keybindings with a smattering of:
  * `ao` is `arguments-to-object`: Replaces arguments to a function call with an object literal of named arguments.
  * `3i` is `ternary-to-if`: Converts ternary operator to if-statement.
  * `sv` is `split-var-declaration`: Splits a `var` with multiple vars declared, into several `var` statements.
+ * `ss` is `split-string`: Splits a `string`.
  * `uw` is `unwrap`: Replaces the parent statement with the selected region.
  * `lt` is `log-this`: Adds a console.log statement for what is at point (or region).
  * `sl` is `forward-slurp`: Moves the next statement into current function, if-statement, for-loop or while-loop.
@@ -131,7 +132,7 @@ Run the tests with:
 
 ## License
 
-Copyright (C) 2012-2014 Magnar Sveen
+Copyright (C) 2012-2015 Magnar Sveen
 
 Author: Magnar Sveen <magnars@gmail.com>
 Keywords: javascript refactorings
