@@ -149,7 +149,7 @@ When at the beginning of the node, kill from outside of it."
                              iter-sibling
                              )
                          next-sibling) ;; No optional arg. Just use next-sibling
-                           )
+                       )
          (end (1+ (js2-node-abs-end last-sibling))) ;; include whitespace after statement
          (text (buffer-substring beg end)))
     (save-excursion
