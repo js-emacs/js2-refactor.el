@@ -144,12 +144,9 @@ When at the beginning of the node, kill from outside of it."
                                  (iter-sibling next-sibling))
                              (while (> num 1) ;; Do next-sibling arg nbr of times
                                (setq iter-sibling (js2-node-next-sibling iter-sibling))
-                               (setq num (1- num))
-                               )
-                             iter-sibling
-                             )
-                         next-sibling) ;; No optional arg. Just use next-sibling
-                       )
+                               (setq num (1- num)))
+                             iter-sibling)
+                         next-sibling)) ;; No optional arg. Just use next-sibling
          (end (1+ (js2-node-abs-end last-sibling))) ;; include whitespace after statement
          (text (buffer-substring beg end)))
     (save-excursion
@@ -177,12 +174,9 @@ When at the beginning of the node, kill from outside of it."
                                      (iter-child last-child))
                                  (while (> num 1) ;; Do prev-sibling arg nbr of times
                                    (setq iter-child (js2-node-prev-sibling iter-child))
-                                   (setq num (1- num))
-                                   )
-                                 iter-child
-                                 )
-                             last-child);; No optional arg. Just use last-child
-                           )
+                                   (setq num (1- num)))
+                                 iter-child)
+                             last-child)); No optional arg. Just use last-child
          (last-child-beg (save-excursion
                            (goto-char (js2-node-abs-pos first-barf-child))
                            (skip-syntax-backward " ")
