@@ -126,3 +126,76 @@ Feature: JS Slurp
     }
     jkl();
     """
+  Scenario: Slurping with negative prefix does a single slurp
+    When I insert:
+    """
+    if (abc) {
+    }
+    ghi();
+    jkl();
+    """
+    And I turn on js2-mode
+    And I go to the front of the word "abc"
+    And I press "M-- 1 C-c C-m sl"
+    Then I should see:
+    """
+    if (abc) {
+        ghi();
+    }
+    jkl();
+    """
+
+  Scenario: Slurping several statements using number prefix
+    When I insert:
+    """
+    function abc() {
+        def();
+    }
+    jkl();
+    mno();
+    pqr();
+    stu();
+    """
+    And I turn on js2-mode
+    And I go to the front of the word "abc"
+    And I press "M-3 C-c C-m sl"
+    Then I should see:
+    """
+    function abc() {
+        def();
+        jkl();
+        mno();
+        pqr();
+    }
+    stu();
+    """
+
+  Scenario: Slurping multiline statement followed by single line statement
+    When I insert:
+    """
+    if (abc) {
+        def();
+    } else {}
+    ghi({
+        jkl: 1,
+        mno: 2
+    });
+    jkl();
+    pqr();
+    """
+    And I turn on js2-mode
+    And I go to the front of the word "else"
+    And I press "M-2 C-c C-m sl"
+    Then I should see:
+    """
+    if (abc) {
+        def();
+    } else {
+        ghi({
+            jkl: 1,
+            mno: 2
+        });
+        jkl();
+    }
+    pqr();
+    """
