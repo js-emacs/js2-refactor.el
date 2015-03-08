@@ -186,10 +186,14 @@
 
 (defun js2r--was-single-var ()
   (or (string= "var ;" (current-line-contents))
+      (string= "const ;" (current-line-contents))
+      (string= "let ;" (current-line-contents))
       (string= "," (current-line-contents))))
 
 (defun js2r--was-starting-var ()
-  (looking-back "var "))
+  (or (looking-back "var ")
+      (looking-back "const ")
+      (looking-back "let ")))
 
 (defun js2r--was-ending-var ()
   (looking-at ";"))
