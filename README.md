@@ -123,7 +123,7 @@ To fetch the test dependencies, install
 [cask](https://github.com/rejeep/cask.el) if you haven't already,
 then:
 
-    $ cd /path/to/expand-region
+    $ cd /path/to/js2-refactor.el
     $ cask
 
 Run the tests with:
