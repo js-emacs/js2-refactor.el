@@ -109,7 +109,9 @@ A list of some wanted improvements for the current refactorings.
 
 * [Matt Briggs](https://github.com/mbriggs) contributed `js2r-add-to-globals-annotation`
 * [Alex Chamberlain](https://github.com/apchamberlain) contributed contracting and expanding arrays and functions.
-* [Nicolas Petton](https://github.com/NicolasPetton) contributed `js2r-kill`
+* [Nicolas Petton](https://github.com/NicolasPetton) contributed lots of stuff and is now a co-maintainer of the project.
+* [Brian J Brennan](https://github.com/brianloveswords) added support for `const` and `let` to inline-var.
+
 
 Thanks!
 
