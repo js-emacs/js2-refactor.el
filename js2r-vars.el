@@ -165,14 +165,16 @@
     (let* ((current-node (js2r--local-name-node-at-point))
            (definer (js2r--var-defining-node current-node))
            (definer-start (js2-node-abs-pos definer))
-           (var-init-node (js2-node-parent definer))
+           (var-init (js2-node-parent definer))
            (initializer (js2-var-init-node-initializer
-                         var-init-node)))
+                         var-init)))
       (unless initializer
         (error "Var is not initialized when defined."))
       (let* ((var-len (js2-node-len current-node))
              (init-beg (js2-node-abs-pos initializer))
              (init-end (+ init-beg (js2-node-len initializer)))
+             (var-init-beg (copy-marker (js2-node-abs-pos var-init)))
+             (var-init-end (copy-marker (+ var-init-beg (js2-node-len var-init))))
              (contents (buffer-substring init-beg init-end)))
         (mapc (lambda (beg)
                 (when (not (= beg definer-start))
@@ -180,8 +182,7 @@
                   (delete-char var-len)
                   (insert contents)))
               (js2r--local-var-positions current-node))
-        (js2r--delete-var-init-node var-init-node)
-        ))))
+        (js2r--delete-var-init var-init-beg var-init-end)))))
 
 
 (defun js2r--was-single-var ()
@@ -198,9 +199,9 @@
 (defun js2r--was-ending-var ()
   (looking-at ";"))
 
-(defun js2r--delete-var-init-node (node)
-  (goto-char (js2-node-abs-pos node))
-  (delete-char (js2-node-len node))
+(defun js2r--delete-var-init (beg end)
+  (goto-char beg)
+  (delete-char (- end beg))
   (cond
    ((js2r--was-single-var)
     (delete-region (point-at-bol) (point-at-eol))
@@ -219,8 +220,7 @@
       (delete-char 1))
     (delete-char -1))
 
-   (t (delete-char 2)
-      )))
+   (t (delete-char 2))))
 
 ;; two cases
 ;;   - it's the only var -> remove the line

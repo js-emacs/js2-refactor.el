@@ -101,3 +101,21 @@ Feature: Extract var
     	baz(bar());
     }
     """
+
+  Scenario: Inlining variable defined after the inlining
+    Given I insert:
+    """
+    function xxx() {
+        return asdfg;
+    }
+    var asdfg = 'x';
+    """
+    And I turn on js2-mode
+    And I go to the front of the word "asdfg"
+    And I press "C-c C-m iv"
+    Then I should see:
+    """
+    function xxx() {
+        return 'x';
+    }
+    """
