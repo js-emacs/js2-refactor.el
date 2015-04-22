@@ -334,3 +334,22 @@ Feature: Killing lines
     """
     foo();;
     """
+
+  Scenario Killing a node right after a comment
+    Given I clear the buffer
+    When I insert:
+    """
+    // test
+    var hello = function(test) {
+    };
+    hello();
+    """
+    And I turn on js2-mode
+    And I place the cursor before "var"
+    And I press "C-c C-m k"
+    Then I should see:
+    """
+    // test
+
+    hello();
+    """

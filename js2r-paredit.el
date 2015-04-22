@@ -54,12 +54,21 @@ function foo() {|2 + 3} -> function foo() {}
 
 (defun js2r--kill-line ()
   "Kill a line, but respecting node boundaries."
-  (let ((node (js2-node-at-point)))
+  (let ((node (js2r--next-node)))
     (cond
      ((js2-comment-node-p node) (kill-line))
      ((js2-string-node-p node) (js2r--kill-line-in-string))
      (t (js2r--kill-line-in-sexp))))
   (js2r--cleanup-after-kill))
+
+(defun js2r--next-node ()
+  "Return the node at point, or the node after the point if the
+  point is at the exact end of a node."
+  (save-excursion
+    (when (= (js2-node-abs-end (js2-node-at-point))
+             (point))
+      (forward-char 1))
+    (js2-node-at-point)))
 
 (defun js2r--cleanup-after-kill ()
   (while (looking-at ";")
