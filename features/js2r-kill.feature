@@ -345,6 +345,7 @@ Feature: Killing lines
     hello();
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I place the cursor before "var"
     And I press "C-c C-m k"
     Then I should see:
