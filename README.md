@@ -45,6 +45,7 @@ vars, method calls and functions for refactorings.
 Then add this to your emacs settings:
 
     (require 'js2-refactor)
+    (add-hook 'js2-mode-hook #'js2-refactor-mode)
 
 ## Setup keybindings
 
@@ -63,7 +64,7 @@ If you would rather have a modifier key, instead of a prefix, do:
 If neither of these appeal to your sense of keyboard layout aesthetics, feel free
 to pick and choose your own keybindings with a smattering of:
 
-    (define-key js2-mode-map (kbd "C-c C-e C-f") 'js2r-extract-function)
+    (define-key js2-refactor-mode-map (kbd "C-c C-e C-f") 'js2r-extract-function)
 
 ## Refactorings
 
