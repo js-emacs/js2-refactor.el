@@ -9,6 +9,7 @@ Feature: Changing var to this
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
 
   Scenario: At declaration
     When I go to the front of the word "def"
