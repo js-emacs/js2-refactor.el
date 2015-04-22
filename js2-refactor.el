@@ -173,5 +173,7 @@
   "Add js2r keybindings using the modifier MODIFIER."
   (js2r--add-keybindings (-partial 'js2r--key-pairs-with-modifier modifier)))
 
+(add-hook 'js2-mode-hook #'yas-minor-mode-on)
+
 (provide 'js2-refactor)
 ;;; js2-refactor.el ends here
