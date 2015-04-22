@@ -5,6 +5,13 @@ A JavaScript refactoring library for emacs.
 This is a collection of small refactoring functions to further the idea of a
 JavaScript IDE in Emacs that started with js2-mode.
 
+## Breaking change in 0.7.0
+
+js2-refactor.el is now a minor mode that has to be enabled, with
+something like the following:
+
+    (add-hook 'js2-mode-hook #'js2-refactor-mode)
+
 ## Breaking change in 0.6.0
 
 You now choose your own keybinding scheme. If you just want what you had
