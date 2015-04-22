@@ -42,6 +42,20 @@
       (newline-and-indent)
       (insert "console.log(\"" stmt " = \", " stmt ");"))))
 
+(defun js2r-debug-this ()
+  "Debug the node at point, adding a 'debug()' statement."
+  (interactive)
+  (js2r--guard)
+  (let* ((log-info (js2r--figure-out-what-to-log-where))
+         (stmt (car log-info))
+         (pos (cdr log-info)))
+    (save-excursion
+      (goto-char pos)
+      (when (looking-at "[;{]")
+        (forward-char 1))
+      (newline-and-indent)
+      (insert "debug(\"" stmt " = %s\", " stmt ");"))))
+
 (defun js2r--figure-out-what-to-log-where ()
   "Return a dotted pair containing the statement to log and the
 position where the log should be inserted."

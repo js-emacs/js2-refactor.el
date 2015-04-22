@@ -156,6 +156,7 @@
   (define-key js2-mode-map (funcall key-fn "wl") 'js2r-wrap-in-for-loop)
   (define-key js2-mode-map (funcall key-fn "3i") 'js2r-ternary-to-if)
   (define-key js2-mode-map (funcall key-fn "lt") 'js2r-log-this)
+  (define-key js2-mode-map (funcall key-fn "dt") 'js2r-debug-this)
   (define-key js2-mode-map (funcall key-fn "sl") 'js2r-forward-slurp)
   (define-key js2-mode-map (funcall key-fn "ba") 'js2r-forward-barf)
   (define-key js2-mode-map (funcall key-fn "k") 'js2r-kill)
