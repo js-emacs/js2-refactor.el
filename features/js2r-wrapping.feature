@@ -3,6 +3,7 @@ Feature: Wrapping stuff
   Scenario: Unwrapping statement
     When I insert "console.log('hi');"
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I select "'hi'"
     And I press "C-c C-m uw"
     Then I should see "'hi'"
@@ -16,6 +17,7 @@ Feature: Wrapping stuff
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I select "console.log('hi');"
     And I press "C-c C-m uw"
     Then I should not see "if (true) {"
@@ -31,6 +33,7 @@ Feature: Wrapping stuff
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to the front of the word "console"
     And I set the mark
     And I go to the end of the word "there"
@@ -53,6 +56,7 @@ Feature: Wrapping stuff
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to the front of the word "hello"
     And I press "C-c C-m uw"
     Then I should not see "if (true) {"

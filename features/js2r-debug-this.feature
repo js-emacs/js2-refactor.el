@@ -3,6 +3,7 @@ Feature: Debug this
   Scenario: debug var
     Given I insert "var bah = { b: 1, c: 'def' };"
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     When I go to the front of the word "bah"
     And I press "C-c C-m dt"
     Then I should see:
@@ -19,6 +20,7 @@ Feature: Debug this
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     When I go to the front of the word "def"
     And I press "C-c C-m dt"
     Then I should see:
@@ -35,6 +37,7 @@ Feature: Debug this
     var def = abc(123) + ghi();
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     When I go to the front of the word "abc"
     And I set the mark
     And I press "C-8 C-f"
@@ -51,6 +54,7 @@ Feature: Debug this
     def.ghi.jkl + 1;
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     When I go to the front of the word "ghi"
     And I press "C-c C-m dt"
     Then I should see:
@@ -67,6 +71,7 @@ Feature: Debug this
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     When I go to the front of the word "def"
     And I press "C-c C-m dt"
     Then I should see:

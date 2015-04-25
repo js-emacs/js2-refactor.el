@@ -3,6 +3,7 @@ Feature: Extract var
   Scenario: Inlining variable
     When I insert "var foo = bar(1,2,3); foo();"
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to the front of the word "foo"
     And I press "C-c C-m iv"
     Then I should see:
@@ -19,6 +20,7 @@ Feature: Extract var
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to the front of the word "foo"
     And I press "C-c C-m iv"
     Then I should see:
@@ -37,6 +39,7 @@ Feature: Extract var
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to the front of the word "foo"
     And I press "C-c C-m iv"
     Then I should see:
@@ -55,6 +58,7 @@ Feature: Extract var
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to the front of the word "foo"
     And I press "C-c C-m iv"
     Then I should see:
@@ -73,6 +77,7 @@ Feature: Extract var
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to the front of the word "foo"
     And I press "C-c C-m iv"
     Then I should see:
@@ -92,6 +97,7 @@ Feature: Extract var
     }
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to the front of the word "foo"
     And I press "C-c C-m iv"
     Then I should see:
@@ -111,6 +117,7 @@ Feature: Extract var
     var asdfg = 'x';
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to the front of the word "asdfg"
     And I press "C-c C-m iv"
     Then I should see:

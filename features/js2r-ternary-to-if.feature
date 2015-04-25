@@ -3,6 +3,7 @@ Feature: Rename variable
   Scenario: Replace simple ternary with if
     When I insert "console.log(a ? 1 : 2);"
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to character "?"
     And I press "C-c C-m 3i"
     Then I should see:
@@ -17,6 +18,7 @@ Feature: Rename variable
   Scenario: Point can be anywhere in ternary
     When I insert "var x = abc ? 1 : 2;"
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to character "b"
     And I press "C-c C-m 3i"
     Then I should see:
@@ -36,6 +38,7 @@ Feature: Rename variable
     });
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to character "?"
     And I press "C-c C-m 3i"
     Then I should see:
@@ -60,6 +63,7 @@ Feature: Rename variable
     );
     """
     And I turn on js2-mode
+    And I turn on js2-refactor-mode
     And I go to character "?"
     And I press "C-c C-m 3i"
     Then I should see:
