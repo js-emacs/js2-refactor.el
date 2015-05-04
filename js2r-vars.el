@@ -259,7 +259,7 @@
 (defun js2r--extract-var-between (beg end)
   (interactive "r")
   (unless (js2r--single-complete-expression-between-p beg end)
-    (error "Can only extract single, complete expressions to var."))
+    (error "Can only extract single, complete expressions to var"))
 
   (let ((deactivate-mark nil)
         (expression (buffer-substring beg end))
