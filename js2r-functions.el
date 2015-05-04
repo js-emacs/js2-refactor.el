@@ -115,7 +115,7 @@
   (js2r--guard)
   (if (use-region-p)
       (js2r--introduce-parameter-between (region-beginning) (region-end))
-    (let ((node (js2r--closest 'js2r--expression-p)))
+    (let ((node (js2r--closest-extractable-node)))
       (js2r--introduce-parameter-between (js2-node-abs-pos node)
                                          (js2-node-abs-end node)))))
 
