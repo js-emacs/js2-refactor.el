@@ -230,7 +230,7 @@
 ;; Extract variable
 
 (defun js2r--start-of-parent-stmt ()
-  (js2-node-abs-pos (js2-node-parent-stmt (js2-node-at-point))))
+  (js2-node-abs-pos (js2r--closest-stmt-node)))
 
 (defun js2r--object-literal-key-behind (pos)
   (save-excursion
