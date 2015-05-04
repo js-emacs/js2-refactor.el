@@ -109,3 +109,55 @@ Feature: Extract var
         spyOn(Foo, 'bar').andReturn(jkl);
     });
     """
+
+  Scenario: Issue 43, inside else if
+    When I insert:
+    """
+    if(false) {
+        console.log('false');
+    } else if(true) {
+        console.log('true');
+    }
+    """
+    And I turn on js2-mode
+    And I turn on js2-refactor-mode
+    And I go to the front of the word "true"
+    And I press "C-c C-m ev"
+    And I press "C-u DEL"
+    And I type "jkl"
+    Then I should see:
+    """
+    var jkl = true;
+    if(false) {
+        console.log('false');
+    } else if(jkl) {
+        console.log('true');
+    }
+    """
+
+  Scenario: Issue 43, inside else if using a region
+    When I insert:
+    """
+    if(false) {
+        console.log('false');
+    } else if(3 in foo) {
+        console.log('true');
+    }
+    """
+    And I turn on js2-mode
+    And I turn on js2-refactor-mode
+    And I go to the front of the word "3"
+    And I set the mark
+    And I go to the end of the word "foo"
+    And I press "C-c C-m ev"
+    And I press "C-u DEL"
+    And I type "jkl"
+    Then I should see:
+    """
+    var jkl = 3 in foo;
+    if(false) {
+        console.log('false');
+    } else if(jkl) {
+        console.log('true');
+    }
+    """

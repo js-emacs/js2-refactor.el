@@ -125,11 +125,23 @@
 
 (defun js2r--closest-extractable-node ()
   "Return the most appropriate node the be extracted into a variable or paramter.
+Lookup the closest expression node from the point, or the closest literal node instead.
+If no node is found, signal an error."
+  (or (or (js2r--closest #'js2r--expression-p)
+          (js2r--closest #'js2r--literal-node-p))
+      (error "Cannot perform refactoring: Nothing to extract at point")))
 
-Lookup the closest expression node from the point.  If no such
-node is found, lookup the closest literal node instead."
-  (or (js2r--closest #'js2r--expression-p)
-      (js2r--closest #'js2r--literal-node-p)))
+(defun js2r--closest-stmt-node ()
+  "Return the closest standalone statement node.
+Special care is taken for if branch nodes: if a statement node is
+part of an if branch node (like 'else if' nodes), return the
+parent node."
+  (let* ((node (js2-node-parent-stmt (js2-node-at-point)))
+        (parent (js2-node-parent node)))
+    (if (and (js2-if-node-p node)
+             (js2-if-node-p parent))
+        parent
+      node)))
 
 (defun js2r--argument-p (node)
   (let ((parent (js2-node-parent node)))

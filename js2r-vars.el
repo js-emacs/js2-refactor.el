@@ -230,7 +230,7 @@
 ;; Extract variable
 
 (defun js2r--start-of-parent-stmt ()
-  (js2-node-abs-pos (js2-node-parent-stmt (js2-node-at-point))))
+  (js2-node-abs-pos (js2r--closest-stmt-node)))
 
 (defun js2r--object-literal-key-behind (pos)
   (save-excursion
@@ -259,7 +259,7 @@
 (defun js2r--extract-var-between (beg end)
   (interactive "r")
   (unless (js2r--single-complete-expression-between-p beg end)
-    (error "Can only extract single, complete expressions to var."))
+    (error "Can only extract single, complete expressions to var"))
 
   (let ((deactivate-mark nil)
         (expression (buffer-substring beg end))
