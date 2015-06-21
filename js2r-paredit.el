@@ -1,8 +1,10 @@
 ;;; js2r-paredit.el --- Paredit-like extensions for js2-refactor
 
-;; Copyright (C) 2012-2015 Magnar Sveen
+;; Copyright (C) 2012-2014 Magnar Sveen
+;; Copyright (C) 2015 Magnar Sveen and Nicolas Petton
 
-;; Author: Magnar Sveen <magnars@gmail.com>
+;; Author: Magnar Sveen <magnars@gmail.com>,
+;;         Nicolas Petton <nicolas@petton.fr>
 ;; Keywords: conveniences
 
 ;; This program is free software; you can redistribute it and/or modify
