@@ -22,8 +22,6 @@
 
 ;;; Code:
 
-
-(require 'cl)
 (require 'dash)
 (require 'yasnippet)
 
