@@ -38,13 +38,13 @@
 (defun js2r--localize-parameter-push ()
   (let* ((node (js2-node-at-point))
          (arg-node (or (js2r--closest-node-where 'js2r--parent-is-call-node node)
-                       (error "Place cursor on argument to localize.")))
+                       (error "Place cursor on argument to localize")))
          (call-node (js2-node-parent arg-node))
          (value (js2-node-string arg-node))
          (target (js2-call-node-target call-node))
          (fn (if (js2-name-node-p target)
                  (js2r--local-fn-from-name-node target)
-               (error "Can only localize parameter for local functions.")))
+               (error "Can only localize parameter for local functions")))
          (usages (js2r--function-usages fn))
          (index (car (--keep (when (eq arg-node it) it-index)
                              (js2-call-node-args call-node))))
@@ -55,11 +55,11 @@
   (let* ((name-node (js2-node-at-point))
          (name (if (js2-name-node-p name-node)
                    (js2-name-node-name name-node)
-                 (error "Place cursor on parameter to localize.")))
+                 (error "Place cursor on parameter to localize")))
          (fn (or (js2r--closest-node-where #'js2r--is-local-function name-node)
-                 (error "Can only localize parameter in local functions.")))
+                 (error "Can only localize parameter in local functions")))
          (index (or (js2r--param-index-for name fn)
-                    (error "%S isn't a parameter to this function." name)))
+                    (error "%S isn't a parameter to this function" name)))
          (usages (js2r--function-usages fn))
          (examples (-distinct (--map (js2r--argument index it) usages)))
          (value (js2r--choose-one "Value: " examples)))
@@ -123,11 +123,11 @@
 
 (defun js2r--introduce-parameter-between (beg end)
   (unless (js2r--single-complete-expression-between-p beg end)
-    (error "Can only introduce single, complete expressions as parameter."))
+    (error "Can only introduce single, complete expressions as parameter"))
 
   (let ((fn (js2r--closest-node-where #'js2r--is-local-function (js2-node-at-point))))
     (unless fn
-      (error "Can only introduce parameter in local functions."))
+      (error "Can only introduce parameter in local functions"))
     (save-excursion
       (let ((name (read-string "Parameter name: "))
             (val (buffer-substring beg end))
@@ -205,7 +205,7 @@
                  (or (js2-function-node-p node)
                      (js2-call-node-p node)
                      (js2-new-node-p node)))
-      (error "Place point right before the opening paren in the call or function."))
+      (error "Place point right before the opening paren in the call or function"))
 
     (-when-let* ((target (js2r--node-target node))
                  (fn (and (js2-name-node-p target)
@@ -218,7 +218,7 @@
 (defun js2r--arguments-to-object-for-function (function-node)
   (let ((params (js2-function-node-params function-node)))
     (when (null params)
-      (error "No params to convert."))
+      (error "No params to convert"))
     (save-excursion
       (js2r--execute-changes
        (-concat
@@ -256,7 +256,7 @@
 
 (defun js2r--arguments-to-object-for-args-with-unknown-function (args)
   (when (null args)
-    (error "No arguments to convert."))
+    (error "No arguments to convert"))
   (let ((names (--map-indexed
                 (format "${%d:%s}"
                         (1+ it-index)
@@ -305,7 +305,7 @@
 (defun js2r--extract-fn (name goto-position call-template function-template)
   (js2r--guard)
   (unless (use-region-p)
-    (error "Mark the expressions to extract first."))
+    (error "Mark the expressions to extract first"))
   (save-excursion
     (let* ((parent (js2r--first-common-ancestor-in-region (region-beginning) (region-end)))
            (block (js2r--closest-node-where #'js2-block-node-p parent))
@@ -389,7 +389,7 @@
     (cond
      ((js2r--looking-at-var-function-expression) (js2r--transform-function-expression-to-declaration))
      ((js2r--looking-at-function-declaration) (js2r--transform-function-declaration-to-expression))
-     (t (error "Can only toggle between function declarations and free standing function expressions.")))))
+     (t (error "Can only toggle between function declarations and free standing function expressions")))))
 
 (defun js2r--find-closest-function ()
   (end-of-line)
