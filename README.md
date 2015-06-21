@@ -144,10 +144,11 @@ Run the tests with:
 ## License
 
 Copyright (C) 2012-2014 Magnar Sveen
+
 Copyright (C) 2015 Magnar Sveen and Nicolas Petton
 
-Author: Magnar Sveen <magnars@gmail.com>,
-        Nicolas Petton <nicolas@petton.fr>
+Author: Magnar Sveen <magnars@gmail.com>, Nicolas Petton <nicolas@petton.fr>
+        
 Keywords: javascript refactorings
 
 This program is free software; you can redistribute it and/or modify
