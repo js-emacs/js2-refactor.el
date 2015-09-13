@@ -129,7 +129,8 @@
 (defvar js2-refactor-mode-map
   (make-sparse-keymap)
   "Keymap for js2-refactor.")
-
+  
+;;;###autoload
 (define-minor-mode js2-refactor-mode
   "Minor mode providing JavaScript refactorings."
   :lighter " js2r"
