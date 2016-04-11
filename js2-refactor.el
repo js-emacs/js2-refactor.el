@@ -176,6 +176,8 @@
   (define-key js2-refactor-mode-map (funcall key-fn "sl") 'js2r-forward-slurp)
   (define-key js2-refactor-mode-map (funcall key-fn "ba") 'js2r-forward-barf)
   (define-key js2-refactor-mode-map (funcall key-fn "k") 'js2r-kill)
+  (define-key js2-refactor-mode-map (funcall key-fn "ri") 'js2r-require-to-import)
+  (define-key js2-refactor-mode-map (funcall key-fn "ir") 'js2r-import-to-require)
   (define-key js2-refactor-mode-map (kbd "<C-S-down>") 'js2r-move-line-down)
   (define-key js2-refactor-mode-map (kbd "<C-S-up>") 'js2r-move-line-up))
 
