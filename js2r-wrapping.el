@@ -40,8 +40,8 @@
   (js2r--skip-region-whitespace)
   (setq beg (min (point) (mark)))
   (setq end (max (point) (mark)))
-  (let ((yas/wrap-around-region t))
-    (yas/expand-snippet "for (var i = 0, l = ${1:length}; i < l; i++) {\n$0\n}"
+  (let ((yas-wrap-around-region t))
+    (yas-expand-snippet "for (var i = 0, l = ${1:length}; i < l; i++) {\n$0\n}"
                         beg end)))
 
 (provide 'js2r-wrapping)
