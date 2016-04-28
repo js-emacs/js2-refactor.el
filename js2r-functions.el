@@ -262,7 +262,7 @@
                             (js2-name-node-name it)
                           "key"))
                 args)))
-    (yas/expand-snippet (js2r--create-object-with-arguments names args)
+    (yas-expand-snippet (js2r--create-object-with-arguments names args)
                         (point)
                         (save-excursion (forward-list) (point)))))
 
