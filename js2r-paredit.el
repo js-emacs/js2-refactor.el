@@ -133,10 +133,10 @@ line, or to the end of the line if no sexp is found."
 (defun js2r--kill-line-in-string ()
   "Kill a line in a string node, respecting the node boundaries.
 When at the beginning of the node, kill from outside of it."
-  (let ((node (js2-node-at-point))
-        (beg (point))
-        (node-start (js2-node-abs-pos node))
-        (node-end (js2-node-abs-end node)))
+  (let* ((node (js2-node-at-point))
+         (beg (point))
+         (node-start (js2-node-abs-pos node))
+         (node-end (js2-node-abs-end node)))
     (if (= beg node-start)
         (js2r--kill-line-in-sexp)
       (kill-region beg (1- node-end)))))
