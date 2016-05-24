@@ -154,8 +154,9 @@
           (goto-char (js2-node-abs-pos (car kids))))))
     (--each (js2r--local-var-positions (js2r--local-name-node-at-point))
       (goto-char it)
-      (when (looking-back "var ")
-        (delete-char -4))
+      (cond ((looking-back "var ") (delete-char -4))
+            ((looking-back "let ") (delete-char -4))
+            ((looking-back "const ") (delete-char -6)))
       (insert "this."))))
 
 ;; Inline var
