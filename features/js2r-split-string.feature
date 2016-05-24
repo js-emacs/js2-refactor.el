@@ -5,8 +5,7 @@ Feature: Split string
     """
     "foo bar"
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I place the cursor before "bar"
     And I press "C-c C-m ss"
     Then I should see:
@@ -19,8 +18,7 @@ Feature: Split string
     """
     'foo bar'
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I place the cursor before "bar"
     And I press "C-c C-m ss"
     Then I should see:
@@ -33,8 +31,7 @@ Feature: Split string
     """
     "foo" + "bar"
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I place the cursor after "foo"
     And I press "C-c C-m ss"
     Then I should see:
@@ -47,8 +44,7 @@ Feature: Split string
     """
     'foo' + 'bar'
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I place the cursor after "foo"
     And I press "C-c C-m ss"
     Then I should see:

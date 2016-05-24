@@ -2,8 +2,7 @@ Feature: Arguments to object
 
   Scenario: Values
     Given I insert "abc(123, 4 + 5, 'hello');"
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     When I go to the end of the word "abc"
     And I press "C-c C-m ao"
     Then I should see:
@@ -17,8 +16,7 @@ Feature: Arguments to object
 
   Scenario: Placeholders
     Given I insert "abc(123, 4 + 5, 'hello');"
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     When I go to the end of the word "abc"
     And I press "C-c C-m ao"
     And I type "def"
@@ -38,8 +36,7 @@ Feature: Arguments to object
 
   Scenario: Known names
     Given I insert "abc(def, ghi, jkl);"
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     When I go to the end of the word "abc"
     And I press "C-c C-m ao"
     Then I should see:
@@ -62,8 +59,7 @@ Feature: Arguments to object
         };
     }
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     When I go to the end of the word "abc"
     And I press "C-c C-m ao"
     Then I should see:
@@ -89,8 +85,7 @@ Feature: Arguments to object
         b: 3
     });
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     When I go to the end of the word "add"
     And I press "C-c C-m ao"
     Then I should see:
@@ -123,8 +118,7 @@ Feature: Arguments to object
         b: 3
     });
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     When I go to the front of the word "abc"
     And I press "C-b C-b"
     And I press "C-c C-m ao"
@@ -155,8 +149,7 @@ Feature: Arguments to object
     }
     var a = new Add(1, 3);
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     When I go to the end of the word "new Add"
     And I press "C-c C-m ao"
     Then I should see:

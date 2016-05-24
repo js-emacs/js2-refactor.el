@@ -9,8 +9,7 @@ Feature: JS Slurp
     ghi();
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "def"
     And I press "C-c C-m sl"
     Then I should see:
@@ -34,8 +33,7 @@ Feature: JS Slurp
     });
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "abc"
     And I press "C-c C-m sl"
     Then I should see:
@@ -57,8 +55,7 @@ Feature: JS Slurp
     ghi();
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "abc"
     And I press "C-c C-m sl"
     Then I should see:
@@ -77,8 +74,7 @@ Feature: JS Slurp
     validations.date();
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the end of the word "function"
     And I press "C-c C-m sl"
     Then I should see:
@@ -97,8 +93,7 @@ Feature: JS Slurp
     ghi();
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "abc"
     And I press "C-c C-m sl"
     Then I should see:
@@ -119,8 +114,7 @@ Feature: JS Slurp
     ghi();
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "else"
     And I press "C-c C-m sl"
     Then I should see:
@@ -140,8 +134,7 @@ Feature: JS Slurp
     ghi();
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "abc"
     And I press "M-- 1 C-c C-m sl"
     Then I should see:
@@ -163,8 +156,7 @@ Feature: JS Slurp
     pqr();
     stu();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "abc"
     And I press "M-3 C-c C-m sl"
     Then I should see:
@@ -191,8 +183,7 @@ Feature: JS Slurp
     jkl();
     pqr();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "else"
     And I press "M-2 C-c C-m sl"
     Then I should see:
