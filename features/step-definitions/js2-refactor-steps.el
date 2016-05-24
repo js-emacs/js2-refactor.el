@@ -1,3 +1,9 @@
+(And "^I turn on js2-mode and js2-refactor-mode$"
+     (lambda ()
+       (js2-mode)
+       (js2-refactor-mode)
+       (js2-parse)))
+
 (And "^delete-selection-mode is active$"
      (lambda ()
         (delete-selection-mode 1)))

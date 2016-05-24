@@ -8,8 +8,7 @@ Feature: Killing lines
     //    bar();
     //}
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "function"
     And I press "C-c C-m k"
     Then I should see:
@@ -27,8 +26,7 @@ Feature: Killing lines
         bar();
     }
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "function"
     And I press "C-c C-m k"
     Then I should see:
@@ -47,8 +45,7 @@ Feature: Killing lines
         bar('hello world');
     }
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "world"
     And I press "C-c C-m k"
     Then I should see:
@@ -65,8 +62,7 @@ Feature: Killing lines
         return [1, 2, bar, baz]
     }
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the end of the word "bar"
     And I press "C-c C-m k"
     Then I should see:
@@ -87,8 +83,7 @@ Feature: Killing lines
                 baz]
     }
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "bar"
     And I press "C-c C-m k"
     Then I should see:
@@ -109,8 +104,7 @@ Feature: Killing lines
         return {a: {foo: 4, bar: 5}, b: 1}
     }
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "bar"
     And I press "C-c C-m k"
     Then I should see:
@@ -128,8 +122,7 @@ Feature: Killing lines
         if (foo) {return 2;}
     }
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "return"
     And I press "C-c C-m k"
     Then I should see:
@@ -147,8 +140,7 @@ Feature: Killing lines
         if (foo) {return 2;} else {return 1;}
     }
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "return"
     And I press "C-c C-m k"
     Then I should see:
@@ -166,8 +158,7 @@ Feature: Killing lines
         if (foo) {return 2;} else {bar();}
     }
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "bar"
     And I press "C-c C-m k"
     Then I should see:
@@ -183,8 +174,7 @@ Feature: Killing lines
     """
     var foo = function() { return hello;}; bar;
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "hello"
     And I press "C-c C-m k"
     Then I should see:
@@ -198,8 +188,7 @@ Feature: Killing lines
     """
     function a(foo, bar) { return bar;}
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the end of the word "foo"
     And I press "C-c C-m k"
     Then I should see:
@@ -213,8 +202,7 @@ Feature: Killing lines
     """
     function a(foo, bar) { return bar;}
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "function"
     And I press "C-c C-m k"
     Then I should see:
@@ -228,8 +216,7 @@ Feature: Killing lines
     """
     var foo = 3;
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "foo"
     And I press "C-c C-m k"
     Then I should see:
@@ -247,8 +234,7 @@ Feature: Killing lines
         'baz'
     ]
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to line "3"
     And I press "C-c C-m k"
     Then I should see:
@@ -266,8 +252,7 @@ Feature: Killing lines
     """
     foo(['foo', 'bar'], 2, 3);
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I place the cursor before "'foo"
     And I press "C-c C-m k"
     Then I should see:
@@ -283,8 +268,7 @@ Feature: Killing lines
         bar();
     });
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I place the cursor before "function"
     And I press "C-c C-m k"
     Then I should see:
@@ -301,8 +285,7 @@ Feature: Killing lines
     }
     blah();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I place the cursor before "if"
     And I press "C-c C-m k"
     Then I should see:
@@ -322,8 +305,7 @@ Feature: Killing lines
     foo();hello(
     );
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I place the cursor before "hello"
     And I press "C-c C-m k"
     Then I should see:
@@ -344,8 +326,7 @@ Feature: Killing lines
     };
     hello();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I place the cursor before "var"
     And I press "C-c C-m k"
     Then I should see:

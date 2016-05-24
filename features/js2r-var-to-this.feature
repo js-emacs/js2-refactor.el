@@ -8,8 +8,7 @@ Feature: Changing var to this
        return def * def + 456;
     }
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
 
   Scenario: At declaration
     When I go to the front of the word "def"

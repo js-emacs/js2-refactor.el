@@ -10,8 +10,7 @@ Feature: JS Barf
     jkl();
     """
 
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "def"
     And I press "C-c C-m ba"
     Then I should see:
@@ -34,8 +33,7 @@ Feature: JS Barf
     }
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "abc"
     And I press "C-c C-m ba"
     Then I should see:
@@ -58,8 +56,7 @@ Feature: JS Barf
     });
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the end of the word "function"
     And I press "C-c C-m ba"
     Then I should see:
@@ -78,8 +75,7 @@ Feature: JS Barf
     }
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "ghi"
     And I press "C-c C-m ba"
     Then I should see:
@@ -100,8 +96,7 @@ Feature: JS Barf
     }
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "ghi"
     And I press "C-c C-m ba"
     Then I should see:
@@ -123,8 +118,7 @@ Feature: JS Barf
     }
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "abc"
     And I press "M-- 1 C-c C-m ba"
     Then I should see:
@@ -147,8 +141,7 @@ Feature: JS Barf
     mno();
     """
 
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "abc"
     And I press "M-2 C-c C-m ba"
     Then I should see:
@@ -174,8 +167,7 @@ Feature: JS Barf
     }
     jkl();
     """
-    And I turn on js2-mode
-    And I turn on js2-refactor-mode
+    And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "abc"
     And I press "M-2 C-c C-m ba"
     Then I should see:
