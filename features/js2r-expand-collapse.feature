@@ -92,6 +92,33 @@ Feature: Expand and collapse things
         return o;
     }
     """
+    
+  Scenario: Expanding arrow functions
+    When I insert "var arrowFunc = (a, b, c) => { return a + b + c; }"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "return"
+    And I press "C-c C-m eu"
+    Then I should see:
+    """
+    var arrowFunc = (a, b, c) => {
+        return a + b + c;
+    }
+    """  
+
+  Scenario: Contracting arrow functions
+    When I insert:
+    """
+    var arrowFunc = (a, b, c) => {
+        return a + b + c;
+    }
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "return"
+    And I press "C-c C-m cu"
+    Then I should see:
+    """
+    var arrowFunc = (a, b, c) => { return a + b + c; }
+    """
 
   Scenario: Contracting functions
     When I insert:
