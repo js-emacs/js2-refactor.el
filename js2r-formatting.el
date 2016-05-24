@@ -124,18 +124,23 @@
 					     ",")
 
 (defun js2r--looking-at-function-start ()
-  (and (looking-at "{")
-       (looking-back
-	;; This horrible-looking regexp is actually pretty simple.  It
-	;; matches "function <optional_name> (<optional_parameters,...>)"
-	;; allowing for whitespace.  TODO: support Unicode in function and
-	;; parameter names.
-	(concat "function[\s\n]*"
-		"\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)?"
-		"\(\\\([a-zA-Z_$][a-zA-Z_$0-9]*"
-		"[\s\n]*,[\s\n]*\\\)*[\s\n]*"
-		"\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)*"
-		"[\s\n]*\)[\s\n]*"))))
+  (or
+   (and (looking-at "{")
+        (looking-back
+         ;; This horrible-looking regexp is actually pretty simple.  It
+         ;; matches "function <optional_name> (<optional_parameters,...>)"
+         ;; allowing for whitespace.  TODO: support Unicode in function and
+         ;; parameter names.
+         (concat "function[\s\n]*"
+                 "\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)?"
+                 "\(\\\([a-zA-Z_$][a-zA-Z_$0-9]*"
+                 "[\s\n]*,[\s\n]*\\\)*[\s\n]*"
+                 "\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)*"
+                 "[\s\n]*\)[\s\n]*")))
+   ;; arrow functions
+   (and (looking-at "{")                
+        (looking-back "=>[\s\n]*")
+        (not (js2r--point-inside-string-p)))))
 
 (defun js2r--goto-closest-function-start ()
   (while (not (js2r--looking-at-function-start))
