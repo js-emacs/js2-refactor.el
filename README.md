@@ -95,6 +95,8 @@ to pick and choose your own keybindings with a smattering of:
  * `sl` is `forward-slurp`: Moves the next statement into current function, if-statement, for-loop or while-loop.
  * `ba` is `forward-barf`: Moves the last child out of current function, if-statement, for-loop or while-loop.
  * `k` is `kill`: Kills to the end of the line, but does not cross semantic boundaries.
+ * `ri` is `require-to-import`: Converts a require statment to an import statement.
+ * `ir` is `import-to-require`: Converts an import statement to a require statment.
 
 There are also some minor conveniences bundled:
 

@@ -83,6 +83,35 @@
     (js2-symbol-ast-node
      (js2-scope-get-symbol scope name))))
 
+(defun js2r--var-init-node (from-node)
+  (let* ((var-init-node (js2r--closest 'js2-var-init-node-p)))
+    (if var-init-node var-init-node (first (js2r--var-init-node-decendants from-node)))))
+
+(defun js2r--import-node (from-node)
+  (let* ((import-node (js2r--closest 'js2-import-node-p)))
+    (if import-node import-node (first (js2r--import-node-decendants from-node)))))
+
+(defun js2r--call-node (var-init)
+  (let* ((call-node (js2r--closest 'js2-call-node-p)))
+    (if call-node call-node (first (js2r--call-node-decendants var-init)))))
+
+(defun js2r--call-node-decendants (node)
+  (-select #'js2-call-node-p (js2r--decendants node)))
+
+(defun js2r--import-node-decendants (node)
+  (-select #'js2-import-node-p (js2r--decendants node)))
+
+(defun js2r--from-clause-node-decendants (node)
+  (-select #'js2-from-clause-node-p (js2r--decendants node)))
+
+(defun js2r--import-clause-node-decendants (node)
+  (-select #'js2-import-clause-node-p (js2r--decendants node)))
+
+(defun js2r--from-clause-node-metadata-decendants (node)
+  (-select #'js2-import-clause-node-metadata-p (js2r--decendants node)))
+
+(defun js2r--export-binding-node-decendants (node)
+  (-select #'js2-export-binding-node-p (js2r--decendants node)))
 
 ;; Add to jslint globals annotation
 
@@ -158,6 +187,41 @@
             ((looking-back "let ") (delete-char -4))
             ((looking-back "const ") (delete-char -6)))
       (insert "this."))))
+
+;; Convert require to import
+
+(defun js2r-require-to-import ()
+  (interactive)
+  (js2r--guard)
+  (let* ((var-init-node (js2r--var-init-node (js2-node-at-point))))
+    (unless var-init-node
+      (error "No variable found"))
+    (let* ((var-name (js2-name-node-name (js2-var-init-node-target var-init-node)))
+           (call-node (js2r--call-node var-init-node)))
+      (unless (and call-node (string= (js2-name-node-name (js2-call-node-target call-node)) "require"))
+        (error "No require statement found"))
+      (let* ((call-node-name (js2-node-string (first (js2-call-node-args call-node))))
+             (stmt (js2-node-parent-stmt var-init-node))
+             (beg (js2-node-abs-pos stmt)))
+        (goto-char beg)
+        (delete-char (js2-node-len stmt))
+        (insert "import " var-name  " from " call-node-name ";")))))
+
+(defun js2r-import-to-require ()
+  (interactive)
+  (js2r--guard)
+  (let* ((import-node (js2r--import-node (js2-node-at-point))))
+    (unless import-node
+      (error "No import statement found"))
+    (let* ((from-clause (js2r--from-clause-node-decendants import-node))
+           (import-clause (js2r--import-clause-node-decendants import-node))
+           (from-string (js2-from-clause-node-module-id (first from-clause)))
+           (binding-node (js2r--export-binding-node-decendants (first import-clause)))
+           (var-name (js2-name-node-name (js2-export-binding-node-local-name (first binding-node))))
+           (beg (js2-node-abs-pos import-node)))
+      (goto-char beg)
+      (delete-char (js2-node-len import-node))
+      (insert "var " var-name  " = require(\"" from-string "\");"))))
 
 ;; Inline var
 
