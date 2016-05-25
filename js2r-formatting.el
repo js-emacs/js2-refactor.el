@@ -138,7 +138,7 @@
                  "\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)*"
                  "[\s\n]*\)[\s\n]*")))
    ;; arrow functions
-   (and (looking-at "{")                
+   (and (looking-at "{")
         (looking-back "=>[\s\n]*")
         (not (js2r--point-inside-string-p)))))
 
@@ -163,6 +163,27 @@
 					     (js2r--looking-at-function-start)
 					     (js2r--goto-closest-function-start)
 					     ";")
+
+(defun js2r--looking-at-call-start ()
+  (looking-at "("))
+
+(defun js2r--goto-closest-call-start ()
+  (while (not (js2r--looking-at-call-start))
+    (if (eq (car (syntax-ppss)) 0)
+        (error "Cursor is not on a call")
+      (goto-char (nth 1 (syntax-ppss))))))
+
+(js2r--create-bracketed-whitespace-traverser js2r-expand-call-args
+               (js2r--ensure-newline)
+               (js2r--looking-at-call-start)
+               (js2r--goto-closest-call-start)
+               ",")
+
+(js2r--create-bracketed-whitespace-traverser js2r-contract-call-args
+               (js2r--ensure-just-one-space)
+               (js2r--looking-at-call-start)
+               (js2r--goto-closest-call-start)
+               ",")
 
 (provide 'js2r-formatting)
 ;;; js2-formatting.el ends here

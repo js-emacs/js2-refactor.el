@@ -59,6 +59,8 @@
 ;;  * `co` is `contract-object`: Converts a multiline object literal to one line.
 ;;  * `eu` is `expand-function`: Converts a one line function to multiline (expecting semicolons as statement delimiters).
 ;;  * `cu` is `contract-function`: Converts a multiline function to one line (expecting semicolons as statement delimiters).
+;;  * `ec` is `expand-call-args`: Converts a one line function call args to multiline.
+;;  * `cc` is `contract-call-args`: Converts a multiline function call args to one line.
 ;;  * `ea` is `expand-array`: Converts a one line array to multiline.
 ;;  * `ca` is `contract-array`: Converts a multiline array to one line.
 ;;  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
@@ -129,7 +131,7 @@
 (defvar js2-refactor-mode-map
   (make-sparse-keymap)
   "Keymap for js2-refactor.")
-  
+
 ;;;###autoload
 (define-minor-mode js2-refactor-mode
   "Minor mode providing JavaScript refactorings."
@@ -151,6 +153,8 @@
   (define-key js2-refactor-mode-map (funcall key-fn "co") 'js2r-contract-object)
   (define-key js2-refactor-mode-map (funcall key-fn "eu") 'js2r-expand-function)
   (define-key js2-refactor-mode-map (funcall key-fn "cu") 'js2r-contract-function)
+  (define-key js2-refactor-mode-map (funcall key-fn "ec") 'js2r-expand-call-args)
+  (define-key js2-refactor-mode-map (funcall key-fn "cc") 'js2r-contract-call-args)
   (define-key js2-refactor-mode-map (funcall key-fn "ea") 'js2r-expand-array)
   (define-key js2-refactor-mode-map (funcall key-fn "ca") 'js2r-contract-array)
   (define-key js2-refactor-mode-map (funcall key-fn "wi") 'js2r-wrap-buffer-in-iife)
