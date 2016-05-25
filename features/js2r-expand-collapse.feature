@@ -161,6 +161,89 @@ Feature: Expand and collapse things
     And I press "C-c C-m cu"
     Then I should see "function f (a, b, c) { var t = a + b + c; var o = {e1: a, e2: b + 1, e3: 'xyzzy'}; return o; }"
 
+  Scenario: Expanding function call arguments
+    When I insert:
+    """
+    m('table.overlay', {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}}, m('tr', m('td', {align:'center'}, m('div', {style:{width:'200px'}}, 'some text'))));
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "overlay"
+    And I press "C-c C-m ec"
+    Then I should see:
+    """
+    m(
+        'table.overlay',
+        {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}},
+        m('tr', m('td', {align:'center'}, m('div', {style:{width:'200px'}}, 'some text')))
+    );
+    """
+    And I go to the front of the word "tr"
+    And I press "C-c C-m ec"
+    Then I should see:
+    """
+    m(
+        'table.overlay',
+        {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}},
+        m(
+            'tr',
+            m('td', {align:'center'}, m('div', {style:{width:'200px'}}, 'some text'))
+        )
+    );
+    """
+
+  Scenario: Contracting function call arguments
+    When I insert:
+    """
+    m(
+        'table.overlay',
+        {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}},
+        m(
+            'tr',
+            m(
+                'td',
+                {align:'center'},
+                m(
+                    'div',
+                    {style:{width:'200px'}},
+                    'some text'
+                )
+            )
+        )
+    );
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "overlay"
+    And I press "C-c C-m cc"
+    Then I should see:
+    """
+    m( 'table.overlay', {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}}, m(
+            'tr',
+            m(
+                'td',
+                {align:'center'},
+                m(
+                    'div',
+                    {style:{width:'200px'}},
+                    'some text'
+                )
+            )
+        ) );
+    """
+    And I go to the front of the word "tr"
+    And I press "C-c C-m cc"
+    Then I should see:
+    """
+    m( 'table.overlay', {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}}, m( 'tr', m(
+                'td',
+                {align:'center'},
+                m(
+                    'div',
+                    {style:{width:'200px'}},
+                    'some text'
+                )
+            ) ) );
+    """
+
   Scenario: Expanding arrays
     When I insert "var a = [ b, 1, c, 3.1415927 ];"
     And I turn on js2-mode and js2-refactor-mode
