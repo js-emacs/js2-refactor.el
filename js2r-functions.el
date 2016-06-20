@@ -416,18 +416,18 @@
 
 (defun js2r--transform-arrow-function-to-expression ()
   (when (js2r--arrow-function-p)
-    (let ((has-par nil))
+    (let ((has-parenthesis nil))
       (save-excursion
         (js2r--find-closest-function)
-        (setq has-par (looking-at "\\s-*("))
+        (setq has-parenthesis (looking-at "\\s-*("))
         (insert "function ")
-        (if has-par
+        (if has-parenthesis
             (forward-list)
           (insert "("))
         (search-forward "=>")
         (delete-char -2)
         (js2r--ensure-just-one-space)
-        (unless has-par
+        (unless has-parenthesis
           (backward-char 1)
           (insert ")"))))))
 
@@ -435,24 +435,25 @@
   (when (not (js2r--arrow-function-p))
     (save-excursion
       (js2r--find-closest-function)
-      (let* ((pos (point))
-             (fn (js2-node-at-point))
-             (params (js2-function-node-params fn))
-             par-start par-end)
-        (if (js2r--looking-at-function-declaration)
-            (error "Can not convert function declarations to arrow function"))
+      (let ((pos (point))
+             (params
+              (js2-function-node-params (js2-node-at-point)))
+             parenthesis-start
+             parenthesis-end)
+        (when (js2r--looking-at-function-declaration)
+          (error "Can not convert function declarations to arrow function"))
         (search-forward "(")
         (backward-char 1)
         (delete-region pos (point))
-        (setq par-start (point))
+        (setq parenthesis-start (point))
         (forward-list)
-        (setq par-end (point))
+        (setq parenthesis-end (point))
         (insert " => ")
         (js2r--ensure-just-one-space)
         (when (= 1 (length params))
-          (goto-char par-end)
+          (goto-char parenthesis-end)
           (backward-delete-char 1)
-          (goto-char par-start)
+          (goto-char parenthesis-start)
           (delete-char 1))))))
 
 
