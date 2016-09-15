@@ -1,7 +1,7 @@
 ;;; js2-refactor.el --- The beginnings of a JavaScript refactoring library in emacs.
 
 ;; Copyright (C) 2012-2014 Magnar Sveen
-;; Copyright (C) 2015 Magnar Sveen and Nicolas Petton
+;; Copyright (C) 2015-2016 Magnar Sveen and Nicolas Petton
 
 ;; Author: Magnar Sveen <magnars@gmail.com>,
 ;;         Nicolas Petton <nicolas@petton.fr>
