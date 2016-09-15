@@ -273,3 +273,23 @@ Feature: Expand and collapse things
     And I go to the front of the word "b"
     And I press "C-c C-m ca"
     Then I should see "var a = [ b, 1, c, 3.1415927 ];"
+
+  Scenario: Expanding arrays with comment
+    When I insert:
+    """
+    var a = [
+        // a, b
+        3, 4
+    ];
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to character "b"
+    And I press "C-c C-m ea"
+    Then I should see:
+    """
+    var a = [
+        // a, b
+        3,
+        4
+    ];
+    """
