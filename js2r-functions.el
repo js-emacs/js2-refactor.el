@@ -378,6 +378,19 @@
          (scope (js2-get-defining-scope scope name)))
     (eq fn scope)))
 
+
+(defun js2r-toggle-arrow-function-and-expression ()
+  "Toggle between function expression to arrow function."
+  (interactive)
+  (save-excursion
+    (js2r--find-closest-function)
+    (cond ((js2r--arrow-function-p)
+           (js2r--transform-arrow-function-to-expression))
+          ((and (js2r--function-start-p) (not (js2r--looking-at-function-declaration)))
+           (js2r--transform-function-expression-to-arrow))
+          (t (error "Can only toggle between function expressions and arrow function")))))
+
+
 ;; Toggle between function name() {} and var name = function ();
 
 (defun js2r-toggle-function-expression-and-declaration ()
@@ -385,27 +398,86 @@
   (save-excursion
     (js2r--find-closest-function)
     (cond
-     ((js2r--looking-at-var-function-expression) (js2r--transform-function-expression-to-declaration))
-     ((js2r--looking-at-function-declaration) (js2r--transform-function-declaration-to-expression))
+     ((js2r--looking-at-var-function-expression)
+      (when (js2r--arrow-function-p) (js2r--transform-arrow-function-to-expression))
+      (js2r--transform-function-expression-to-declaration))
+     ((js2r--looking-at-function-declaration)
+      (js2r--transform-function-declaration-to-expression))
      (t (error "Can only toggle between function declarations and free standing function expressions")))))
 
+
+(defun js2r--arrow-function-p ()
+  (interactive)
+  (save-excursion
+    (ignore-errors
+      (js2r--find-closest-function)
+      (and (looking-at ".+?=>\\s-*{")
+           (not (js2r--point-inside-string-p))))))
+
+(defun js2r--transform-arrow-function-to-expression ()
+  (when (js2r--arrow-function-p)
+    (let ((has-parenthesis nil))
+      (save-excursion
+        (js2r--find-closest-function)
+        (setq has-parenthesis (looking-at "\\s-*("))
+        (insert "function ")
+        (if has-parenthesis
+            (forward-list)
+          (insert "("))
+        (search-forward "=>")
+        (delete-char -2)
+        (js2r--ensure-just-one-space)
+        (unless has-parenthesis
+          (backward-char 1)
+          (insert ")"))))))
+
+(defun js2r--transform-function-expression-to-arrow ()
+  (when (not (js2r--arrow-function-p))
+    (save-excursion
+      (js2r--find-closest-function)
+      (let ((pos (point))
+             (params
+              (js2-function-node-params (js2-node-at-point)))
+             parenthesis-start
+             parenthesis-end)
+        (when (js2r--looking-at-function-declaration)
+          (error "Can not convert function declarations to arrow function"))
+        (search-forward "(")
+        (backward-char 1)
+        (delete-region pos (point))
+        (setq parenthesis-start (point))
+        (forward-list)
+        (setq parenthesis-end (point))
+        (insert " => ")
+        (js2r--ensure-just-one-space)
+        (when (= 1 (length params))
+          (goto-char parenthesis-end)
+          (backward-delete-char 1)
+          (goto-char parenthesis-start)
+          (delete-char 1))))))
+
+
+(defun js2r--function-start-p()
+  (let* ((fn (js2r--closest #'js2-function-node-p)))
+    (and fn
+    (= (js2-node-abs-pos fn) (point)))))
+
 (defun js2r--find-closest-function ()
-  (end-of-line)
-  (word-search-backward "function")
-  (while (er--point-inside-string-p)
-    (word-search-backward "function")))
+  (when (not (js2r--function-start-p))
+    (let* ((fn (js2r--closest #'js2-function-node-p)))
+      (goto-char (js2-node-abs-pos fn)))))
 
 (defun js2r--looking-at-method ()
-  (and (looking-at "function")
+  (and (js2r--function-start-p)
        (looking-back ": ?")))
 
 (defun js2r--looking-at-function-declaration ()
-  (and (looking-at "function")
+  (and (js2r--function-start-p)
        (looking-back "^ *")))
 
 (defun js2r--looking-at-var-function-expression ()
-  (and (looking-at "function")
-       (looking-back "^ *var [a-z_$]+ = ")))
+  (and (js2r--function-start-p)
+       (looking-back "^ *var[\s\n]*[a-z_$]+[\s\n]*=[\s\n]*")))
 
 (defun js2r--transform-function-expression-to-declaration ()
   (when (js2r--looking-at-var-function-expression)

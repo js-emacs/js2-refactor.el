@@ -171,6 +171,7 @@
   (define-key js2-refactor-mode-map (funcall key-fn "ip") #'js2r-introduce-parameter)
   (define-key js2-refactor-mode-map (funcall key-fn "lp") #'js2r-localize-parameter)
   (define-key js2-refactor-mode-map (funcall key-fn "tf") #'js2r-toggle-function-expression-and-declaration)
+  (define-key js2-refactor-mode-map (funcall key-fn "ta") #'js2r-toggle-arrow-function-and-expression)
   (define-key js2-refactor-mode-map (funcall key-fn "ao") #'js2r-arguments-to-object)
   (define-key js2-refactor-mode-map (funcall key-fn "uw") #'js2r-unwrap)
   (define-key js2-refactor-mode-map (funcall key-fn "wl") #'js2r-wrap-in-for-loop)
