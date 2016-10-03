@@ -52,12 +52,18 @@
               (goto-char (js2-node-abs-pos node))
               (looking-back "\\.[\n\t ]*")))))
 
+(defun js2r--name-node-defining-scope (name-node)
+  (unless (js2r--local-name-node-p name-node)
+    (error "Node is not on a local identifier"))
+  (js2-get-defining-scope
+   (js2-node-get-enclosing-scope name-node)
+   (js2-name-node-name name-node)))
+
 (defun js2r--local-usages-of-name-node (name-node)
   (unless (js2r--local-name-node-p name-node)
     (error "Node is not on a local identifier"))
   (let* ((name (js2-name-node-name name-node))
-         (scope (js2-node-get-enclosing-scope name-node))
-         (scope (js2-get-defining-scope scope name))
+         (scope (js2r--name-node-defining-scope name-node))
          (current-start (js2-node-abs-pos name-node))
          (current-end (+ current-start (js2-node-len name-node)))
          (result nil))
@@ -66,7 +72,8 @@
      (lambda (node end-p)
        (when (and (not end-p)
                   (js2r--local-name-node-p node)
-                  (string= name (js2-name-node-name node)))
+                  (string= name (js2-name-node-name node))
+                  (eq scope (js2r--name-node-defining-scope node)))
          (add-to-list 'result node))
        t))
     result))
@@ -78,8 +85,7 @@
   (unless (js2r--local-name-node-p var-node)
     (error "Node is not on a local identifier"))
   (let* ((name (js2-name-node-name var-node))
-         (scope (js2-node-get-enclosing-scope var-node))
-         (scope (js2-get-defining-scope scope name)))
+         (scope (js2r--name-node-defining-scope var-node)))
     (js2-symbol-ast-node
      (js2-scope-get-symbol scope name))))
 

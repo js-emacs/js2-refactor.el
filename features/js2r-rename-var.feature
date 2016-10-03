@@ -48,3 +48,13 @@ Feature: Rename variable
     And I press "C-c C-m rv"
     And I type "ghi"
     Then I should see "var ghi = this.abc;"
+
+  Scenario: Don't rename shadowed variables
+    Given delete-selection-mode is active
+    When I insert "var abc; abc=1; function shadow(abc) { abc=2; } function noShadow() { abc=3; }"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the end of the word "var"
+    And I press "C-f"
+    And I press "C-c C-m rv"
+    And I type "ghi"
+    Then I should see "var ghi; ghi=1; function shadow(abc) { abc=2; } function noShadow() { ghi=3; }"
