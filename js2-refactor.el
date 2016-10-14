@@ -153,6 +153,12 @@
   :group 'js2-refactor
   :type 'boolean)
 
+(defcustom js2r-prefered-quote-type 1
+  "The prefered quote style for strings."
+  :group 'js2-refactor
+  :type '(choice (const :tag "Double" 1)
+                 (const :tag "Single" 2)))
+
 ;;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun js2r--add-keybindings (key-fn)

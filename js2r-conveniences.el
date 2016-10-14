@@ -42,7 +42,7 @@
       (when (looking-at "[;{]")
         (forward-char 1))
       (newline-and-indent)
-      (insert "console.log(\"" stmt " = \", " stmt ");"))))
+      (insert "console.log(" (js2r--wrap-text stmt " = ") ", " stmt ");"))))
 
 (defun js2r-debug-this ()
   "Debug the node at point, adding a 'debug()' statement."
@@ -56,7 +56,7 @@
       (when (looking-at "[;{]")
         (forward-char 1))
       (newline-and-indent)
-      (insert "debug(\"" stmt " = %s\", " stmt ");"))))
+      (insert "debug(" (js2r--wrap-text stmt " = %s") ", " stmt ");"))))
 
 (defun js2r--figure-out-what-to-log-where ()
   "Return a dotted pair containing the statement to log and the
