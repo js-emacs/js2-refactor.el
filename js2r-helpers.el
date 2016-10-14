@@ -25,14 +25,12 @@
 (require 'dash)
 (require 's)
 
-(defun js2r--wrap-text-with-prefered-quotes (&rest text)
+(defun js2r--wrap-text (&rest text)
   "Wrap TEXT with the prefered quotes.  The prefered quotes is set with `js2r-prefered-quote-type'."
   (let ((prefered-quotes "\""))
     (when (= 2 js2r-prefered-quote-type)
       (setq prefered-quotes "'"))
     (concat prefered-quotes (apply 'concat text) prefered-quotes)))
-
-(defalias 'js2r--wrap-text 'js2r--wrap-text-with-prefered-quotes)
 
 (defun js2r--fix-special-modifier-combinations (key)
   (case key
