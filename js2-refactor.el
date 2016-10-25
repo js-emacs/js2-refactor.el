@@ -51,18 +51,12 @@
 
 ;; All refactorings start with `C-c C-m` and then a two-letter mnemonic shortcut.
 
+;;  * `ee` is `expand-node-at-point`: Expand bracketed list according to node type at point (array, object, function, call args).
+;;  * `cc` is `contract-node-at-point`: Contract bracketed list according to node type at point (array, object, function, call args).
 ;;  * `ef` is `extract-function`: Extracts the marked expressions out into a new named function.
 ;;  * `em` is `extract-method`: Extracts the marked expressions out into a new named method in an object literal.
 ;;  * `ip` is `introduce-parameter`: Changes the marked expression to a parameter in a local function.
 ;;  * `lp` is `localize-parameter`: Changes a parameter to a local var in a local function.
-;;  * `eo` is `expand-object`: Converts a one line object literal to multiline.
-;;  * `co` is `contract-object`: Converts a multiline object literal to one line.
-;;  * `eu` is `expand-function`: Converts a one line function to multiline (expecting semicolons as statement delimiters).
-;;  * `cu` is `contract-function`: Converts a multiline function to one line (expecting semicolons as statement delimiters).
-;;  * `ec` is `expand-call-args`: Converts a one line function call args to multiline.
-;;  * `cc` is `contract-call-args`: Converts a multiline function call args to one line.
-;;  * `ea` is `expand-array`: Converts a one line array to multiline.
-;;  * `ca` is `contract-array`: Converts a multiline array to one line.
 ;;  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
 ;;  * `ig` is `inject-global-in-iife`: Creates a shortcut for a marked global by injecting it in the wrapping immediately invoked function expression
 ;;  * `ag` is `add-to-globals-annotation`: Creates a `/*global */` annotation if it is missing, and adds the var at point to it.
@@ -163,14 +157,8 @@
 
 (defun js2r--add-keybindings (key-fn)
   "Add js2r refactoring keybindings to `js2-mode-map' using KEY-FN to create each keybinding."
-  (define-key js2-refactor-mode-map (funcall key-fn "eo") #'js2r-expand-object)
-  (define-key js2-refactor-mode-map (funcall key-fn "co") #'js2r-contract-object)
-  (define-key js2-refactor-mode-map (funcall key-fn "eu") #'js2r-expand-function)
-  (define-key js2-refactor-mode-map (funcall key-fn "cu") #'js2r-contract-function)
-  (define-key js2-refactor-mode-map (funcall key-fn "ec") #'js2r-expand-call-args)
-  (define-key js2-refactor-mode-map (funcall key-fn "cc") #'js2r-contract-call-args)
-  (define-key js2-refactor-mode-map (funcall key-fn "ea") #'js2r-expand-array)
-  (define-key js2-refactor-mode-map (funcall key-fn "ca") #'js2r-contract-array)
+  (define-key js2-refactor-mode-map (funcall key-fn "ee") #'js2r-expand-node-at-point)
+  (define-key js2-refactor-mode-map (funcall key-fn "cc") #'js2r-contract-node-at-point)
   (define-key js2-refactor-mode-map (funcall key-fn "wi") #'js2r-wrap-buffer-in-iife)
   (define-key js2-refactor-mode-map (funcall key-fn "ig") #'js2r-inject-global-in-iife)
   (define-key js2-refactor-mode-map (funcall key-fn "ev") #'js2r-extract-var)

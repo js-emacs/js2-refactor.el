@@ -186,5 +186,59 @@
                (js2r--goto-closest-call-start)
                ",")
 
+(defun js2r--expand-contract-node-at-point (&optional is-contract)
+  "Expand or contract bracketed list according to node type in point.
+Currently working on array, object, function and call args node types.
+With argument, contract closest expression, otherwise expand."
+  (let ((debug-on-error nil)
+        (pos (point))
+        (array-start (point-max))
+        (object-start (point-max))
+        (function-start (point-max))
+        (call-start (point-max)))
+    (save-excursion
+      (ignore-errors
+        (js2r--goto-closest-array-start)
+        (setq array-start (- pos (point)))))
+    (save-excursion
+      (ignore-errors
+        (js2r--goto-closest-object-start)
+        (setq object-start (- pos (point)))))
+    (save-excursion
+      (ignore-errors
+        (js2r--goto-closest-function-start)
+        (setq function-start (- pos (point)))))
+    (save-excursion
+      (ignore-errors
+        (js2r--goto-closest-call-start)
+        (setq call-start (- pos (point)))))
+    (setq pos (-min (list array-start object-start function-start call-start)))
+    (when (= pos array-start)
+      (if is-contract
+          (js2r-contract-array)
+        (js2r-expand-array)))
+    (when (= pos object-start)
+      (if is-contract
+          (js2r-contract-object)
+        (js2r-expand-object)))
+    (when (= pos function-start)
+      (if is-contract
+          (js2r-contract-function)
+        (js2r-expand-function)))
+    (when (= pos call-start)
+      (if is-contract
+          (js2r-contract-call-args)
+        (js2r-expand-call-args)))))
+
+(defun js2r-expand-node-at-point ()
+  "Expand bracketed list according to node type at point."
+  (interactive)
+  (js2r--expand-contract-node-at-point))
+
+(defun js2r-contract-node-at-point ()
+  "Contract bracketed list according to node type at point."
+  (interactive)
+  (js2r--expand-contract-node-at-point t))
+
 (provide 'js2r-formatting)
 ;;; js2-formatting.el ends here

@@ -5,6 +5,12 @@ A JavaScript refactoring library for emacs.
 This is a collection of small refactoring functions to further the idea of a
 JavaScript IDE in Emacs that started with js2-mode.
 
+## Change in 0.8.0
+
+Add `expand-node-at-point` and `contract-node-at-point` function to Expand / Contract bracketed list according to node type at point (array, object, function, call args).
+
+Removed previous `ea` `ca` `eo` `co` `eu` `cu` `ec` `cc` key bindings.
+
 ## Breaking change in 0.7.0
 
 js2-refactor.el is now a minor mode that has to be enabled, with
@@ -68,16 +74,12 @@ to pick and choose your own keybindings with a smattering of:
 
 ## Refactorings
 
+ * `ee` is `expand-node-at-point`: Expand bracketed list according to node type at point (array, object, function, call args).
+ * `cc` is `contract-node-at-point`: Contract bracketed list according to node type at point (array, object, function, call args).
  * `ef` is `extract-function`: Extracts the marked expressions out into a new named function.
  * `em` is `extract-method`: Extracts the marked expressions out into a new named method in an object literal.
  * `ip` is `introduce-parameter`: Changes the marked expression to a parameter in a local function.
  * `lp` is `localize-parameter`: Changes a parameter to a local var in a local function.
- * `eo` is `expand-object`: Converts a one line object literal to multiline.
- * `co` is `contract-object`: Converts a multiline object literal to one line.
- * `eu` is `expand-function`: Converts a one line function to multiline (expecting semicolons as statement delimiters).
- * `cu` is `contract-function`: Converts a multiline function to one line (expecting semicolons as statement delimiters).
- * `ea` is `expand-array`: Converts a one line array to multiline.
- * `ca` is `contract-array`: Converts a multiline array to one line.
  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
  * `ig` is `inject-global-in-iife`: Creates a shortcut for a marked global by injecting it in the wrapping immediately invoked function expression
  * `ag` is `add-to-globals-annotation`: Creates a `/*global */` annotation if it is missing, and adds the var at point to it.
@@ -106,8 +108,10 @@ There are also some minor conveniences bundled:
 
 A list of some wanted improvements for the current refactorings.
 
- * expand- and contract-array: should work recursively with nested
-   object literals and nested arrays.
+ * ~~expand- and contract-array: should work recursively with nested
+   object literals and nested arrays.~~
+   Now the `expand-node-at-point` and `contract-node-at-point` should work,
+   by moving point into right place.
  * expand- and contract-function: should deal better with nested
    object literals, array declarations, and statements terminated only
    by EOLs (without semicolons).
@@ -120,6 +124,7 @@ A list of some wanted improvements for the current refactorings.
 * [Alex Chamberlain](https://github.com/apchamberlain) contributed contracting and expanding arrays and functions.
 * [Nicolas Petton](https://github.com/NicolasPetton) contributed lots of stuff and is now a co-maintainer of the project.
 * [Brian J Brennan](https://github.com/brianloveswords) added support for `const` and `let` to inline-var.
+* [James Yang](https://github.com/futurist) added `expand-node-at-point` and `contract-node-at-point` functions.
 
 
 Thanks!
