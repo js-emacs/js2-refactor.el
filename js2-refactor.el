@@ -132,6 +132,7 @@
 (require 'js2r-conditionals)
 (require 'js2r-conveniences)
 (require 'js2r-paredit)
+(require 'js2r-highlights)
 
 (defvar js2-refactor-mode-map
   (make-sparse-keymap)
