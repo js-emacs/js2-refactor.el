@@ -64,8 +64,6 @@
     (error "Node is not on a local identifier"))
   (let* ((name (js2-name-node-name name-node))
          (scope (js2r--name-node-defining-scope name-node))
-         (current-start (js2-node-abs-pos name-node))
-         (current-end (+ current-start (js2-node-len name-node)))
          (result nil))
     (js2-visit-ast
      scope
