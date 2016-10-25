@@ -19,6 +19,31 @@ Feature: Rename variable
     And I type "ghi"
     Then I should see "var ghi = 123, def = ghi;"
 
+  Scenario: Rename not confused by comments
+    Given delete-selection-mode is active
+    When I insert:
+    """
+    function foo(){}
+    var x = {
+        foo/**/: 1
+    };
+    // comment ends in dot.
+    foo();
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "foo"
+    And I press "C-c C-m rv"
+    And I type "bar"
+    Then I should see:
+    """
+    function bar(){}
+    var x = {
+        foo/**/: 1
+    };
+    // comment ends in dot.
+    bar();
+    """
+
   Scenario: Rename function params
     Given delete-selection-mode is active
     When I insert "function test(abc) { alert(abc); }"

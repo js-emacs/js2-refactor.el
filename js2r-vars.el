@@ -44,13 +44,12 @@
     current-node))
 
 (defun js2r--local-name-node-p (node)
-  (and (js2-name-node-p node)
-       (not (save-excursion ; not key in object literal { key: value }
-              (goto-char (+ (js2-node-abs-pos node) (js2-node-len node)))
-              (looking-at "[\n\t ]*:")))
-       (not (save-excursion ; not property lookup on object
-              (goto-char (js2-node-abs-pos node))
-              (looking-back "\\.[\n\t ]*")))))
+  (let ((parent (js2-node-parent node)))
+    (and parent (js2-name-node-p node)
+         (not (and (js2-object-prop-node-p parent)
+                   (eq node (js2-object-prop-node-left parent))))
+         (not (and (js2-prop-get-node-p parent)
+                   (eq node (js2-prop-get-node-right parent)))))))
 
 (defun js2r--name-node-defining-scope (name-node)
   (unless (js2r--local-name-node-p name-node)
