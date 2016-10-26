@@ -137,7 +137,7 @@ this only works if the mode was called with
     regions))
 
 (defun js2r--hl-get-free-vars-regions (pos undeclared?)
-  (let* ((node (js2-node-at-point pos))
+  (let* ((node (js2-node-at-point pos t))
          (func (js2-mode-find-enclosing-fn node))
          (regions (list)))
     (cl-flet ((is-free? (node)
@@ -169,7 +169,7 @@ this only works if the mode was called with
     regions))
 
 (defun js2r--hl-get-exits-regions (pos)
-  (let* ((node (js2-node-at-point pos))
+  (let* ((node (js2-node-at-point pos t))
          (func (js2-mode-find-parent-fn node))
          (regions (list)))
     (unless func
