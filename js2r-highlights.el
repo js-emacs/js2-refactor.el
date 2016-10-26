@@ -38,7 +38,28 @@
       ((or (js2-string-node-p node)
            (js2-number-node-p node)
            (js2-regexp-node-p node))
-       (js2r--hl-get-constant-regions node)))))
+       (js2r--hl-get-constant-regions node))
+      ((js2-this-or-super-node-p node)
+       (js2r--hl-get-this-regions node)))))
+
+(defun js2r--hl-get-this-regions (node)
+  (let ((func (js2-mode-find-parent-fn node))
+        (type (js2-node-type node))
+        (regions (list)))
+    (unless func
+      (error "Not inside a function"))
+    (js2-visit-ast func
+                   (lambda (node end-p)
+                     (cond
+                       ((js2-function-node-p node)
+                        (or (eq node func)
+                            (eq (js2-function-node-form node) 'FUNCTION_ARROW)))
+                       ((eq (js2-node-type node) type)
+                        (push `((begin . ,(js2-node-abs-pos node))
+                                (end . ,(js2-node-abs-end node)))
+                              regions))
+                       (t t))))
+    regions))
 
 (defun js2r-highlight-thing-at-point (pos)
   (interactive "d")
