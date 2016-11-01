@@ -30,7 +30,7 @@
 
 (require 'js2r-helpers)
 
-(defun js2r-log-this (prefix)
+(defun js2r-log-this (arg)
   "Log of the node at point, adding a 'console.log()' statement."
   (interactive "P")
   (js2r--guard)
@@ -42,7 +42,7 @@
       (when (looking-at "[;{]")
         (forward-char 1))
       (newline-and-indent)
-      (if prefix
+      (if arg
           (insert "console.log(\"" stmt " = \", JSON.stringify(" stmt ", null, 2));")
         (insert "console.log(\"" stmt " = \", " stmt ");")))))
 
