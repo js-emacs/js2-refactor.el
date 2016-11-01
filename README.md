@@ -92,7 +92,7 @@ to pick and choose your own keybindings with a smattering of:
  * `sv` is `split-var-declaration`: Splits a `var` with multiple vars declared, into several `var` statements.
  * `ss` is `split-string`: Splits a `string`.
  * `uw` is `unwrap`: Replaces the parent statement with the selected region.
- * `lt` is `log-this`: Adds a console.log() statement for what is at point (or region).
+ * `lt` is `log-this`: Adds a console.log() statement for what is at point (or region). With a prefix argument, use JSON pretty-printing.
  * `dt` is `debug-this`: Adds a debug() statement for what is at point (or region).
  * `sl` is `forward-slurp`: Moves the next statement into current function, if-statement, for-loop or while-loop.
  * `ba` is `forward-barf`: Moves the last child out of current function, if-statement, for-loop or while-loop.
