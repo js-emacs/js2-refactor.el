@@ -30,9 +30,9 @@
 
 (require 'js2r-helpers)
 
-(defun js2r-log-this ()
+(defun js2r-log-this (prefix)
   "Log of the node at point, adding a 'console.log()' statement."
-  (interactive)
+  (interactive "P")
   (js2r--guard)
   (let* ((log-info (js2r--figure-out-what-to-log-where))
          (stmt (car log-info))
@@ -42,7 +42,9 @@
       (when (looking-at "[;{]")
         (forward-char 1))
       (newline-and-indent)
-      (insert "console.log(" (js2r--wrap-text stmt " = ") ", " stmt ");"))))
+      (if prefix
+          (insert "console.log(\"" stmt " = \", JSON.stringify(" stmt ", null, 2));")
+        (insert "console.log(\"" stmt " = \", " stmt ");")))))
 
 (defun js2r-debug-this ()
   "Debug the node at point, adding a 'debug()' statement."
