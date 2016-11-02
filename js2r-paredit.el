@@ -60,8 +60,7 @@ function foo() {|2 + 3} -> function foo() {}
     (cond
      ((js2-comment-node-p node) (kill-line))
      ((js2-string-node-p node) (js2r--kill-line-in-string))
-     (t (js2r--kill-line-in-sexp))))
-  (js2r--cleanup-after-kill))
+     (t (js2r--kill-line-in-sexp)))))
 
 (defun js2r--next-node ()
   "Return the node at point, or the node after the point if the
@@ -71,10 +70,6 @@ function foo() {|2 + 3} -> function foo() {}
              (point))
       (forward-char 1))
     (js2-node-at-point)))
-
-(defun js2r--cleanup-after-kill ()
-  (while (looking-at ";")
-    (kill-forward-chars 1)))
 
 (defun js2r--kill-line-in-sexp ()
   "Kill a line, but only kills until the closest outer sexp on
@@ -111,6 +106,9 @@ warn the user."
              (end-of-sexp (save-excursion
                             (goto-char beg-of-sexp)
                             (forward-list)
+                            ;; Kill all remaining semi-colons as well
+                            (while (looking-at ";")
+                              (forward-char))
                             (point))))
         (if (js2-same-line beg-of-sexp)
             (kill-region beg (max end end-of-sexp))

@@ -335,3 +335,37 @@ Feature: Killing lines
 
     hello();
     """
+
+  Scenario Yanking a Killed node should yank the entire node
+    Given I clear the buffer
+    When I insert:
+    """
+    function hello(test) {
+    }
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    And I place the cursor before "function"
+    And I press "C-c C-m k"
+    And I press "C-y"
+    Then I should see:
+    """
+    function hello(test) {
+    }
+    """
+
+  Scenario Yanking a Killed node with semi-colom should yank the semi-colon as well
+    Given I clear the buffer
+    When I insert:
+    """
+    var hello = function(test) {
+    };
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    And I place the cursor before "var"
+    And I press "C-c C-m k"
+    And I press "C-y"
+    Then I should see:
+    """
+    var hello = function(test) {
+    };
+    """
