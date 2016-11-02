@@ -31,7 +31,8 @@
 (require 'js2r-helpers)
 
 (defun js2r-log-this (arg)
-  "Log of the node at point, adding a 'console.log()' statement.  With a prefix argument ARG, use JSON pretty-printing for logging."
+  "Log of the node at point, adding a 'console.log()' statement.
+With a prefix argument ARG, use JSON pretty-printing for logging."
   (interactive "P")
   (js2r--guard)
   (let* ((log-info (js2r--figure-out-what-to-log-where))
