@@ -186,59 +186,151 @@
                (js2r--goto-closest-call-start)
                ",")
 
-(defun js2r--expand-contract-node-at-point (&optional is-contract)
-  "Expand or contract bracketed list according to node type in point.
-Currently working on array, object, function and call args node types.
-With argument, contract closest expression, otherwise expand."
-  (let ((debug-on-error nil)
-        (pos (point))
-        (array-start (point-max))
-        (object-start (point-max))
-        (function-start (point-max))
-        (call-start (point-max)))
-    (save-excursion
-      (ignore-errors
-        (js2r--goto-closest-array-start)
-        (setq array-start (- pos (point)))))
-    (save-excursion
-      (ignore-errors
-        (js2r--goto-closest-object-start)
-        (setq object-start (- pos (point)))))
-    (save-excursion
-      (ignore-errors
-        (js2r--goto-closest-function-start)
-        (setq function-start (- pos (point)))))
-    (save-excursion
-      (ignore-errors
-        (js2r--goto-closest-call-start)
-        (setq call-start (- pos (point)))))
-    (setq pos (-min (list array-start object-start function-start call-start)))
-    (when (= pos array-start)
-      (if is-contract
-          (js2r-contract-array)
-        (js2r-expand-array)))
-    (when (= pos object-start)
-      (if is-contract
-          (js2r-contract-object)
-        (js2r-expand-object)))
-    (when (= pos function-start)
-      (if is-contract
-          (js2r-contract-function)
-        (js2r-expand-function)))
-    (when (= pos call-start)
-      (if is-contract
-          (js2r-contract-call-args)
-        (js2r-expand-call-args)))))
+(defun js2-comments-between (start end &optional comments-list)
+  "Return comment nodes between START and END, nil if not found.
+START and END are absolute positions in current buffer.
+Pass COMMENTS-LIST when no AST available."
+  (let ((ast js2-mode-ast)
+        (comments nil)
+        c-start c-end)
+    (setq comments-list (or comments-list
+                            (and ast (js2-ast-root-comments ast))))
+    (nreverse
+      (dolist (comment comments-list comments)
+        (setq c-start (js2-node-abs-pos comment)
+              c-end (1- (+ c-start (js2-node-len comment))))
+        (unless (or (< c-end start)
+                    (> c-start end))
+          (push comment comments))))))
 
-(defun js2r-expand-node-at-point ()
+(defun js2r--node-is-list (node)
+  (or
+   (js2-function-node-p node)
+   (js2-block-node-p node)
+   (js2-array-node-p node)
+   (js2-object-node-p node)
+   (js2-new-node-p node)
+   (js2-call-node-p node)))
+
+(defun js2r--node-child-list (target-node &optional recursive)
+  "Get all child nodes for target-node, test with (js2r--node-is-list), recursively when recursive is t."
+  (let ((result nil)
+        (nodes nil)
+        (children (cond
+                   ((js2-function-node-p target-node)
+                    (js2-block-node-kids (js2-function-node-body target-node)))
+                   ((js2-block-node-p target-node)
+                    (js2-block-node-kids target-node))
+                   ((js2-array-node-p target-node)
+                    (js2-array-node-elems target-node))
+                   ((js2-object-node-p target-node)
+                    (js2-object-node-elems target-node))
+                   ((js2-call-node-p target-node)
+                    (js2-call-node-args target-node))
+                   ((js2-new-node-p target-node)
+                    (js2-new-node-args target-node))
+                   (t
+                    nil)))
+        (is-object (js2-object-node-p target-node))
+        check-node node-parts)
+    (dolist (node children)
+      ;; node-parts is ALIST: ((node parent) (node parent))
+      (setq node-parts nil)
+      (setq check-node node)
+      ;; get object parts (left, right)
+      (if (and is-object (js2-object-prop-node-p node))
+          (progn
+            (setq check-node (js2-object-prop-node-right node))
+            (push (list (js2-object-prop-node-left node) target-node) node-parts)
+            (push (list check-node target-node) node-parts))
+        (push (list node target-node) node-parts))
+      (if (js2r--node-is-list check-node)
+          (setq result
+                (nconc result
+                       (append node-parts (when recursive (js2r--node-child-list check-node recursive)))))
+        (setq nodes (append nodes node-parts))))
+    (nconc result (nreverse nodes))))
+
+(defun js2r--expand-contract-node-at-point (&optional is-contract is-recursive)
+  (save-excursion
+    (let* ((node (js2-node-at-point))
+           (target (if (and (not (js2-comment-node-p node))
+                            (not (js2r--node-is-list node)))
+                       (setq node (js2-node-parent node))
+                     node))
+           (target-start (js2-node-abs-pos target))
+           (target-end (js2-node-abs-end target))
+           (pos-list (list
+                      (list :pos (1+ target-start) :node target :parent target)
+                      (list :pos (1- target-end) :node target :parent target)))
+           (sum-space 0)
+           child-nodes
+           pos-start pos-end
+           asi node parent start end)
+      (when (js2r--node-is-list target)
+        (setq child-nodes (js2r--node-child-list target is-recursive))
+        (dolist (N child-nodes)
+          ;; N is (node parent)
+          (setq node (car N))
+          (setq start (js2-node-abs-pos node))
+          (setq end (js2-node-abs-end node))
+          (push (list :pos start :node node :role 'start :parent (cadr N)) pos-list)
+          (push (list :pos end :node node :role 'end :parent (cadr N)) pos-list)
+          (when (and is-recursive (js2r--node-is-list node))
+            (push (list :pos (1+ start) :node node :role 'list-start :parent node) pos-list)
+            (push (list :pos (1- end) :node node :role 'list-end :parent node) pos-list)
+            ))
+        (setq pos-list (sort pos-list '(lambda(a b) (< (plist-get a :pos) (plist-get b :pos)))))
+        (dotimes (i (length pos-list))
+          (setq start (nth i pos-list))
+          (incf i)
+          (setq end (nth i pos-list))
+          (setq pos-start (plist-get start :pos))
+          (setq pos-end (plist-get end :pos))
+          (setq node (plist-get start :node))
+          (setq parent (plist-get start :parent))
+          ;; automatic semicolon insertion (ASI) sperated list, maybe omit ";"
+          (setq asi (js2-block-node-p parent))
+          (unless (js2-comments-between pos-start pos-end)
+            ;; remove start part space
+            (goto-char (- pos-start sum-space))
+            (while (looking-at "[\n\s]")
+              (delete-char 1)
+              (incf sum-space))
+            ;; remove end part space
+            (goto-char (- pos-end sum-space))
+            (while (looking-back "[\n\s]")
+              (delete-char -1)
+              (incf sum-space))
+            ;; add ";" for ASI if it omitted
+            (when (and is-contract asi (not (js2-block-node-p node)) (not (= (char-before) ?\;)))
+              (insert ";")
+              (decf sum-space))
+
+            (if is-contract
+                (insert " ")
+              (if (and
+                    ;; don't append newline for object prop name
+                    ;; node-type 39 is "js2-name-node"
+                   (= 39 (js2-node-type node))
+                   (js2-object-node-p parent))
+                  (insert " ")
+                (newline)))
+            (decf sum-space)
+            ))
+        (when (not is-contract)
+          (js2-indent-region target-start (- target-end sum-space)))
+        ))))
+
+(defun js2r-expand-node-at-point (args)
   "Expand bracketed list according to node type at point."
-  (interactive)
-  (js2r--expand-contract-node-at-point))
+  (interactive "P")
+  (js2r--expand-contract-node-at-point nil args))
 
-(defun js2r-contract-node-at-point ()
+(defun js2r-contract-node-at-point (args)
   "Contract bracketed list according to node type at point."
-  (interactive)
-  (js2r--expand-contract-node-at-point t))
+  (interactive "P")
+  (js2r--expand-contract-node-at-point t args))
 
 (provide 'js2r-formatting)
 ;;; js2-formatting.el ends here
