@@ -164,7 +164,7 @@ Feature: Expand and collapse things
   Scenario: Expanding function call arguments
     When I insert:
     """
-    m('table.overlay', {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}}, m('tr', m('td', {align:'center'}, m('div', {style:{width:'200px'}}, 'some text'))));
+    m('table.overlay', {style:{border:0, padding:0, margin:0, width:'100px', height:'100px', backgroundColor:'rgba(0,0,0,0.5)'}}, m('tr', m('td', {align:'center'}, m('div', {style:{width:'200px'}}, 'some text'))));
     """
     And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "overlay"
@@ -173,17 +173,18 @@ Feature: Expand and collapse things
     """
     m(
         'table.overlay',
-        {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}},
+        {style:{border:0, padding:0, margin:0, width:'100px', height:'100px', backgroundColor:'rgba(0,0,0,0.5)'}},
         m('tr', m('td', {align:'center'}, m('div', {style:{width:'200px'}}, 'some text')))
     );
     """
+    And reparse buffer
     And I go to the front of the word "tr"
     And I press "C-c C-m ee"
     Then I should see:
     """
     m(
         'table.overlay',
-        {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}},
+        {style:{border:0, padding:0, margin:0, width:'100px', height:'100px', backgroundColor:'rgba(0,0,0,0.5)'}},
         m(
             'tr',
             m('td', {align:'center'}, m('div', {style:{width:'200px'}}, 'some text'))
@@ -196,7 +197,7 @@ Feature: Expand and collapse things
     """
     m(
         'table.overlay',
-        {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}},
+        {style:{border:0, padding:0, margin:0, width:'100px', height:'100px', backgroundColor:'rgba(0,0,0,0.5)'}},
         m(
             'tr',
             m(
@@ -216,7 +217,7 @@ Feature: Expand and collapse things
     And I press "C-c C-m cc"
     Then I should see:
     """
-    m( 'table.overlay', {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}}, m(
+    m( 'table.overlay', {style:{border:0, padding:0, margin:0, width:'100px', height:'100px', backgroundColor:'rgba(0,0,0,0.5)'}}, m(
             'tr',
             m(
                 'td',
@@ -229,11 +230,12 @@ Feature: Expand and collapse things
             )
         ) );
     """
+    And reparse buffer
     And I go to the front of the word "tr"
     And I press "C-c C-m cc"
     Then I should see:
     """
-    m( 'table.overlay', {style:{border:0, padding:0, margin:0, width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,0.5)'}}, m( 'tr', m(
+    m( 'table.overlay', {style:{border:0, padding:0, margin:0, width:'100px', height:'100px', backgroundColor:'rgba(0,0,0,0.5)'}}, m( 'tr', m(
                 'td',
                 {align:'center'},
                 m(
@@ -316,6 +318,7 @@ Feature: Expand and collapse things
     function abc(x,y){x+=z; return x+y;}
     func(6,7);
     """
+    And reparse buffer
     When I press "C-c C-m cc"
     Then I should see:
     """
@@ -324,63 +327,69 @@ Feature: Expand and collapse things
     function abc(x,y){x+=z; return x+y;}
     func(6,7);
     """
+    And reparse buffer
     When I go to the front of the word "4"
     And I press "C-c C-m ee"
     Then I should see:
     """
     var a = [ 1, 2, 3 ];
     var b = {
-        c:4,
-        d:5
+        c: 4,
+        d: 5
     };
     function abc(x,y){x+=z; return x+y;}
     func(6,7);
     """
+    And reparse buffer
     When I press "C-c C-m cc"
     Then I should see:
     """
     var a = [ 1, 2, 3 ];
-    var b = { c:4, d:5 };
+    var b = { c: 4, d: 5 };
     function abc(x,y){x+=z; return x+y;}
     func(6,7);
     """
+    And reparse buffer
     When I go to the front of the word "z"
     And I press "C-c C-m ee"
     Then I should see:
     """
     var a = [ 1, 2, 3 ];
-    var b = { c:4, d:5 };
+    var b = { c: 4, d: 5 };
     function abc(x,y){
         x+=z;
         return x+y;
     }
     func(6,7);
     """
+    And reparse buffer
     When I press "C-c C-m cc"
     Then I should see:
     """
     var a = [ 1, 2, 3 ];
-    var b = { c:4, d:5 };
+    var b = { c: 4, d: 5 };
     function abc(x,y){ x+=z; return x+y; }
     func(6,7);
     """
+    And reparse buffer
     When I go to the front of the word "6"
     And I press "C-c C-m ee"
     Then I should see:
     """
     var a = [ 1, 2, 3 ];
-    var b = { c:4, d:5 };
+    var b = { c: 4, d: 5 };
     function abc(x,y){ x+=z; return x+y; }
     func(
         6,
         7
     );
     """
+    And reparse buffer
     When I press "C-c C-m cc"
     Then I should see:
     """
     var a = [ 1, 2, 3 ];
-    var b = { c:4, d:5 };
+    var b = { c: 4, d: 5 };
     function abc(x,y){ x+=z; return x+y; }
     func( 6, 7 );
     """

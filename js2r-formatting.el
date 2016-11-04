@@ -186,7 +186,7 @@
                (js2r--goto-closest-call-start)
                ",")
 
-(defun js2-comments-between (start end &optional comments-list)
+(defun js2r--comments-between (start end &optional comments-list)
   "Return comment nodes between START and END, nil if not found.
 START and END are absolute positions in current buffer.
 Pass COMMENTS-LIST when no AST available."
@@ -253,20 +253,23 @@ Pass COMMENTS-LIST when no AST available."
 
 (defun js2r--expand-contract-node-at-point (&optional is-contract is-recursive)
   (save-excursion
-    (let* ((node (js2-node-at-point))
-           (target (if (and (not (js2-comment-node-p node))
-                            (not (js2r--node-is-list node)))
-                       (setq node (js2-node-parent node))
-                     node))
-           (target-start (js2-node-abs-pos target))
-           (target-end (js2-node-abs-end target))
-           (pos-list (list
-                      (list :pos (1+ target-start) :node target :parent target)
-                      (list :pos (1- target-end) :node target :parent target)))
-           (sum-space 0)
-           child-nodes
-           pos-start pos-end
-           asi node parent start end)
+    (let* ((current-node (js2-node-at-point))
+            (target  (progn
+                       ;; skip comment if point is on
+                       (when (js2-comment-node-p current-node)
+                         (setq current-node (js2-node-at-point (1+ (js2-node-abs-end current-node)))))
+                       (while (not (js2r--node-is-list current-node))
+                         (setq current-node (js2-node-parent current-node)))
+                       current-node))
+            (target-start (js2-node-abs-pos target))
+            (target-end (js2-node-abs-end target))
+            (pos-list (list
+                        (list :pos (1+ target-start) :node target :role 'list-start :parent target)
+                        (list :pos (1- target-end) :node target :role 'list-end :parent target)))
+            (sum-space 0)
+            child-nodes
+            pos-start pos-end
+            asi node parent start end)
       (when (js2r--node-is-list target)
         (setq child-nodes (js2r--node-child-list target is-recursive))
         (dolist (N child-nodes)
@@ -280,10 +283,10 @@ Pass COMMENTS-LIST when no AST available."
             (push (list :pos (1+ start) :node node :role 'list-start :parent node) pos-list)
             (push (list :pos (1- end) :node node :role 'list-end :parent node) pos-list)
             ))
-        (setq pos-list (sort pos-list '(lambda(a b) (< (plist-get a :pos) (plist-get b :pos)))))
+        (setq pos-list (sort pos-list #'(lambda(a b) (< (plist-get a :pos) (plist-get b :pos)))))
         (dotimes (i (length pos-list))
           (setq start (nth i pos-list))
-          (incf i)
+          (cl-incf i)
           (setq end (nth i pos-list))
           (setq pos-start (plist-get start :pos))
           (setq pos-end (plist-get end :pos))
@@ -291,36 +294,38 @@ Pass COMMENTS-LIST when no AST available."
           (setq parent (plist-get start :parent))
           ;; automatic semicolon insertion (ASI) sperated list, maybe omit ";"
           (setq asi (js2-block-node-p parent))
-          (unless (js2-comments-between pos-start pos-end)
+          (unless (js2r--comments-between pos-start pos-end)
             ;; remove start part space
             (goto-char (- pos-start sum-space))
             (while (looking-at "[\n\s]")
               (delete-char 1)
-              (incf sum-space))
+              (cl-incf sum-space))
             ;; remove end part space
             (goto-char (- pos-end sum-space))
             (while (looking-back "[\n\s]")
               (delete-char -1)
-              (incf sum-space))
+              (cl-incf sum-space))
             ;; add ";" for ASI if it omitted
             (when (and is-contract asi (not (js2-block-node-p node)) (not (= (char-before) ?\;)))
               (insert ";")
-              (decf sum-space))
-
+              (cl-decf sum-space))
             (if is-contract
                 (insert " ")
               (if (and
                     ;; don't append newline for object prop name
-                    ;; node-type 39 is "js2-name-node"
-                   (= 39 (js2-node-type node))
-                   (js2-object-node-p parent))
+                    (js2-object-node-p parent)
+                    ;; ensure it's not object start/end {}
+                    (not (eq node parent))
+                    (not (eq (plist-get end :node) parent))
+                    ;; check object-prop-left-node-p (workaround)
+                    (= (js2-node-abs-pos node) (js2-node-abs-pos (js2-node-parent node))))
                   (insert " ")
                 (newline)))
-            (decf sum-space)
+            (cl-decf sum-space)
             ))
         (when (not is-contract)
           (js2-indent-region target-start (- target-end sum-space)))
-        ))))
+        (js2-reparse)))))
 
 (defun js2r-expand-node-at-point (args)
   "Expand bracketed list according to node type at point."
