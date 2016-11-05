@@ -264,12 +264,14 @@ Pass COMMENTS-LIST when no AST available."
             (target-start (js2-node-abs-pos target))
             (target-end (js2-node-abs-end target))
             (pos-list (list
-                        (list :pos (1+ target-start) :node target :role 'list-start :parent target)
-                        (list :pos (1- target-end) :node target :role 'list-end :parent target)))
-            (sum-space 0)
+                        (list :pos target-start :node target :parent target)
+                        (list :pos (1- target-end) :node target :parent target)))
+            (newline (js2r--buffer-newline-char))
             child-nodes
+            changes content
             pos-start pos-end
             asi node parent start end)
+      ;; build pos-list for list node
       (when (js2r--node-is-list target)
         (setq child-nodes (js2r--node-child-list target is-recursive))
         (dolist (N child-nodes)
@@ -277,13 +279,18 @@ Pass COMMENTS-LIST when no AST available."
           (setq node (car N))
           (setq start (js2-node-abs-pos node))
           (setq end (js2-node-abs-end node))
-          (push (list :pos start :node node :role 'start :parent (cadr N)) pos-list)
-          (push (list :pos end :node node :role 'end :parent (cadr N)) pos-list)
+          (push (list :pos (if (js2-new-node-p node)
+                                 ;; new-node's start pos just before new
+                               (progn (goto-char start) (backward-word) (point))
+                             start) :node node :parent (cadr N)) pos-list)
+          (push (list :pos end :node node :parent (cadr N)) pos-list)
           (when (and is-recursive (js2r--node-is-list node))
-            (push (list :pos (1+ start) :node node :role 'list-start :parent node) pos-list)
-            (push (list :pos (1- end) :node node :role 'list-end :parent node) pos-list)
-            ))
+            (push (list :pos (1+ start) :node node :parent node) pos-list)
+            (push (list :pos (1- end) :node node :parent node) pos-list))))
+      (when (> (length pos-list) 2)
+        ;; sort pos-list with :pos
         (setq pos-list (sort pos-list #'(lambda(a b) (< (plist-get a :pos) (plist-get b :pos)))))
+        ;; perform expand/contract action with pos-list
         (dotimes (i (length pos-list))
           (setq start (nth i pos-list))
           (cl-incf i)
@@ -295,36 +302,24 @@ Pass COMMENTS-LIST when no AST available."
           ;; automatic semicolon insertion (ASI) sperated list, maybe omit ";"
           (setq asi (js2-block-node-p parent))
           (unless (js2r--comments-between pos-start pos-end)
-            ;; remove start part space
-            (goto-char (- pos-start sum-space))
-            (while (looking-at "[\n\s]")
-              (delete-char 1)
-              (cl-incf sum-space))
-            ;; remove end part space
-            (goto-char (- pos-end sum-space))
-            (while (looking-back "[\n\s]")
-              (delete-char -1)
-              (cl-incf sum-space))
+            (setq content (s-trim (buffer-substring pos-start pos-end)))
             ;; add ";" for ASI if it omitted
-            (when (and is-contract asi (not (js2-block-node-p node)) (not (= (char-before) ?\;)))
-              (insert ";")
-              (cl-decf sum-space))
+            (when (and is-contract asi (not (js2-block-node-p node)) (not (= (char-before pos-start) ?\;)))
+              (setq content (concat content ";")))
             (if is-contract
-                (insert " ")
+                (setq content (concat content " "))
               (if (and
-                    ;; don't append newline for object prop name
-                    (js2-object-node-p parent)
-                    ;; ensure it's not object start/end {}
-                    (not (eq node parent))
-                    (not (eq (plist-get end :node) parent))
-                    ;; check object-prop-left-node-p (workaround)
-                    (= (js2-node-abs-pos node) (js2-node-abs-pos (js2-node-parent node))))
-                  (insert " ")
-                (newline)))
-            (cl-decf sum-space)
-            ))
-        (when (not is-contract)
-          (js2-indent-region target-start (- target-end sum-space)))
+                   ;; don't append newline for object prop name
+                   (js2-object-node-p parent)
+                   ;; ensure it's not object start/end {}
+                   (not (eq node parent))
+                   (not (eq (plist-get end :node) parent))
+                   ;; check object-prop-left-node-p (workaround)
+                   (zerop (js2-node-pos node)))
+                  (setq content (concat content " "))
+                (setq content (concat content newline))))
+            (push (list :beg pos-start :end pos-end :contents content) changes)))
+        (js2r--execute-changes changes)
         (js2-reparse)))))
 
 (defun js2r-expand-node-at-point (args)

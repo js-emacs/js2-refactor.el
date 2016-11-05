@@ -25,6 +25,14 @@
 (require 'dash)
 (require 's)
 
+(defun js2r--buffer-newline-char ()
+  "Newline char regarding to current buffer coding."
+  (let ((coding (symbol-name buffer-file-coding-system)))
+    (cond ((s-ends-with? "-unix" coding) "\n")
+          ((s-ends-with? "-mac" coding) "\r")
+          ((s-ends-with? "-dos" coding) "\r\n")
+          (:else "\n"))))
+
 (defun js2r--wrap-text (&rest text)
   "Wrap TEXT with the prefered quotes.  The prefered quotes is set with `js2r-prefered-quote-type'."
   (let ((prefered-quotes "\""))

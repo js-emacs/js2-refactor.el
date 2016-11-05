@@ -10,10 +10,6 @@
      (lambda ()
         (delete-selection-mode 1)))
 
-(And "^reparse buffer$"
-     (lambda ()
-        (js2-reparse 'force)))
-
 (When "^I go to character \"\\(.+\\)\"$"
       (lambda (char)
         (goto-char (point-min))
