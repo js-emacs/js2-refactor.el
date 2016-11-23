@@ -22,7 +22,22 @@ Pass a prefix argument if you need to include them (the optional
 `undeclared?' argument)."
   (interactive "d\nP")
   (js2r-highlight-forgetit)
-  (js2r--hl-things (js2r--hl-get-free-vars-regions pos undeclared?)))
+  (let ((data (js2r--hl-things (js2r--hl-get-free-vars-regions pos (not undeclared?))
+                               :no-message t))
+        (hash (make-hash-table :test 'equal)))
+    (cl-loop
+       for (name) in data
+       for count = (or (gethash name hash) 0)
+       do (puthash name (1+ count) hash))
+    (message "%s"
+             (with-temp-buffer
+                 (insert (format "%d places: " (length data)))
+               (cl-loop
+                  for first = t then nil
+                  for name being the hash-keys of hash using (hash-values count)
+                  do (unless first (insert ", "))
+                     (insert (format "%s × %d" name count)))
+               (buffer-substring-no-properties (point-min) (point-max))))))
 
 (defun js2r-highlight-exits (pos)
   "Highlights forced exit points from the function surrounding
@@ -201,28 +216,33 @@ this only works if the mode was called with
 
 (defun js2r--hl-things (things &rest options)
   (let ((line-only (plist-get options :line-only))
+        (no-message (plist-get options :no-message))
         (things (sort things
                       (lambda (a b)
                         (< (cdr (assq 'begin a))
                            (cdr (assq 'begin b)))))))
     (cond
-      (things (cl-loop
-                 for ref in things
-                 for beg = (cdr (assq 'begin ref))
-                 for end = (if line-only
-                               (save-excursion
-                                (goto-char beg)
-                                (end-of-line)
-                                (point))
-                               (cdr (assq 'end ref)))
-                 do (let ((ovl (make-overlay beg end)))
-                      (overlay-put ovl 'face 'highlight)
-                      (overlay-put ovl 'evaporate t)
-                      (overlay-put ovl 'js2r-highlights t)))
-              (message "%d places highlighted" (length things))
-              (js2r--hl-mode 1))
+      (things (let ((data (cl-loop
+                             for ref in things
+                             for beg = (cdr (assq 'begin ref))
+                             for end = (if line-only
+                                           (save-excursion
+                                            (goto-char beg)
+                                            (end-of-line)
+                                            (point))
+                                           (cdr (assq 'end ref)))
+                             do (let ((ovl (make-overlay beg end)))
+                                  (overlay-put ovl 'face 'highlight)
+                                  (overlay-put ovl 'evaporate t)
+                                  (overlay-put ovl 'js2r-highlights t))
+                             collect (list (buffer-substring-no-properties beg end) beg end))))
+                (unless no-message
+                  (message "%d places highlighted" (length things)))
+                (js2r--hl-mode 1)
+                data))
       (t
-       (message "No places found")))))
+       (unless no-message
+         (message "No places found"))))))
 
 (define-minor-mode js2r--hl-mode
   "Internal mode used by `js2r-highlights'"
