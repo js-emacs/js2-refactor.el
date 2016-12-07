@@ -90,6 +90,24 @@ this only works if the mode was called with
         (goto-char (overlay-start i))
         (throw 'done nil)))))
 
+(defun js2r-highlight-extend-region ()
+  "Extend region to the current or upper AST node."
+  (interactive)
+  (cond
+    ((use-region-p)
+     (cl-loop
+        for node = (js2-node-at-point (point)) then (js2-node-parent node)
+        for beg = (point) then (js2-node-abs-pos node)
+        for end = (mark) then (js2-node-abs-end node)
+        until (or (< beg (point)) (> end (mark)))
+        finally
+           (goto-char beg)
+           (push-mark end t t)))
+    (t
+     (let ((node (js2-node-at-point (point))))
+       (goto-char (js2-node-abs-pos node))
+       (push-mark (js2-node-abs-end node) t t)))))
+
 (defun js2r--hl-get-var-regions ()
   (let* ((current-node (js2r--local-name-node-at-point))
          (len (js2-node-len current-node)))
