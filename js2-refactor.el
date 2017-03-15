@@ -153,6 +153,13 @@
   :type '(choice (const :tag "Double" 1)
                  (const :tag "Single" 2)))
 
+(defcustom js2r-always-insert-parens-around-arrow-function-params nil
+  "When non-nil, js2r always inserts parenthesis around arrow function params.
+This only affects arrow functions with one parameter."
+  :group 'js2-refactor
+  :type 'boolean)
+
+
 ;;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun js2r--add-keybindings (key-fn)
