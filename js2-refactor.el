@@ -133,6 +133,10 @@
   (make-sparse-keymap)
   "Keymap for js2-refactor.")
 
+(defvar js2-refactor-keybinding-prefix
+  nil
+  "Store keybinding prefix used by js2-refactor.")
+
 ;;;###autoload
 (define-minor-mode js2-refactor-mode
   "Minor mode providing JavaScript refactorings."
@@ -203,6 +207,7 @@ This only affects arrow functions with one parameter."
 ;;;###autoload
 (defun js2r-add-keybindings-with-prefix (prefix)
   "Add js2r keybindings using the prefix PREFIX."
+  (setq js2-refactor-keybinding-prefix (read-kbd-macro prefix))
   (js2r--add-keybindings (-partial #'js2r--key-pairs-with-prefix prefix)))
 
 ;;;###autoload
