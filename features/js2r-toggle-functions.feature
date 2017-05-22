@@ -40,23 +40,23 @@
     """
 
   Scenario: Toggle arrow function without braces
-    When I insert "const plus2 = (a) =>  a + 2;"
+    When I insert "const plus2 = (a) => a + 2;"
     And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "a"
     And I press "C-c C-m ta"
     Then I should see:
     """
-    cont plus2 = function(a) { return a + 2; };
+    const plus2 = function (a) { return a + 2; };
     """
 
   Scenario: Toggle arrow function without parens
-    When I insert "const plus2 = a =>  a + 2;"
+    When I insert "const plus2 = a => a + 2;"
     And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "a"
     And I press "C-c C-m ta"
     Then I should see:
     """
-    cont plus2 = function(a) { return a + 2; };
+    const plus2 = function (a) { return a + 2; };
     """
 
     Scenario: Toggle arrow function returning constants
@@ -66,5 +66,5 @@
     And I press "C-c C-m ta"
     Then I should see:
     """
-    cont two = function() { return 2; };
+    const two = function () { return 2; };
     """

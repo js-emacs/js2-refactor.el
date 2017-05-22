@@ -411,7 +411,7 @@
   (save-excursion
     (ignore-errors
       (js2r--find-closest-function)
-      (and (looking-at "(?[,[:space:][:word:]]+)?[[:space:]]*=>")
+      (and (looking-at "(?[,[:space:][:word:]]*)?[[:space:]]*=>")
            (not (js2r--point-inside-string-p))))))
 
 (defun js2r--transform-arrow-function-to-expression ()
@@ -431,7 +431,9 @@
           (backward-char 1)
           (insert ")"))
         (unless (looking-at "\\s-*{")
-          (insert " { return ")
+          (js2r--ensure-just-one-space)
+          (insert "{ return ")
+          (js2r--ensure-just-one-space)
           (goto-char (point-at-eol))
           (insert " };"))))))
 
