@@ -78,8 +78,8 @@ to pick and choose your own keybindings with a smattering of:
  * `cc` is `contract-node-at-point`: Contract bracketed list according to node type at point (array, object, function, call args).
  * `ef` is `extract-function`: Extracts the marked expressions out into a new named function.
  * `em` is `extract-method`: Extracts the marked expressions out into a new named method in an object literal.
- * `tf` is `toggle-function-expression-and-declaration`: Toggle between function expression to arrow function.
- * `ta` is `toggle-arrow-function-and-expression`: Toggle between function name() {} and var name = function ();
+ * `tf` is `toggle-function-expression-and-declaration`: Toggle between function name() {} and var name = function ();
+ * `ta` is `toggle-arrow-function-and-expression`: Toggle between function expression to arrow function.
  * `ip` is `introduce-parameter`: Changes the marked expression to a parameter in a local function.
  * `lp` is `localize-parameter`: Changes a parameter to a local var in a local function.
  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression

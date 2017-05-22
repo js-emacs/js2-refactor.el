@@ -55,6 +55,8 @@
 ;;  * `cc` is `contract-node-at-point`: Contract bracketed list according to node type at point (array, object, function, call args).
 ;;  * `ef` is `extract-function`: Extracts the marked expressions out into a new named function.
 ;;  * `em` is `extract-method`: Extracts the marked expressions out into a new named method in an object literal.
+;;  * `tf` is `toggle-function-expression-and-declaration`: Toggle between function name() {} and var name = function ();
+;;  * `ta` is `toggle-arrow-function-and-expression`: Toggle between function expression to arrow function.
 ;;  * `ip` is `introduce-parameter`: Changes the marked expression to a parameter in a local function.
 ;;  * `lp` is `localize-parameter`: Changes a parameter to a local var in a local function.
 ;;  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
@@ -64,11 +66,16 @@
 ;;  * `iv` is `inline-var`: Replaces all instances of a variable with its initial value.
 ;;  * `rv` is `rename-var`: Renames the variable on point and all occurrences in its lexical scope.
 ;;  * `vt` is `var-to-this`: Changes local `var a` to be `this.a` instead.
-;;  * `ao` is `arguments-to-object`: Replaces arguments to a function call with an object literal of named arguments.  Requires yasnippets.
+;;  * `ao` is `arguments-to-object`: Replaces arguments to a function call with an object literal of named arguments.
 ;;  * `3i` is `ternary-to-if`: Converts ternary operator to if-statement.
 ;;  * `sv` is `split-var-declaration`: Splits a `var` with multiple vars declared, into several `var` statements.
 ;;  * `ss` is `split-string`: Splits a `string`.
 ;;  * `uw` is `unwrap`: Replaces the parent statement with the selected region.
+;;  * `lt` is `log-this`: Adds a console.log() statement for what is at point (or region).  With a prefix argument, use JSON pretty-printing.
+;;  * `dt` is `debug-this`: Adds a debug() statement for what is at point (or region).
+;;  * `sl` is `forward-slurp`: Moves the next statement into current function, if-statement, for-loop or while-loop.
+;;  * `ba` is `forward-barf`: Moves the last child out of current function, if-statement, for-loop or while-loop.
+;;  * `k` is `kill`: Kills to the end of the line, but does not cross semantic boundaries.
 
 ;; There are also some minor conveniences bundled:
 
