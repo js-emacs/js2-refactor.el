@@ -29,7 +29,6 @@
     var f  = (a, b, c) => { var t = a + b + c; return t; };
     """
 
-
   Scenario: Toggle arrow function and function expression
     When I insert "var f = (a, b, c) => { var t = a + b + c; return t; };"
     And I turn on js2-mode and js2-refactor-mode
@@ -40,3 +39,32 @@
     var f = function (a, b, c) { var t = a + b + c; return t; };
     """
 
+  Scenario: Toggle arrow function without braces
+    When I insert "const plus2 = (a) =>  a + 2;"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "a"
+    And I press "C-c C-m ta"
+    Then I should see:
+    """
+    cont plus2 = function(a) { return a + 2; };
+    """
+
+  Scenario: Toggle arrow function without parens
+    When I insert "const plus2 = a =>  a + 2;"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "a"
+    And I press "C-c C-m ta"
+    Then I should see:
+    """
+    cont plus2 = function(a) { return a + 2; };
+    """
+
+    Scenario: Toggle arrow function returning constants
+    When I insert "const two = () => 2;"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "2"
+    And I press "C-c C-m ta"
+    Then I should see:
+    """
+    cont two = function() { return 2; };
+    """

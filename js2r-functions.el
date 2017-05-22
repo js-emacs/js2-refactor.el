@@ -411,12 +411,12 @@
   (save-excursion
     (ignore-errors
       (js2r--find-closest-function)
-      (and (looking-at ".+?=>\\s-*{")
+      (and (looking-at "(?[,[:space:][:word:]]+)?[[:space:]]*=>")
            (not (js2r--point-inside-string-p))))))
 
 (defun js2r--transform-arrow-function-to-expression ()
   (when (js2r--arrow-function-p)
-    (let ((has-parenthesis nil))
+    (let (has-parenthesis)
       (save-excursion
         (js2r--find-closest-function)
         (setq has-parenthesis (looking-at "\\s-*("))
@@ -429,7 +429,11 @@
         (js2r--ensure-just-one-space)
         (unless has-parenthesis
           (backward-char 1)
-          (insert ")"))))))
+          (insert ")"))
+        (unless (looking-at "\\s-*{")
+          (insert " { return ")
+          (goto-char (point-at-eol))
+          (insert " };"))))))
 
 (defun js2r--transform-function-expression-to-arrow ()
   (when (not (js2r--arrow-function-p))
