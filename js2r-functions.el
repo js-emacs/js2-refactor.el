@@ -419,23 +419,27 @@
     (let (has-parenthesis)
       (save-excursion
         (js2r--find-closest-function)
-        (setq has-parenthesis (looking-at "\\s-*("))
-        (insert "function ")
-        (if has-parenthesis
-            (forward-list)
-          (insert "("))
-        (search-forward "=>")
-        (delete-char -2)
-        (js2r--ensure-just-one-space)
-        (unless has-parenthesis
-          (backward-char 1)
-          (insert ")"))
-        (unless (looking-at "\\s-*{")
+        (let ((end (make-marker)))
+          (save-excursion
+            (search-forward "=>")
+            (set-marker end (js2-node-abs-end (js2-node-at-point))))
+          (setq has-parenthesis (looking-at "\\s-*("))
+          (insert "function ")
+          (if has-parenthesis
+              (forward-list)
+            (insert "("))
+          (search-forward "=>")
+          (delete-char -2)
           (js2r--ensure-just-one-space)
-          (insert "{ return ")
-          (js2r--ensure-just-one-space)
-          (goto-char (point-at-eol))
-          (insert " };"))))))
+          (unless has-parenthesis
+            (backward-char 1)
+            (insert ")"))
+          (unless (looking-at "\\s-*{")
+            (js2r--ensure-just-one-space)
+            (insert "{ return ")
+            (js2r--ensure-just-one-space)
+            (goto-char (marker-position end))
+            (insert "; }")))))))
 
 (defun js2r--transform-function-expression-to-arrow ()
   (when (not (js2r--arrow-function-p))

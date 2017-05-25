@@ -59,7 +59,7 @@
     const plus2 = function (a) { return a + 2; };
     """
 
-    Scenario: Toggle arrow function returning constants
+  Scenario: Toggle arrow function returning constants
     When I insert "const two = () => 2;"
     And I turn on js2-mode and js2-refactor-mode
     And I go to the front of the word "2"
@@ -67,4 +67,24 @@
     Then I should see:
     """
     const two = function () { return 2; };
+    """
+
+  Scenario: Toggle arrow function as argument
+    When I insert "emitter.on('event', evt => console.log(evt));"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "evt"
+    And I press "C-c C-m ta"
+    Then I should see:
+    """
+    emitter.on('event', function (evt) { return console.log(evt); });
+    """
+
+  Scenario: Toggle function expression as argument
+    When I insert "emitter.on('event', function(evt) { return console.log(evt); });"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "evt"
+    And I press "C-c C-m ta"
+    Then I should see:
+    """
+    emitter.on('event', evt => { return console.log(evt); });
     """
