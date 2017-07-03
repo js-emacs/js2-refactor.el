@@ -124,24 +124,32 @@
 					     (js2r--goto-closest-array-start)
 					     ",")
 
+;; (defun js2r--looking-at-function-start ()
+;;   (or
+;;    (and (looking-at "{")
+;;         (looking-back
+;;          ;; This horrible-looking regexp is actually pretty simple.  It
+;;          ;; matches "function <optional_name> (<optional_parameters,...>)"
+;;          ;; allowing for whitespace.  TODO: support Unicode in function and
+;;          ;; parameter names.
+;;          (concat "function[\s\n]*"
+;;                  "\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)?"
+;;                  "\(\\\([a-zA-Z_$][a-zA-Z_$0-9]*"
+;;                  "[\s\n]*,[\s\n]*\\\)*[\s\n]*"
+;;                  "\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)*"
+;;                  "[\s\n]*\)[\s\n]*")))
+;;    ;; arrow functions
+;;    (and (looking-at "{")
+;;         (looking-back "=>[\s\n]*")
+;;         (not (js2r--point-inside-string-p)))))
+
 (defun js2r--looking-at-function-start ()
-  (or
-   (and (looking-at "{")
-        (looking-back
-         ;; This horrible-looking regexp is actually pretty simple.  It
-         ;; matches "function <optional_name> (<optional_parameters,...>)"
-         ;; allowing for whitespace.  TODO: support Unicode in function and
-         ;; parameter names.
-         (concat "function[\s\n]*"
-                 "\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)?"
-                 "\(\\\([a-zA-Z_$][a-zA-Z_$0-9]*"
-                 "[\s\n]*,[\s\n]*\\\)*[\s\n]*"
-                 "\\\([a-zA-Z_$][a-zA-Z_$0-9]*[\s\n]*\\\)*"
-                 "[\s\n]*\)[\s\n]*")))
-   ;; arrow functions
-   (and (looking-at "{")
-        (looking-back "=>[\s\n]*")
-        (not (js2r--point-inside-string-p)))))
+  "Return non-nil if the point is at the start of a function body."
+  (let* ((node (js2-node-at-point))
+	 (parent (js2-node-parent node)))
+    (and (looking-at "{")
+	 (js2-block-node-p node)
+	 (js2-function-node-p parent))))
 
 (defun js2r--goto-closest-function-start ()
   (while (not (js2r--looking-at-function-start))
@@ -190,8 +198,7 @@
   "Expand or contract bracketed list according to node type in point.
 Currently working on array, object, function and call args node types.
 With argument, contract closest expression, otherwise expand."
-  (let ((debug-on-error nil)
-        (pos (point))
+  (let ((pos (point))
         (array-start (point-max))
         (object-start (point-max))
         (function-start (point-max))

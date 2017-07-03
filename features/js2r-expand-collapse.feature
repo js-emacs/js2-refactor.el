@@ -178,6 +178,7 @@ Feature: Expand and collapse things
     );
     """
     And I go to the front of the word "tr"
+    And The buffer is parsed
     And I press "C-c C-m ee"
     Then I should see:
     """
@@ -230,6 +231,7 @@ Feature: Expand and collapse things
         ) );
     """
     And I go to the front of the word "tr"
+    And The buffer is parsed
     And I press "C-c C-m cc"
     Then I should see:
     """
@@ -316,7 +318,8 @@ Feature: Expand and collapse things
     function abc(x,y){x+=z; return x+y;}
     func(6,7);
     """
-    When I press "C-c C-m cc"
+    When The buffer is parsed
+    And I press "C-c C-m cc"
     Then I should see:
     """
     var a = [ 1, 2, 3 ];
@@ -324,7 +327,8 @@ Feature: Expand and collapse things
     function abc(x,y){x+=z; return x+y;}
     func(6,7);
     """
-    When I go to the front of the word "4"
+    When The buffer is parsed
+    And I go to the front of the word "4"
     And I press "C-c C-m ee"
     Then I should see:
     """
@@ -336,7 +340,8 @@ Feature: Expand and collapse things
     function abc(x,y){x+=z; return x+y;}
     func(6,7);
     """
-    When I press "C-c C-m cc"
+    When The buffer is parsed
+    And I press "C-c C-m cc"
     Then I should see:
     """
     var a = [ 1, 2, 3 ];
@@ -344,7 +349,8 @@ Feature: Expand and collapse things
     function abc(x,y){x+=z; return x+y;}
     func(6,7);
     """
-    When I go to the front of the word "z"
+    When the buffer is parsed
+    And I go to the front of the word "z"
     And I press "C-c C-m ee"
     Then I should see:
     """
@@ -356,7 +362,8 @@ Feature: Expand and collapse things
     }
     func(6,7);
     """
-    When I press "C-c C-m cc"
+    When The buffer is parsed
+    And I press "C-c C-m cc"
     Then I should see:
     """
     var a = [ 1, 2, 3 ];
@@ -364,7 +371,8 @@ Feature: Expand and collapse things
     function abc(x,y){ x+=z; return x+y; }
     func(6,7);
     """
-    When I go to the front of the word "6"
+    When The buffer is parsed
+    And I go to the front of the word "6"
     And I press "C-c C-m ee"
     Then I should see:
     """
@@ -376,7 +384,8 @@ Feature: Expand and collapse things
         7
     );
     """
-    When I press "C-c C-m cc"
+    When The buffer is parsed
+    And I press "C-c C-m cc"
     Then I should see:
     """
     var a = [ 1, 2, 3 ];

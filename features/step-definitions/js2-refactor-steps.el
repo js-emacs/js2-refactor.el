@@ -6,6 +6,10 @@
        (js2-refactor-mode)
        (js2-parse)))
 
+(And "^The buffer is parsed$"
+     (lambda ()
+       (js2-parse)))
+
 (And "^delete-selection-mode is active$"
      (lambda ()
         (delete-selection-mode 1)))
