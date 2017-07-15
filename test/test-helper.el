@@ -39,5 +39,4 @@ buffer in `js2-mode' with CONTENTS."
      (js2-parse)
      ,@body))
 
-(provide 'test-helper)
 ;;; test-helper.el ends here
