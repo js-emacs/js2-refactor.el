@@ -96,8 +96,7 @@ position where the log should be inserted."
   (if (js2-return-node-p parent-stmt)
       (save-excursion
         (goto-char (js2-node-abs-pos parent-stmt))
-        (beginning-of-line)
-        (forward-char -1)
+        (skip-chars-backward " \t\n\r") ; Can't use skip-syntax-backward since \n is end-comment
         (point))
     (js2-node-abs-end parent-stmt)))
 
