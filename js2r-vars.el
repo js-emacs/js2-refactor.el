@@ -278,7 +278,7 @@
     (set-marker orig-var-end (point))
 
     (goto-char (js2r--start-of-parent-stmt))
-    (insert "var " name)
+    (js2r--insert-var name)
     (set-marker new-var-end (point))
     (insert " = " expression ";")
     (when (or (js2r--line-above-is-blank)
@@ -296,6 +296,13 @@
     (set-marker new-var-end nil))
   (mc/maybe-multiple-cursors-mode))
 
+(defun js2r--insert-var (name)
+  "Insert a var definition for NAME."
+  (let ((keyword (if js2r-prefer-let-over-var
+		     "let"
+		   "var")))
+    (insert "%s %s" keyword name)))
+
 (defun js2r-split-var-declaration ()
   "Split a variable declaration into separate variable
 declarations for each declared variable."
@@ -307,7 +314,8 @@ declarations for each declared variable."
            (stmt (js2-node-parent-stmt declaration)))
       (goto-char (js2-node-abs-end stmt))
       (mapc (lambda (kid)
-              (insert "var " (js2-node-string kid) ";")
+	      (js2r--insert-var (js2-node-string kid))
+              (insert ";")
               (newline)
               (if (save-excursion
                     (goto-char (js2-node-abs-end kid))
