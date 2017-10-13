@@ -314,7 +314,7 @@ declarations for each declared variable."
            (stmt (js2-node-parent-stmt declaration)))
       (goto-char (js2-node-abs-end stmt))
       (mapc (lambda (kid)
-	      (js2r--insert-var (js2-node-string kid))
+              (js2r--insert-var (js2-node-string kid))
               (insert ";")
               (newline)
               (if (save-excursion
