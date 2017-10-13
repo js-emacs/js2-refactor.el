@@ -1,4 +1,4 @@
-;;; js2r-iife.el --- IIFE wrapping functions for js2-refactor
+;;; js2r-iife.el --- IIFE wrapping functions for js2-refactor    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012-2014 Magnar Sveen
 ;; Copyright (C) 2015-2016 Magnar Sveen and Nicolas Petton

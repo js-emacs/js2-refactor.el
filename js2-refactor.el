@@ -1,4 +1,4 @@
-;;; js2-refactor.el --- The beginnings of a JavaScript refactoring library in emacs.
+;;; js2-refactor.el --- The beginnings of a JavaScript refactoring library in emacs.    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012-2014 Magnar Sveen
 ;; Copyright (C) 2015-2016 Magnar Sveen and Nicolas Petton

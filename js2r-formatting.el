@@ -1,4 +1,4 @@
-;;; js2r-formatting.el --- Private helper functions for formatting
+;;; js2r-formatting.el --- Private helper functions for formatting    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012-2014 Magnar Sveen
 ;; Copyright (C) 2015-2016 Magnar Sveen and Nicolas Petton
