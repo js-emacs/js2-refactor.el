@@ -301,7 +301,7 @@
   (let ((keyword (if js2r-prefer-let-over-var
 		     "let"
 		   "var")))
-    (insert "%s %s" keyword name)))
+    (insert (format "%s %s" keyword name))))
 
 (defun js2r-split-var-declaration ()
   "Split a variable declaration into separate variable
