@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2017  Nicolas Petton
 
-;; Author: Nicolas Petton(require 'yasnippet) <nicolas@petton.fr>
+;; Author: Nicolas Petton
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,11 +23,7 @@
 
 ;;; Code:
 
-
-
-(provide 'js2r-wrapping)
-;;; js2r-wrapping.el ends here
-
+(require 'yasnippet)
 
 (defvar js2r--space-str " \t\n")
 
@@ -74,3 +70,4 @@
                         beg end)))
 
 (provide 'js2r-wrapping)
+;;; js2r-wrapping.el ends here
