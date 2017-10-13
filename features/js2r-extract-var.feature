@@ -3,6 +3,7 @@ Feature: Extract var
   Scenario: Extracting region
     When I insert "abc(1 + 2 + 3, 4 + 5);"
     And I turn on js2-mode and js2-refactor-mode
+    And I set js2r-prefer-let-over-var to nil
     And I go to the front of the word "1"
     And I set the mark
     And I go to the end of the word "2"
@@ -18,6 +19,7 @@ Feature: Extract var
   Scenario: Extracting function parameter
     When I insert "abc(1 + 2 + 3, 4 + 5);"
     And I turn on js2-mode and js2-refactor-mode
+    And I set js2r-prefer-let-over-var to nil
     And I go to the front of the word "2"
     And I press "C-c C-m ev"
     And I press "C-u DEL"
@@ -36,6 +38,7 @@ Feature: Extract var
     }
     """
     And I turn on js2-mode and js2-refactor-mode
+    And I set js2r-prefer-let-over-var to nil
     And I go to the front of the word "abc"
     And I press "C-c C-m ev"
     And I press "C-u DEL"
@@ -56,6 +59,7 @@ Feature: Extract var
     }
     """
     And I turn on js2-mode and js2-refactor-mode
+    And I set js2r-prefer-let-over-var to nil
     And I go to the front of the word "def"
     And I press "C-c C-m ev"
     And I press "C-u DEL"
@@ -74,6 +78,7 @@ Feature: Extract var
     abc.def.ghi();
     """
     And I turn on js2-mode and js2-refactor-mode
+    And I set js2r-prefer-let-over-var to nil
     And I go to the front of the word "def"
     And I press "C-c C-m ev"
     And I press "C-u DEL"
@@ -92,6 +97,7 @@ Feature: Extract var
     });
     """
     And I turn on js2-mode and js2-refactor-mode
+    And I set js2r-prefer-let-over-var to nil
     And I go to the front of the word "baz"
     And I press "C-c C-m ev"
     And I press "C-u DEL"
@@ -114,6 +120,7 @@ Feature: Extract var
     }
     """
     And I turn on js2-mode and js2-refactor-mode
+    And I set js2r-prefer-let-over-var to nil
     And I go to the front of the word "true"
     And I press "C-c C-m ev"
     And I press "C-u DEL"
@@ -138,6 +145,7 @@ Feature: Extract var
     }
     """
     And I turn on js2-mode and js2-refactor-mode
+    And I set js2r-prefer-let-over-var to nil
     And I go to the front of the word "3"
     And I set the mark
     And I go to the end of the word "foo"
