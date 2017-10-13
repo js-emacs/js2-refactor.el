@@ -9,10 +9,11 @@ before_install:
   - cask install
 
 env:
-  - TAGS="" EVM_EMACS=emacs-24.5-travis
-  - TAGS="" EVM_EMACS=emacs-25.2-travis
-  - TAGS="" EVM_EMACS=emacs-25.3-travis
-  - TAGS="" EVM_EMACS=emacs-git-snapshot-travis
+  matrix:
+    - TAGS="" EVM_EMACS=emacs-24.5-travis
+    - TAGS="" EVM_EMACS=emacs-25.2-travis
+    - TAGS="" EVM_EMACS=emacs-25.3-travis
+    - TAGS="" EVM_EMACS=emacs-git-snapshot-travis
 
 matrix:
   fast_finish: true
