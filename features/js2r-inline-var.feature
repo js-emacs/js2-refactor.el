@@ -10,6 +10,24 @@ Feature: Extract var
     bar(1,2,3)();
     """
 
+  Scenario: Inlining variable with no semicolon
+    Given I insert:
+    """
+    const count = 10
+    if (count > 5) {
+        console.log('true')
+    }
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "count"
+    And I press "C-c C-m iv"
+    Then I should see:
+    """
+    if (10 > 5) {
+        console.log('true')
+    }
+    """
+
   Scenario: Inlining variable with tab indentation
     Given I insert:
     """

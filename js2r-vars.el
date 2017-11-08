@@ -192,10 +192,10 @@
 
 
 (defun js2r--was-single-var ()
-  (or (string= "var ;" (current-line-contents))
-      (string= "const ;" (current-line-contents))
-      (string= "let ;" (current-line-contents))
-      (string= "," (current-line-contents))))
+  (save-excursion
+    (goto-char (point-at-bol))
+    (or (looking-at "^[[:space:]]*\\(var\\|const\\|let\\)[[:space:]]?;?$")
+	(looking-at "^[[:space:]]*,[[:space:]]*$"))))
 
 (defun js2r--was-starting-var ()
   (or (looking-back "var ")
