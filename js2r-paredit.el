@@ -142,6 +142,13 @@ When at the beginning of the node, kill from outside of it."
       (kill-region beg (1- node-end)))))
 
 (defun js2r-forward-slurp (&optional arg)
+  "Add the expression following the current function into it.
+
+The addition is performed by moving the closing brace of the
+function down.
+
+When called with a prefix argument ARG, slurp ARG expressions
+following the current function."
   (interactive "p")
   (js2r--guard)
   (js2r--wait-for-parse
@@ -159,15 +166,24 @@ When at the beginning of the node, kill from outside of it."
 				(setq num (1- num)))
 			      iter-sibling)
 			  next-sibling)) ;; No optional arg. Just use next-sibling
-	  (end (1+ (js2-node-abs-end last-sibling))) ;; include whitespace after statement
+	  (end (js2-node-abs-end last-sibling))
 	  (text (buffer-substring beg end)))
      (save-excursion
        (delete-region beg end)
+       ;; Delete newline character if the deleted AST node was at the end of the line
+       (goto-char beg)
+       (when (and (eolp)
+		  (not (eobp)))
+	 (delete-char 1))
        (goto-char (js2-node-abs-end nesting))
        (forward-char -1)
-       (when (looking-back "{ *") (newline))
+       (when (looking-back "{ *")
+	 (newline))
        (setq beg (point))
        (insert text)
+       (when (looking-at " *}")
+	 (newline))
+       (setq end (point))
        (indent-region beg end)))))
 
 (defun js2r-forward-barf (&optional arg)
