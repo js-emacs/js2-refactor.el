@@ -66,6 +66,39 @@ Feature: JS Slurp
     jkl();
     """
 
+  Scenario: Slurping and closing braces
+    When I insert:
+    """
+    function abc() {
+    }
+    ghi();
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "abc"
+    And I press "C-c C-m sl"
+    Then I should see:
+    """
+    function abc() {
+        ghi();
+    }
+    """
+
+  Scenario: Slurping and end of buffer (regression test for issue#104)
+    When I insert:
+    """
+    function abc() {
+    }
+    ghi();"""
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "abc"
+    And I press "C-c C-m sl"
+    Then I should see:
+    """
+    function abc() {
+        ghi();
+    }
+    """
+
   Scenario: Slurping into nested function
     When I insert:
     """

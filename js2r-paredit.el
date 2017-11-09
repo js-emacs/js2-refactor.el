@@ -166,15 +166,24 @@ following the current function."
 				(setq num (1- num)))
 			      iter-sibling)
 			  next-sibling)) ;; No optional arg. Just use next-sibling
-	  (end (1+ (js2-node-abs-end last-sibling))) ;; include whitespace after statement
+	  (end (js2-node-abs-end last-sibling))
 	  (text (buffer-substring beg end)))
      (save-excursion
        (delete-region beg end)
+       ;; Delete newline character if the deleted AST node was at the end of the line
+       (goto-char beg)
+       (when (and (eolp)
+		  (not (eobp)))
+	 (delete-char 1))
        (goto-char (js2-node-abs-end nesting))
        (forward-char -1)
-       (when (looking-back "{ *") (newline))
+       (when (looking-back "{ *")
+	 (newline))
        (setq beg (point))
        (insert text)
+       (when (looking-at " *}")
+	 (newline))
+       (setq end (point))
        (indent-region beg end)))))
 
 (defun js2r-forward-barf (&optional arg)
