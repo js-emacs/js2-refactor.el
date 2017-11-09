@@ -142,6 +142,13 @@ When at the beginning of the node, kill from outside of it."
       (kill-region beg (1- node-end)))))
 
 (defun js2r-forward-slurp (&optional arg)
+  "Add the expression following the current function into it.
+
+The addition is performed by moving the closing brace of the
+function down.
+
+When called with a prefix argument ARG, slurp ARG expressions
+following the current function."
   (interactive "p")
   (js2r--guard)
   (js2r--wait-for-parse
