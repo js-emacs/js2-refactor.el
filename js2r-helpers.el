@@ -24,6 +24,11 @@
 
 (require 'dash)
 (require 's)
+(require 'js2-mode)
+
+(defmacro js2r--wait-for-parse (&rest body)
+  "Evaluate BODY once the current buffer has been parsed."
+  `(js2-mode-wait-for-parse (lambda () ,@body)))
 
 (defun js2r--wrap-text (&rest text)
   "Wrap TEXT with the prefered quotes.  The prefered quotes is set with `js2r-prefered-quote-type'."

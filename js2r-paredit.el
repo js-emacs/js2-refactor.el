@@ -24,6 +24,8 @@
 
 (require 'dash)
 
+(require 'js2r-helpers)
+
 (defun js2r--nesting-node-p (node)
   (or (js2-function-node-p node)
       (js2-if-node-p node)
@@ -142,62 +144,64 @@ When at the beginning of the node, kill from outside of it."
 (defun js2r-forward-slurp (&optional arg)
   (interactive "p")
   (js2r--guard)
-  (let* ((nesting (js2r--closest 'js2r--nesting-node-p))
-         (standalone (if (js2r--standalone-node-p nesting)
-                         nesting
-                       (js2-node-parent-stmt nesting)))
-         (next-sibling (js2-node-next-sibling standalone))
-         (beg (js2-node-abs-pos next-sibling))
-         (last-sibling (if (wholenump arg)
-                           (let ((num arg)
-                                 (iter-sibling next-sibling))
-                             (while (> num 1) ;; Do next-sibling arg nbr of times
-                               (setq iter-sibling (js2-node-next-sibling iter-sibling))
-                               (setq num (1- num)))
-                             iter-sibling)
-                         next-sibling)) ;; No optional arg. Just use next-sibling
-         (end (1+ (js2-node-abs-end last-sibling))) ;; include whitespace after statement
-         (text (buffer-substring beg end)))
-    (save-excursion
-      (delete-region beg end)
-      (goto-char (js2-node-abs-end nesting))
-      (forward-char -1)
-      (when (looking-back "{ *") (newline))
-      (setq beg (point))
-      (insert text)
-      (indent-region beg end))))
+  (js2r--wait-for-parse
+   (let* ((nesting (js2r--closest 'js2r--nesting-node-p))
+	  (standalone (if (js2r--standalone-node-p nesting)
+			  nesting
+			(js2-node-parent-stmt nesting)))
+	  (next-sibling (js2-node-next-sibling standalone))
+	  (beg (js2-node-abs-pos next-sibling))
+	  (last-sibling (if (wholenump arg)
+			    (let ((num arg)
+				  (iter-sibling next-sibling))
+			      (while (> num 1) ;; Do next-sibling arg nbr of times
+				(setq iter-sibling (js2-node-next-sibling iter-sibling))
+				(setq num (1- num)))
+			      iter-sibling)
+			  next-sibling)) ;; No optional arg. Just use next-sibling
+	  (end (1+ (js2-node-abs-end last-sibling))) ;; include whitespace after statement
+	  (text (buffer-substring beg end)))
+     (save-excursion
+       (delete-region beg end)
+       (goto-char (js2-node-abs-end nesting))
+       (forward-char -1)
+       (when (looking-back "{ *") (newline))
+       (setq beg (point))
+       (insert text)
+       (indent-region beg end)))))
 
 (defun js2r-forward-barf (&optional arg)
   (interactive "p")
   (js2r--guard)
-  (let* ((nesting (js2r--closest 'js2r--nesting-node-p))
-         (standalone (if (js2r--standalone-node-p nesting)
-                         nesting
-                       (js2-node-parent-stmt nesting)))
-         (standalone-end (js2-node-abs-end standalone))
-         (last-child (car (last (if (js2-if-node-p nesting)
-                                    (js2-scope-kids (js2r--closest 'js2-scope-p))
-                                  (js2r--node-kids nesting)))))
-         (first-barf-child (if (wholenump arg)
-                               (let ((num arg)
-                                     (iter-child last-child))
-                                 (while (> num 1) ;; Do prev-sibling arg nbr of times
-                                   (setq iter-child (js2-node-prev-sibling iter-child))
-                                   (setq num (1- num)))
-                                 iter-child)
-                             last-child)); No optional arg. Just use last-child
-         (last-child-beg (save-excursion
-                           (goto-char (js2-node-abs-pos first-barf-child))
-                           (skip-syntax-backward " ")
-                           (while (looking-back "\n") (backward-char))
-                           (point)))
-         (last-child-end (js2-node-abs-end last-child))
-         (text (buffer-substring last-child-beg last-child-end)))
-    (save-excursion
-      (js2r--execute-changes
-       (list
-        (list :beg last-child-beg :end last-child-end :contents "")
-        (list :beg standalone-end :end standalone-end :contents text))))))
+  (js2r--wait-for-parse
+   (let* ((nesting (js2r--closest 'js2r--nesting-node-p))
+	  (standalone (if (js2r--standalone-node-p nesting)
+			  nesting
+			(js2-node-parent-stmt nesting)))
+	  (standalone-end (js2-node-abs-end standalone))
+	  (last-child (car (last (if (js2-if-node-p nesting)
+				     (js2-scope-kids (js2r--closest 'js2-scope-p))
+				   (js2r--node-kids nesting)))))
+	  (first-barf-child (if (wholenump arg)
+				(let ((num arg)
+				      (iter-child last-child))
+				  (while (> num 1) ;; Do prev-sibling arg nbr of times
+				    (setq iter-child (js2-node-prev-sibling iter-child))
+				    (setq num (1- num)))
+				  iter-child)
+			      last-child)) ; No optional arg. Just use last-child
+	  (last-child-beg (save-excursion
+			    (goto-char (js2-node-abs-pos first-barf-child))
+			    (skip-syntax-backward " ")
+			    (while (looking-back "\n") (backward-char))
+			    (point)))
+	  (last-child-end (js2-node-abs-end last-child))
+	  (text (buffer-substring last-child-beg last-child-end)))
+     (save-excursion
+       (js2r--execute-changes
+	(list
+	 (list :beg last-child-beg :end last-child-end :contents "")
+	 (list :beg standalone-end :end standalone-end :contents text)))))))
 
 (provide 'js2r-paredit)
 ;;; js2r-paredit.el ends here
