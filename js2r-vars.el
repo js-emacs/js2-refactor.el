@@ -48,10 +48,20 @@
 (defun js2r--local-name-node-p (node)
   (let ((parent (js2-node-parent node)))
     (and parent (js2-name-node-p node)
+         ;; is not foo in { foo: 1 }
          (not (and (js2-object-prop-node-p parent)
-                   (eq node (js2-object-prop-node-left parent))))
+                   (eq node (js2-object-prop-node-left parent))
+                   ;; could be { foo } though, in which case the node
+                   ;; is parent's both left and right.
+                   (not (eq node (js2-object-prop-node-right parent)))))
+         ;; is not foo in x.foo
          (not (and (js2-prop-get-node-p parent)
-                   (eq node (js2-prop-get-node-right parent)))))))
+                   (eq node (js2-prop-get-node-right parent))))
+         ;; is not foo in import { foo as bar } from ...
+         ;; could be bar, though.
+         (not (and (js2-export-binding-node-p parent)
+                   (eq node (js2-export-binding-node-extern-name parent))
+                   (not (eq node (js2-export-binding-node-local-name parent))))))))
 
 (defun js2r--name-node-defining-scope (name-node)
   (unless (js2r--local-name-node-p name-node)
