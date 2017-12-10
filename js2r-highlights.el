@@ -1,4 +1,24 @@
 ;;; -*- lexical-binding: t -*-
+;;; js2r-highlights.el --- Highlight variable occurrences, free variables, etc.
+
+;; Copyright (C) 2016-2017 Mihai Bazon <mihai.bazon@gmail.com>
+
+;; Keywords: conveniences
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Code:
 
 (defun js2r-highlight-thing-at-point (pos)
   "Highlight all occurrences of the thing at point.  Generally,
@@ -8,6 +28,7 @@ use it on strings, numbers or literal regexps (highlights
 occurrences in the whole buffer), or on keywords `this' and
 `super' (highlights occurrences in the current function)."
   (interactive "d")
+  (js2-reparse)
   (js2r-highlight-forgetit)
   (js2r--hl-things (or (js2r--hl-get-regions pos)
                        (js2r--hl-get-regions (- pos 1)))))
@@ -21,6 +42,7 @@ are not included (assumed to be globally defined somewhere else).
 Pass a prefix argument if you need to include them (the optional
 `undeclared?' argument)."
   (interactive "d\nP")
+  (js2-reparse)
   (js2r-highlight-forgetit)
   (let ((data (js2r--hl-things (js2r--hl-get-free-vars-regions pos (not undeclared?))
                                :no-message t))
@@ -43,6 +65,7 @@ Pass a prefix argument if you need to include them (the optional
   "Highlights forced exit points from the function surrounding
 point, that is, `return' and `throw' statements."
   (interactive "d")
+  (js2-reparse)
   (js2r-highlight-forgetit)
   (js2r--hl-things (js2r--hl-get-exits-regions pos)))
 
@@ -91,12 +114,15 @@ this only works if the mode was called with
         (throw 'done nil)))))
 
 (defun js2r-highlight-extend-region ()
-  "Extend region to the current or upper AST node."
+  "Extend region to the current or upper AST node.  Function
+suitable for `er/try-expand-list' (from expand-region), which
+see."
   (interactive)
+  (js2-reparse)
   (cond
     ((use-region-p)
      (cl-loop
-        for node = (js2-node-at-point (point)) then (js2-node-parent node)
+        for node = (js2-node-at-point) then (js2-node-parent node)
         for beg = (point) then (js2-node-abs-pos node)
         for end = (mark) then (js2-node-abs-end node)
         until (or (< beg (point)) (> end (mark)))
