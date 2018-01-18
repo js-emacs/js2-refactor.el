@@ -52,9 +52,13 @@ function foo() {|2 + 3} -> function foo() {}
   (interactive)
   (if js2-parsed-errors
       (progn
-        (message "Buffer has parse errors. Killing the line")
+        (message "Buffer has parse errors.  Killing the line")
         (kill-line))
-    (js2r--kill-line)))
+    (condition-case error
+	(js2r--kill-line)
+      (progn
+	(message "Error occured while trying to kill AST node.  Killing the line.")
+	(kill-line)))))
 
 (defun js2r--kill-line ()
   "Kill a line, but respecting node boundaries."
