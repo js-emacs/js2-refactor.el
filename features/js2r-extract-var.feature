@@ -172,3 +172,33 @@ Feature: Extract var
     let three = 1 + 2;
     abc(three + 3, 4 + 5);
     """
+
+  Scenario: Use extract-let
+    When I insert "abc(1 + 2 + 3, 4 + 5);"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "1"
+    And I set the mark
+    And I go to the end of the word "2"
+    And I press "C-c C-m el"
+    And I press "C-u DEL"
+    And I type "three"
+    Then I should see:
+    """
+    let three = 1 + 2;
+    abc(three + 3, 4 + 5);
+    """
+
+  Scenario: Use extract-const
+    When I insert "abc(1 + 2 + 3, 4 + 5);"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "1"
+    And I set the mark
+    And I go to the end of the word "2"
+    And I press "C-c C-m ec"
+    And I press "C-u DEL"
+    And I type "three"
+    Then I should see:
+    """
+    const three = 1 + 2;
+    abc(three + 3, 4 + 5);
+    """

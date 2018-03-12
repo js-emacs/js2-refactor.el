@@ -63,6 +63,8 @@
 ;;  * `ig` is `inject-global-in-iife`: Creates a shortcut for a marked global by injecting it in the wrapping immediately invoked function expression
 ;;  * `ag` is `add-to-globals-annotation`: Creates a `/*global */` annotation if it is missing, and adds the var at point to it.
 ;;  * `ev` is `extract-var`: Takes a marked expression and replaces it with a var.
+;;  * `el` is `extract-var`: Takes a marked expression and replaces it with a let.
+;;  * `ec` is `extract-var`: Takes a marked expression and replaces it with a const.
 ;;  * `iv` is `inline-var`: Replaces all instances of a variable with its initial value.
 ;;  * `rv` is `rename-var`: Renames the variable on point and all occurrences in its lexical scope.
 ;;  * `vt` is `var-to-this`: Changes local `var a` to be `this.a` instead.
@@ -182,6 +184,8 @@ This only affects arrow functions with one parameter."
   (define-key js2-refactor-mode-map (funcall key-fn "wi") #'js2r-wrap-buffer-in-iife)
   (define-key js2-refactor-mode-map (funcall key-fn "ig") #'js2r-inject-global-in-iife)
   (define-key js2-refactor-mode-map (funcall key-fn "ev") #'js2r-extract-var)
+  (define-key js2-refactor-mode-map (funcall key-fn "el") #'js2r-extract-let)
+  (define-key js2-refactor-mode-map (funcall key-fn "ec") #'js2r-extract-const)
   (define-key js2-refactor-mode-map (funcall key-fn "iv") #'js2r-inline-var)
   (define-key js2-refactor-mode-map (funcall key-fn "rv") #'js2r-rename-var)
   (define-key js2-refactor-mode-map (funcall key-fn "vt") #'js2r-var-to-this)

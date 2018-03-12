@@ -270,15 +270,40 @@
   (interactive)
   (js2r--guard)
   (js2r--wait-for-parse
+   (let ((keyword (if js2r-prefer-let-over-var "let" "var")))
+        (if (use-region-p)
+            (js2r--extract-var-between (region-beginning) (region-end) keyword)
+          (let ((node (js2r--closest-extractable-node)))
+            (js2r--extract-var-between (js2-node-abs-pos node)
+                                       (js2-node-abs-end node) keyword))))))
+
+;;;###autoload
+(defun js2r-extract-let ()
+  (interactive)
+  (js2r--guard)
+  (js2r--wait-for-parse
    (if (use-region-p)
-       (js2r--extract-var-between (region-beginning) (region-end))
+       (js2r--extract-var-between (region-beginning) (region-end) "let")
      (let ((node (js2r--closest-extractable-node)))
        (js2r--extract-var-between (js2-node-abs-pos node)
-				  (js2-node-abs-end node))))))
+                                  (js2-node-abs-end node) "let")))))
+
+;;;###autoload
+(defun js2r-extract-const ()
+  (interactive)
+  (js2r--guard)
+  (js2r--wait-for-parse
+   (if (use-region-p)
+       (js2r--extract-var-between (region-beginning) (region-end) "const")
+     (let ((node (js2r--closest-extractable-node)))
+       (js2r--extract-var-between (js2-node-abs-pos node)
+                                  (js2-node-abs-end node) "const")))))
 
 (add-to-list 'mc--default-cmds-to-run-once 'js2r-extract-var)
+(add-to-list 'mc--default-cmds-to-run-once 'js2r-extract-let)
+(add-to-list 'mc--default-cmds-to-run-once 'js2r-extract-const)
 
-(defun js2r--extract-var-between (beg end)
+(defun js2r--extract-var-between (beg end keyword)
   (interactive "r")
   (unless (js2r--single-complete-expression-between-p beg end)
     (error "Can only extract single, complete expressions to var"))
@@ -294,7 +319,7 @@
     (set-marker orig-var-end (point))
 
     (goto-char (js2r--start-of-parent-stmt))
-    (js2r--insert-var name)
+    (js2r--insert-var name keyword)
     (set-marker new-var-end (point))
     (insert " = " expression ";")
     (when (or (js2r--line-above-is-blank)
@@ -312,12 +337,9 @@
     (set-marker new-var-end nil))
   (mc/maybe-multiple-cursors-mode))
 
-(defun js2r--insert-var (name)
+(defun js2r--insert-var (name keyword)
   "Insert a var definition for NAME."
-  (let ((keyword (if js2r-prefer-let-over-var
-		     "let"
-		   "var")))
-    (insert (format "%s %s" keyword name))))
+  (insert (format "%s %s" keyword name)))
 
 (defun js2r-split-var-declaration ()
   "Split a variable declaration into separate variable
@@ -328,10 +350,15 @@ declarations for each declared variable."
    (save-excursion
      (let* ((declaration (or (js2r--closest #'js2-var-decl-node-p) (error "No var declaration at point.")))
 	    (kids (js2-var-decl-node-kids declaration))
-	    (stmt (js2-node-parent-stmt declaration)))
+	    (stmt (js2-node-parent-stmt declaration))
+        (tt (js2-var-decl-node-decl-type declaration))
+        (keyword (cond
+                  ((= tt js2-VAR) "var")
+                  ((= tt js2-LET) "let")
+                  ((= tt js2-CONST) "const"))))
        (goto-char (js2-node-abs-end stmt))
        (mapc (lambda (kid)
-	       (js2r--insert-var (js2-node-string kid))
+           (js2r--insert-var (js2-node-string kid) keyword)
 	       (insert ";")
 	       (newline)
 	       (if (save-excursion
