@@ -135,7 +135,7 @@ A list of some wanted improvements for the current refactorings.
 * [Nicolas Petton](https://github.com/NicolasPetton) contributed lots of stuff and is now a co-maintainer of the project.
 * [Brian J Brennan](https://github.com/brianloveswords) added support for `const` and `let` to inline-var.
 * [James Yang](https://github.com/futurist) added `expand-node-at-point` and `contract-node-at-point` functions.
-
+* [Arne Martin Aurlien](https://github.com/arnemart) added more support for `let` and `const`.
 
 Thanks!
 
