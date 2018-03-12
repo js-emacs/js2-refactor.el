@@ -92,6 +92,8 @@ to pick and choose your own keybindings with a smattering of:
  * `ig` is `inject-global-in-iife`: Creates a shortcut for a marked global by injecting it in the wrapping immediately invoked function expression
  * `ag` is `add-to-globals-annotation`: Creates a `/*global */` annotation if it is missing, and adds the var at point to it.
  * `ev` is `extract-var`: Takes a marked expression and replaces it with a var.
+ * `el` is `extract-let`: Similar to `extract-var` but uses a `let`-statement.
+ * `ec` is `extract-const`: Similar to `extract-var` but uses a `const`-statement.
  * `iv` is `inline-var`: Replaces all instances of a variable with its initial value.
  * `rv` is `rename-var`: Renames the variable on point and all occurrences in its lexical scope.
  * `vt` is `var-to-this`: Changes local `var a` to be `this.a` instead.
