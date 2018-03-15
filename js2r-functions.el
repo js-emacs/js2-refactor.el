@@ -520,5 +520,14 @@
     (forward-list)
     (insert ";")))
 
+(defun js2r-toggle-function-async ()
+  "Toggle the innermost function from sync to async."
+  (interactive)
+  (save-excursion
+    (js2r--find-closest-function)
+    (if (looking-back "async[[:space:]\n]+")
+        (delete-region (match-beginning 0) (match-end 0))
+      (insert "async "))))
+
 (provide 'js2r-functions)
 ;;; js2-functions.el ends here

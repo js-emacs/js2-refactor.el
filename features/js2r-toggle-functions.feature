@@ -88,3 +88,42 @@
     """
     emitter.on('event', evt => { return console.log(evt); });
     """
+
+  Scenario: Toggling async function
+    When I insert "p.then(async function(ret) { return process(ret, arg); });"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "process"
+    And I press "C-c C-m ts"
+    Then I should see:
+    """
+    p.then(function(ret) { return process(ret, arg); });
+    """
+  Scenario: Toggling non-async function
+    When I insert "p.then(function(ret) { return process(ret, arg); });"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "process"
+    And I press "C-c C-m ts"
+    Then I should see:
+    """
+    p.then(async function(ret) { return process(ret, arg); });
+    """
+
+  Scenario: Toggling async arrow function
+    When I insert "p.then(async (ret) => process(ret, arg));"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "process"
+    And I press "C-c C-m ts"
+    Then I should see:
+    """
+    p.then((ret) => process(ret, arg));
+    """
+
+  Scenario: Toggling non-async arrow function
+    When I insert "p.then(ret => process(ret, arg));"
+    And I turn on js2-mode and js2-refactor-mode
+    And I go to the front of the word "process"
+    And I press "C-c C-m ts"
+    Then I should see:
+    """
+    p.then(async ret => process(ret, arg));
+    """

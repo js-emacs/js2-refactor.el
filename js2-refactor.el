@@ -57,6 +57,7 @@
 ;;  * `em` is `extract-method`: Extracts the marked expressions out into a new named method in an object literal.
 ;;  * `tf` is `toggle-function-expression-and-declaration`: Toggle between function name() {} and var name = function ();
 ;;  * `ta` is `toggle-arrow-function-and-expression`: Toggle between function expression to arrow function.
+;;  * `ts` is `toggle-function-async`: Toggle between an async and a regular function.
 ;;  * `ip` is `introduce-parameter`: Changes the marked expression to a parameter in a local function.
 ;;  * `lp` is `localize-parameter`: Changes a parameter to a local var in a local function.
 ;;  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
@@ -205,6 +206,7 @@ unless point is in a return statement."
   (define-key js2-refactor-mode-map (funcall key-fn "lp") #'js2r-localize-parameter)
   (define-key js2-refactor-mode-map (funcall key-fn "tf") #'js2r-toggle-function-expression-and-declaration)
   (define-key js2-refactor-mode-map (funcall key-fn "ta") #'js2r-toggle-arrow-function-and-expression)
+  (define-key js2-refactor-mode-map (funcall key-fn "ts") #'js2r-toggle-function-async)
   (define-key js2-refactor-mode-map (funcall key-fn "ao") #'js2r-arguments-to-object)
   (define-key js2-refactor-mode-map (funcall key-fn "uw") #'js2r-unwrap)
   (define-key js2-refactor-mode-map (funcall key-fn "wl") #'js2r-wrap-in-for-loop)
