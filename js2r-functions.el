@@ -298,12 +298,16 @@
 (defun js2r-extract-method (name)
   "Extract a method from the closest statement expression from the point."
   (interactive "sName of new method: ")
-  (js2r--extract-fn
-   name
-   (lambda ()
-       (goto-char (js2-node-abs-pos (js2r--closest #'js2-object-prop-node-p))))
-   "this.%s(%s);"
-   "%s: function (%s) {\n%s\n},\n\n"))
+  (let ((class-node (js2r--closest #'js2-class-node-p)))
+    (js2r--extract-fn
+     name
+     (if class-node (lambda ())
+       (lambda ()
+         (goto-char (js2-node-abs-pos (js2r--closest #'js2-object-prop-node-p)))))
+     "this.%s(%s);"
+     (if class-node
+         "%s(%s) {\n%s\n}\n\n"
+       "%s: function (%s) {\n%s\n},\n\n"))))
 
 (defun js2r--extract-fn (name goto-position call-template function-template)
   (js2r--guard)

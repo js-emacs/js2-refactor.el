@@ -236,3 +236,28 @@ Feature: Extract function
         }
     }
     """
+
+  Scenario: Extract method from class
+    Given I insert:
+    """
+    class C {
+        abc() {
+            console.log("abc");
+        }
+    }
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    When I select "console.log"
+    And I press "C-c C-m em name RET"
+    Then I should see:
+    """
+    class C {
+        name() {
+            console.log("abc");
+        }
+
+        abc() {
+            this.name();
+        }
+    }
+    """
