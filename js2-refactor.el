@@ -175,6 +175,13 @@ This only affects arrow functions with one parameter."
 (defcustom js2r-prefer-let-over-var nil
   "When non-nil, js2r uses let constructs over var when performing refactorings.")
 
+(defcustom js2r-log-before-point  nil
+  "When non-nil, js2r inserts logging and debug statements before point.
+When nil, logging and debug statements are inserted after point,
+unless point is in a return statement."
+  :group 'js2-refactor
+  :type 'boolean)
+
 ;;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun js2r--add-keybindings (key-fn)

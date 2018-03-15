@@ -104,3 +104,24 @@ Feature: Log this
     function a() { callFunc(arg);
                    console.log("abc = ", abc);return abc; }
     """
+
+  Scenario: Console.log before point
+    Given I insert:
+    """
+    function abc() {
+        callFunc(arg);
+        return def + 1;
+    }
+    """
+    And I turn on js2-mode and js2-refactor-mode
+    And I set logging to be before the use-site
+    When I go to the front of the word "arg"
+    And I press "C-c C-m lt"
+    Then I should see:
+    """
+    function abc() {
+        console.log("arg = ", arg);
+        callFunc(arg);
+        return def + 1;
+    }
+    """

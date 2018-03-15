@@ -93,7 +93,7 @@ position where the log should be inserted."
 
 (defun js2r--find-suitable-log-position-around (parent-stmt)
   "Return the position close to PARENT-STMT where the log statement should be inserted."
-  (if (js2-return-node-p parent-stmt)
+  (if (or js2r-log-before-point (js2-return-node-p parent-stmt))
       (save-excursion
         (goto-char (js2-node-abs-pos parent-stmt))
         (skip-chars-backward " \t\n\r") ; Can't use skip-syntax-backward since \n is end-comment

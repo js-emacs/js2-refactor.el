@@ -28,3 +28,7 @@
               (message "Can not go to character '%s' since it does not exist in the current buffer: %s"))
           (cl-assert search nil message word (espuds-buffer-contents))
           (if (string-equal "front" pos) (backward-word)))))
+
+(When "^I set logging to be before the use-site$"
+      (lambda ()
+        (setq-local js2r-log-before-point t)))
