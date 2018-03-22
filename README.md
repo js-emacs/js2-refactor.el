@@ -86,6 +86,7 @@ to pick and choose your own keybindings with a smattering of:
  * `em` is `extract-method`: Extracts the marked expressions out into a new named method in an object literal.
  * `tf` is `toggle-function-expression-and-declaration`: Toggle between function name() {} and var name = function ();
  * `ta` is `toggle-arrow-function-and-expression`: Toggle between function expression to arrow function.
+ * `ts` is `toggle-function-async`: Toggle between an async and a regular function.
  * `ip` is `introduce-parameter`: Changes the marked expression to a parameter in a local function.
  * `lp` is `localize-parameter`: Changes a parameter to a local var in a local function.
  * `wi` is `wrap-buffer-in-iife`: Wraps the entire buffer in an immediately invoked function expression
