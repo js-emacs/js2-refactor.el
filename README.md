@@ -102,6 +102,7 @@ to pick and choose your own keybindings with a smattering of:
  * `3i` is `ternary-to-if`: Converts ternary operator to if-statement.
  * `sv` is `split-var-declaration`: Splits a `var` with multiple vars declared, into several `var` statements.
  * `ss` is `split-string`: Splits a `string`.
+ * `st` is `string-to-template`: Converts a `string` into a template string.
  * `uw` is `unwrap`: Replaces the parent statement with the selected region.
  * `lt` is `log-this`: Adds a console.log() statement for what is at point (or region). With a prefix argument, use JSON pretty-printing.
  * `dt` is `debug-this`: Adds a debug() statement for what is at point (or region).
