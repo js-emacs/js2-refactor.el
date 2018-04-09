@@ -117,16 +117,15 @@ position where the log should be inserted."
 (defun js2r-string-to-template ()
   "Convert the string at point into a template string."
   (interactive)
-  (when (memq (js2r--point-inside-string-p) '(?\" ?\'))
-    (let* ((syntax (syntax-ppss))
-           (start (nth 8 syntax))
-           end
-           (forward-sexp-function nil))
-      (save-excursion
-        (goto-char start) (forward-sexp) (delete-char -1) (insert "`")
-        (setq end (point))
-        (goto-char start) (delete-char 1) (insert "`")
-        (perform-replace "`" "\\`" nil nil nil nil nil (1+ start) (1- end))))))
+  (let ((node (js2-node-at-point)))
+    (when (js2-string-node-p node)
+      (let* ((start (js2-node-abs-pos node))
+             (end (+ start (js2-node-len node))))
+        (when (memq (char-after start) '(?' ?\"))
+          (save-excursion
+            (goto-char end) (delete-char -1) (insert "`")
+            (goto-char start) (delete-char 1) (insert "`")
+            (perform-replace "`" "\\`" nil nil nil nil nil (1+ start) (1- end))))))))
 
 (defun js2r--string-delimiter (node)
   "Return the delimiter character of the string node NODE.
