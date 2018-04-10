@@ -73,6 +73,7 @@
 ;;  * `3i` is `ternary-to-if`: Converts ternary operator to if-statement.
 ;;  * `sv` is `split-var-declaration`: Splits a `var` with multiple vars declared, into several `var` statements.
 ;;  * `ss` is `split-string`: Splits a `string`.
+;;  * `st` is `string-to-template`: Converts a `string` into a template string.
 ;;  * `uw` is `unwrap`: Replaces the parent statement with the selected region.
 ;;  * `lt` is `log-this`: Adds a console.log() statement for what is at point (or region).  With a prefix argument, use JSON pretty-printing.
 ;;  * `dt` is `debug-this`: Adds a debug() statement for what is at point (or region).
@@ -200,6 +201,7 @@ unless point is in a return statement."
   (define-key js2-refactor-mode-map (funcall key-fn "ag") #'js2r-add-to-globals-annotation)
   (define-key js2-refactor-mode-map (funcall key-fn "sv") #'js2r-split-var-declaration)
   (define-key js2-refactor-mode-map (funcall key-fn "ss") #'js2r-split-string)
+  (define-key js2-refactor-mode-map (funcall key-fn "st") #'js2r-string-to-template)
   (define-key js2-refactor-mode-map (funcall key-fn "ef") #'js2r-extract-function)
   (define-key js2-refactor-mode-map (funcall key-fn "em") #'js2r-extract-method)
   (define-key js2-refactor-mode-map (funcall key-fn "ip") #'js2r-introduce-parameter)
