@@ -301,7 +301,7 @@
   (let ((class-node (js2r--closest #'js2-class-node-p)))
     (js2r--extract-fn
      name
-     (if class-node (lambda ())
+     (unless class-node
        (lambda ()
          (goto-char (js2-node-abs-pos (js2r--closest #'js2-object-prop-node-p)))))
      "this.%s(%s);"
@@ -343,7 +343,7 @@
 	 (insert "var " export-var " = "))
        (insert (format call-template name params-string))
        (goto-char (js2-node-abs-pos fn))
-       (funcall goto-position)
+       (when goto-position (funcall goto-position))
        (let ((start (point)))
 	 (insert (format function-template name params-string contents))
 	 (indent-region start (1+ (point))))))))
