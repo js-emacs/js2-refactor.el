@@ -134,6 +134,7 @@
 
 (defun js2r-rename-var ()
   "Renames the variable on point and all occurrences in its lexical scope."
+	(if (fboundp 'evil-insert-state) (evil-insert-state))
   (interactive)
   (js2r--guard)
   (js2r--wait-for-parse
