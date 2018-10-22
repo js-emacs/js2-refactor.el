@@ -78,6 +78,11 @@ to pick and choose your own keybindings with a smattering of:
 
     (define-key js2-refactor-mode-map (kbd "C-c C-e C-f") 'js2r-extract-function)
 
+Additionally, for an interactive list of available keybindings the
+following
+[hydra](https://gist.github.com/anachronic/7af88c62db136727cd1fed17ee0a662f)
+can be used as a starting point.
+
 ## Refactorings
 
  * `ee` is `expand-node-at-point`: Expand bracketed list according to node type at point (array, object, function, call args).
