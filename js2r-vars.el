@@ -132,6 +132,7 @@
 
 ;; Rename variable
 
+;;;###autoload
 (defun js2r-rename-var ()
   "Renames the variable on point and all occurrences in its lexical scope."
   (interactive)
