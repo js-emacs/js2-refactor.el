@@ -24,7 +24,7 @@
 
 (require 'js2r-helpers)
 
-(defvar js2r--iife-regexp "[[:space:]]*(\\(?:function (\)\\|() => {\\)")
+(defconst js2r--iife-regexp "[[:space:]]*(\\(?:function (\)\\|() => {\\)")
 (defconst js2r--use-strict-regexp "[[:space:]]*\\(['\"]\\)use strict\\1")
 
 (defun js2r-wrap-in-iife (beg end)
