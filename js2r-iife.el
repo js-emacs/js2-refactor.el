@@ -50,7 +50,6 @@ BEG and END are the start and end of the region, respectively."
                              (2 "'use strict'"))
                            ";\n"))
       (goto-char end-marker)
-      (delete-blank-lines)
       (insert "}" (pcase js2r-iife-function-style
                     ((or `function `lambda) ")()")
                     (`function-inner "())"))
