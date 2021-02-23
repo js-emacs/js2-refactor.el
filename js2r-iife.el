@@ -45,7 +45,10 @@ BEG and END are the start and end of the region, respectively."
                     ((or `function `function-inner) "function ()")
                     (`lambda "() =>"))
               " {\n")
-      (when strict (insert "\"use strict\";\n"))
+      (when strict (insert (pcase js2r-prefered-quote-type
+                             (1 "\"use strict\"")
+                             (2 "'use strict'"))
+                           ";\n"))
       (goto-char end-marker)
       (delete-blank-lines)
       (insert "}" (pcase js2r-iife-function-style
