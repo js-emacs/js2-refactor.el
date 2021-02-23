@@ -24,22 +24,30 @@
 
 (require 'js2r-helpers)
 
-(defvar js2r--iife-regexp "^(function (")
+(defvar js2r--iife-regexp "[[:space:]]*(\\(?:function (\)\\|() => {\\)")
 
 (defun js2r-wrap-in-iife (beg end)
   "Wrap the current region in an iife.
 BEG and END are the start and end of the region, respectively."
   (interactive "r")
+  (cl-assert (memq js2r-iife-function-style '(function-inner function lambda))
+             nil "`js2r-iife-function-style' invalid")
   (let ((end-marker (copy-marker end t)))
     (save-excursion
       (goto-char beg)
       (when (looking-at-p js2r--iife-regexp)
         (user-error "Region is already an immediately invoked function expression"))
-      (insert "(function () {\n")
+      (insert "(" (pcase js2r-iife-function-style
+                    ((or `function `function-inner) "function ()")
+                    (`lambda "() =>"))
+              " {\n")
       (when js2r-use-strict (insert "\"use strict\";\n"))
       (goto-char end-marker)
       (delete-blank-lines)
-      (insert "}());\n")
+      (insert "}" (pcase js2r-iife-function-style
+                    ((or `function `lambda) ")()")
+                    (`function-inner "())"))
+              ";\n")
       (indent-region beg (point)))
     (set-marker end-marker nil)))
 

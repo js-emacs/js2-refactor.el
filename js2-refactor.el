@@ -162,6 +162,16 @@
   :group 'js2-refactor
   :type 'boolean)
 
+(defcustom js2r-iife-function-style 'function
+  "The type of function to use for IIFEs.
+Can be either `function', yielding (function () {})(),
+`function-inner' for (function () {} ()), or `lambda',
+for (() => {})()."
+  :group 'js2-refactor
+  :type '(choice (const function :tag "(function () {})()")
+                 (const function-inner :tag "(function () {}())")
+                 (const lambda :tag "(() => {})()")))
+
 (defcustom js2r-prefered-quote-type 1
   "The prefered quote style for strings."
   :group 'js2-refactor
