@@ -25,6 +25,7 @@
 (require 'js2r-helpers)
 
 (defvar js2r--iife-regexp "[[:space:]]*(\\(?:function (\)\\|() => {\\)")
+(defconst js2r--use-strict-regexp "[[:space:]]*\\(['\"]\\)use strict\\1")
 
 (defun js2r-wrap-in-iife (beg end)
   "Wrap the current region in an iife.
@@ -32,16 +33,19 @@ BEG and END are the start and end of the region, respectively."
   (interactive "r")
   (cl-assert (memq js2r-iife-function-style '(function-inner function lambda))
              nil "`js2r-iife-function-style' invalid")
-  (let ((end-marker (copy-marker end t)))
+  (let ((end-marker (copy-marker end t))
+        (strict js2r-use-strict))
     (save-excursion
       (goto-char beg)
       (when (looking-at-p js2r--iife-regexp)
         (user-error "Region is already an immediately invoked function expression"))
+      (when (looking-at-p js2r--use-strict-regexp)
+        (setq strict nil))
       (insert "(" (pcase js2r-iife-function-style
                     ((or `function `function-inner) "function ()")
                     (`lambda "() =>"))
               " {\n")
-      (when js2r-use-strict (insert "\"use strict\";\n"))
+      (when strict (insert "\"use strict\";\n"))
       (goto-char end-marker)
       (delete-blank-lines)
       (insert "}" (pcase js2r-iife-function-style
