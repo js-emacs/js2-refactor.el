@@ -26,21 +26,27 @@
 
 (defvar js2r--iife-regexp "^(function (")
 
+(defun js2r-wrap-in-iife (beg end)
+  "Wrap the current region in an iife.
+BEG and END are the start and end of the region, respectively."
+  (interactive "r")
+  (let ((end-marker (copy-marker end t)))
+    (save-excursion
+      (goto-char beg)
+      (when (looking-at-p js2r--iife-regexp)
+        (user-error "Region is already an immediately invoked function expression"))
+      (insert "(function () {\n")
+      (when js2r-use-strict (insert "\"use strict\";\n"))
+      (goto-char end-marker)
+      (delete-blank-lines)
+      (insert "}());\n")
+      (indent-region beg (point)))
+    (set-marker end-marker nil)))
+
 (defun js2r-wrap-buffer-in-iife ()
   "Wrap the entire buffer in an immediately invoked function expression"
   (interactive)
-  (save-excursion
-    (when (ignore-errors (search-backward-regexp js2r--iife-regexp))
-      (error "Buffer already contains an immediately invoked function expression."))
-    (goto-char (point-min))
-    (insert "(function () {\n")
-    (when js2r-use-strict (insert "\"use strict\";\n"))
-    (insert "\n")
-    (goto-char (point-max))
-    (insert "\n")
-    (delete-blank-lines)
-    (insert "\n}());")
-    (indent-region (point-min) (point-max))))
+  (js2r-wrap-in-iife (point-min) (point-max)))
 
 (defun js2r--selected-name-positions ()
   "Returns the (beginning . end) of the name at cursor, or active region."
