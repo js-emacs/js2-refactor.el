@@ -28,6 +28,10 @@
 (defconst js2r--iife-regexp "[[:space:]]*(\\(?:function ([^)]*)\\|([^)]*) => {\\)")
 (defconst js2r--use-strict-regexp "[[:space:]]*\\(['\"]\\)use strict\\1")
 
+(defun js2r-looking-at-iife-p ()
+  "Check if `point' is `looking-at' an IIFE."
+  (looking-at-p js2r--iife-regexp))
+
 (defun js2r-wrap-in-iife (beg end)
   "Wrap the current region in an iife.
 BEG and END are the start and end of the region, respectively."
@@ -38,7 +42,7 @@ BEG and END are the start and end of the region, respectively."
         (strict js2r-use-strict))
     (save-excursion
       (goto-char beg)
-      (when (looking-at-p js2r--iife-regexp)
+      (when (js2r-looking-at-iife-p)
         (user-error "Region is already an immediately invoked function expression"))
       (when (looking-at-p js2r--use-strict-regexp)
         (setq strict nil))
