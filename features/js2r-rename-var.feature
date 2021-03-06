@@ -11,13 +11,13 @@ Feature: Rename variable
 
   Scenario: Rename two instances of name
     Given delete-selection-mode is active
-    When I insert "var abc = 123, def = abc;"
+    When I insert "var foo = 123, bar = foo;"
     And I turn on js2-mode and js2-refactor-mode
-    And I go to character ";"
+    And I go to character "f"
     And I press "C-b"
     And I press "C-c C-m rv"
-    And I type "ghi"
-    Then I should see "var ghi = 123, def = ghi;"
+    And I type "baz"
+    Then I should see "var baz = 123, bar = baz;"
 
   Scenario: Rename not confused by comments
     Given delete-selection-mode is active
