@@ -51,6 +51,8 @@ BEG and END are the start and end of the region, respectively."
                              (2 "'use strict'"))
                            ";\n"))
       (goto-char end-marker)
+      (unless (eq (char-before) ?\n)
+        (insert "\n"))
       (insert "}" (pcase js2r-iife-function-style
                     ((or `function `lambda) ")()")
                     (`function-inner "())"))
@@ -61,7 +63,13 @@ BEG and END are the start and end of the region, respectively."
 (defun js2r-wrap-buffer-in-iife ()
   "Wrap the entire buffer in an immediately invoked function expression"
   (interactive)
-  (js2r-wrap-in-iife (point-min) (point-max)))
+  (let ((eob-nl? (eq (char-before (point-max)) ?\n)))
+    (js2r-wrap-in-iife (point-min) (point-max))
+    (unless eob-nl?
+      (save-excursion
+        (goto-char (point-max))
+        ;; `backward-delete-char' is advised in DOOM
+        (delete-char -1)))))
 
 (defun js2r--selected-name-positions ()
   "Returns the (beginning . end) of the name at cursor, or active region."
