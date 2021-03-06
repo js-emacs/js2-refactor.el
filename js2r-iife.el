@@ -58,6 +58,7 @@ BEG and END are the start and end of the region, respectively."
                     (`function-inner "())"))
               ";\n")
       (indent-region beg (point)))
+    (back-to-indentation)
     (set-marker end-marker nil)))
 
 (defun js2r-wrap-buffer-in-iife ()
