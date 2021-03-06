@@ -2,16 +2,19 @@ language: emacs
 sudo: false
 
 before_install:
-  - curl -fsSkL https://gist.github.com/rejeep/ebcd57c3af83b049833b/raw > travis.sh && source ./travis.sh
-  # Fix cask (See https://github.com/cask/cask/issues/399#issuecomment-331640427)
-  - perl -ibak -lape 's{#!/usr/bin/env python}{#!/usr/bin/python}' "$(which cask)"
-  - evm install $EVM_EMACS --use --skip
+  - sudo apt-get install python3
+  - export PATH="/home/travis/.evm/bin:$PATH"
+  - export PATH="/home/travis/.cask/bin:$PATH"
+  - git clone https://github.com/cask/cask /home/travis/.cask
+  - git clone https://github.com/rejeep/evm.git /home/travis/.evm
+  - evm config path /tmp
+  - evm install emacs-27.1-travis-linux-xenial --use --skip
   - cask install
 
 env:
   - TAGS="" EVM_EMACS=emacs-25.3-travis
   - TAGS="" EVM_EMACS=emacs-26.3-travis
-  - TAGS="" EVM_EMACS=emacs-27.1-travis
+  - TAGS="" EVM_EMACS=emacs-27.1-travis-linux-xenial
   - TAGS="" EVM_EMACS=emacs-git-snapshot-travis
 
 matrix:
