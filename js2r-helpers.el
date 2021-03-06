@@ -28,6 +28,7 @@
 
 (defmacro js2r--wait-for-parse (&rest body)
   "Evaluate BODY once the current buffer has been parsed."
+  (declare (debug def-body))
   `(js2-mode-wait-for-parse (lambda () ,@body)))
 
 (defun js2r--wrap-text (&rest text)
