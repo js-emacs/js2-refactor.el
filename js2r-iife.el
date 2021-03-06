@@ -140,5 +140,35 @@ See `js2r-add-global-to-iife'."
      (let ((name (buffer-substring beg end)))
        (js2r-add-global-to-iife name (js2r--read-iife-short-name name))))))
 
+(defun js2r-unwrap-iife ()
+  "Unwrap the IIFE at `point'."
+  (interactive)
+  (save-match-data
+    (unless (looking-at js2r--iife-regexp)
+      (user-error "`point' is not on an IIFE"))
+    (let ((body (save-excursion
+                  (goto-char (match-end 0))
+                  (forward-char -1)
+                  (let ((start (1+ (point))))
+                    (forward-list)
+                    (forward-char -1)
+                    (buffer-substring-no-properties start (point))))))
+      (let ((start (point)))
+        (forward-list)
+        (delete-region start (point))
+
+        (when (looking-at "\\(([^)]*)\\)?;$?")
+          (delete-region (match-beginning 0) (match-end 0)))
+
+        (insert (string-trim body))
+        (indent-region start (point))
+        (back-to-indentation)))))
+
+(defun js2r-unwrap-iife-in-buffer ()
+  "Unwrap the first IIFE in the current buffer.
+See `js2r-wrap-buffer-in-iife'."
+  (search-forward-regexp js2r--iife-regexp)
+  (js2r-unwrap-iife))
+
 (provide 'js2r-iife)
 ;;; js2-iife.el ends here
