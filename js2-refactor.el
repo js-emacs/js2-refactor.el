@@ -162,7 +162,7 @@
   :group 'js2-refactor
   :type 'boolean)
 
-(defcustom js2r-iife-function-style 'function
+(defcustom js2r-iife-style 'function
   "The type of function to use for IIFEs.
 Can be either `function', yielding (function () {})(),
 `function-inner' for (function () {} ()), or `lambda',
