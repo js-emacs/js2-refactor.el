@@ -137,9 +137,10 @@ A list of some wanted improvements for the current refactorings.
 
 ## Contributors
 
+* [Nicolas Petton](https://github.com/NicolasPetton) contributed lots of stuff and is now a co-maintainer of the project.
+* [Nikita Bloshchanevich](https://github.com/nbfalcon) is now a co-maintainer of the project.
 * [Matt Briggs](https://github.com/mbriggs) contributed `js2r-add-to-globals-annotation`
 * [Alex Chamberlain](https://github.com/apchamberlain) contributed contracting and expanding arrays and functions.
-* [Nicolas Petton](https://github.com/NicolasPetton) contributed lots of stuff and is now a co-maintainer of the project.
 * [Brian J Brennan](https://github.com/brianloveswords) added support for `const` and `let` to inline-var.
 * [James Yang](https://github.com/futurist) added `expand-node-at-point` and `contract-node-at-point` functions.
 * [Arne Martin Aurlien](https://github.com/arnemart) added more support for `let` and `const`.
