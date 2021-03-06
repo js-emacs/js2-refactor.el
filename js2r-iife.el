@@ -88,44 +88,53 @@ BEG and END are the start and end of the region, respectively."
         (skip-syntax-backward ".w_")
         (cons (point) end)))))
 
+(defun js2r--read-iife-short-name (name)
+  "Read an iife short name for NAME.
+See `js2r-add-global-to-iife'."
+  (read-string "Short name (%s): " (substring name 0 1) nil name))
+
+(defun js2r-add-global-to-iife (global short)
+  "Add GLOBAL under the name SHORT to the current IIFE."
+  (interactive
+   (let ((global (read-string "Global: " (thing-at-point 'symbol))))
+     (list global (js2r--read-iife-short-name global))))
+  (save-excursion
+    (save-match-data
+      (atomic-change-group
+        (let* (beg end)
+          (unless (search-backward-regexp js2r--iife-regexp)
+            (error "No immediately invoked function expression found"))
+          (goto-char (match-end 0))
+          (search-backward ")")
+          (unless (= (char-before) ?\()
+            (insert ", "))
+          (insert short)
+          (search-forward "{")
+          (setq beg (point))
+          (backward-char)
+          (forward-list)
+          (setq end (point))
+          (unless (search-forward "(" (+ 3 (point)) t)
+            (user-error "IIFE not called"))
+          (forward-char -1)
+          (forward-list)
+          (forward-char -1)
+          (unless (eq (char-before) ?\()
+            (insert ", "))
+          (insert global)
+          (goto-char beg)
+          (while (search-forward-regexp (format "\\_<%s\\_>" global) end t)
+            (replace-match short t t)))))))
+
 (defun js2r-inject-global-in-iife ()
   "Create shortcut for marked global by injecting it in the wrapping IIFE"
   (interactive)
   (js2r--guard)
   (js2r--wait-for-parse
-   (save-excursion
-     (save-match-data
-       (atomic-change-group
-         (let* ((name-pos (js2r--selected-name-positions))
-                (name-beg (car name-pos))
-                (name-end (cdr name-pos))
-                (name (buffer-substring-no-properties name-beg name-end))
-                (short (read-string (format "Short name (%s): " name) (substring name 0 1) nil name))
-                beg end)
-           (unless (search-backward-regexp js2r--iife-regexp)
-             (error "No immediately invoked function expression found."))
-           (goto-char (match-end 0))
-           (search-backward ")")
-           (deactivate-mark)
-           (unless (= (char-before) ?\()
-             (insert ", "))
-           (insert short)
-           (search-forward "{")
-           (setq beg (point))
-           (backward-char)
-           (forward-list)
-           (setq end (point))
-           (unless (search-forward "(" (+ 3 (point)) t)
-             (user-error "IIFE not called"))
-           (forward-char -1)
-           (forward-list)
-           (forward-char -1)
-           (unless (eq (char-before) ?\()
-             (insert ", "))
-           (insert name)
-           (goto-char beg)
-           (while (search-forward-regexp (format "\\_<%s\\_>" name) end t)
-             (replace-match short t t))))))))
+   (cl-destructuring-bind (beg . end) (js2r--selected-name-positions)
+     (deactivate-mark)
+     (let ((name (buffer-substring beg end)))
+       (js2r-add-global-to-iife name (js2r--read-iife-short-name name))))))
 
 (provide 'js2r-iife)
 ;;; js2-iife.el ends here
