@@ -36,8 +36,8 @@
   "Wrap the current region in an iife.
 BEG and END are the start and end of the region, respectively."
   (interactive "r")
-  (cl-assert (memq js2r-iife-function-style '(function-inner function lambda))
-             nil "`js2r-iife-function-style' invalid")
+  (cl-assert (memq js2r-iife-style '(function-inner function lambda))
+             nil "`js2r-iife-style' invalid")
   (let ((end-marker (copy-marker end t))
         (strict js2r-use-strict))
     (save-excursion
@@ -46,7 +46,7 @@ BEG and END are the start and end of the region, respectively."
         (user-error "Region is already an immediately invoked function expression"))
       (when (looking-at-p js2r--use-strict-regexp)
         (setq strict nil))
-      (insert "(" (pcase js2r-iife-function-style
+      (insert "(" (pcase js2r-iife-style
                     ((or `function `function-inner) "function ()")
                     (`lambda "() =>"))
               " {\n")
@@ -57,7 +57,7 @@ BEG and END are the start and end of the region, respectively."
       (goto-char end-marker)
       (unless (eq (char-before) ?\n)
         (insert "\n"))
-      (insert "}" (pcase js2r-iife-function-style
+      (insert "}" (pcase js2r-iife-style
                     ((or `function `lambda) ")()")
                     (`function-inner "())"))
               ";\n")
