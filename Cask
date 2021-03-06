@@ -1,6 +1,6 @@
 (source melpa)
 
-(package "js2-refactor" "0.6.1" "A JavaScript refactoring library for emacs.")
+(package "js2-refactor" "0.9.0" "A JavaScript refactoring library for emacs.")
 
 (depends-on "js2-mode" "20101228")
 (depends-on "multiple-cursors" "1.0.0")
