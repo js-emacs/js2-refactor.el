@@ -65,10 +65,9 @@
 (defalias 'js2r--point-inside-string-p 'js2r--current-quotes-char)
 
 (defun js2r--closest-node-where (p node)
-  (if (or (null node)
-          (apply p node nil))
-      node
-    (js2r--closest-node-where p (js2-node-parent node))))
+  (while (and node (not (funcall p node)))
+    (setq node (js2-node-parent node)))
+  node)
 
 (defun js2r--closest (p)
   (save-excursion
