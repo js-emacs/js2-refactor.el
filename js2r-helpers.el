@@ -31,6 +31,15 @@
   (declare (debug def-body))
   `(js2-mode-wait-for-parse (lambda () ,@body)))
 
+(defmacro js2r--with-indentation (&rest body)
+  "Evaluate BODY and indent its insertion.
+Indent the region between the "
+  (declare (debug body) (indent 0))
+  (let ((start-point-sym (make-symbol "start")))
+    `(let ((,start-point-sym (point)))
+       (prog1 ,(macroexp-progn body)
+         (indent-region ,start-point-sym (point))))))
+
 (defun js2r--wrap-text (&rest text)
   "Wrap TEXT with the prefered quotes.  The prefered quotes is set with `js2r-prefered-quote-type'."
   (let ((prefered-quotes "\""))
@@ -216,6 +225,37 @@ parent node."
           (insert (plist-get it :contents)))
         (indent-region abs-beg abs-end)
         (set-marker abs-end nil)))))
+
+(defun js2r--defun-at-point (&optional pos)
+  "Return the nearest function node surrounding POS.
+Return nil if POS, defaulting to `point', is not surrounded by a
+function. Function nodes may be lambdas, functions, ...."
+  (js2r--closest-node-where #'js2-function-node-p
+                            (js2-node-at-point (or pos (point)) t)))
+
+(defun js2r--delete-match (&optional n)
+  "Delete the Nth (default: 0th) submatch."
+  (let ((n (or n 0)))
+    (delete-region (match-beginning n)
+                   (match-end n))))
+
+(defun js2r--use-strict ()
+  "Get a 'use strict' string respecting configuration options.
+Currently, the value depends on `js2r-prefered-quote-type'."
+  (concat (pcase js2r-prefered-quote-type
+            (1 "\"use strict\"")
+            (2 "'use strict'"))
+          ";"))
+
+(defun js2r--delete-blank-lines ()
+  "Delete blank lines around `point'.
+Unlike `delete-blank-lines', this function does not leave a
+single blank line."
+  (delete-blank-lines)
+  (unless (eobp)
+    (delete-char 1)))
+
+(defconst js2r--use-strict-regexp "[[:space:]]*\\(['\"]\\)use strict\\1;?")
 
 (provide 'js2r-helpers)
 ;;; js2-helpers.el ends here
