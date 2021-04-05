@@ -25,8 +25,7 @@
 (require 'js2r-helpers)
 (require 'cl-lib)
 
-(defconst js2r--iife-regexp "[[:space:]]*(\\(?:function ([^)]*)\\|([^)]*) => {\\)")
-(defconst js2r--use-strict-regexp "[[:space:]]*\\(['\"]\\)use strict\\1")
+(defconst js2r--iife-regexp "[[:space:]]*(\\(?:function ([^)]*)\\|([^)]*)[[:space:]\n]*=>\\)[[:space:]\n]*{")
 
 (defun js2r-looking-at-iife-p ()
   "Check if `point' is `looking-at' an IIFE."
@@ -50,10 +49,7 @@ BEG and END are the start and end of the region, respectively."
                     ((or `function `function-inner) "function ()")
                     (`lambda "() =>"))
               " {\n")
-      (when strict (insert (pcase js2r-prefered-quote-type
-                             (1 "\"use strict\"")
-                             (2 "'use strict'"))
-                           ";\n"))
+      (when strict (insert (js2r--use-strict)))
       (goto-char end-marker)
       (unless (eq (char-before) ?\n)
         (insert "\n"))

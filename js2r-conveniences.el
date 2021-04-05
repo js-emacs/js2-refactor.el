@@ -238,5 +238,36 @@ down in an object or array literal."
         (end-of-line)
         (delete-char -1))))
 
+(defun js2r-toggle-use-strict-defun ()
+  "Toggle 'use strict' in the current function.
+If `point' is not in a function, or FORCE-FILE is given, toggle
+'use strict' globally. Otherwise, toggle it in the current
+function."
+  (interactive)
+  (js2r--wait-for-parse
+   (let* ((fun (or (js2r--defun-at-point)
+                   (user-error "Not in a function")))
+          (body (js2-function-node-body fun)))
+     (unless (js2-block-node-p body)
+       (user-error "Function body must be a block"))
+     (save-excursion
+       (goto-char (js2-node-abs-pos body))
+       (save-match-data
+         (if (search-forward-regexp js2r--use-strict-regexp
+                                    (js2-node-abs-end body) t)
+             (progn (js2r--delete-match)
+                    (js2r--delete-blank-lines))
+           (goto-char (js2-node-abs-pos body))
+           (forward-char)
+           (let ((start (point))
+                 (oneline? (= (line-number-at-pos (js2-node-abs-end body))
+                              (line-number-at-pos (js2-node-abs-pos body)))))
+             (js2r--with-indentation
+               (insert "\n" (js2r--use-strict))
+               (unless (looking-at-p "\n[[:space:]]*$")
+                 (insert "\n"))
+               (when oneline?
+                 (insert "\n"))))))))))
+
 (provide 'js2r-conveniences)
 ;;; js2r-conveniences.el ends here
