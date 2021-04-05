@@ -269,5 +269,18 @@ function."
                (when oneline?
                  (insert "\n"))))))))))
 
+(defun js2r-toggle-use-strict-module ()
+  "Toggle 'use strict' globally."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (save-match-data
+      (if (re-search-forward (concat "^" js2r--use-strict-regexp) nil t)
+          (progn (js2r--delete-match)
+                 (js2r--delete-blank-lines))
+        (insert (js2r--use-strict))
+        (unless (looking-at-p "\n[[:space:]]*$")
+          (insert "\n\n"))))))
+
 (provide 'js2r-conveniences)
 ;;; js2r-conveniences.el ends here
