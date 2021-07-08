@@ -214,6 +214,8 @@ unless point is in a return statement."
   (define-key js2-refactor-mode-map (funcall key-fn "sv") #'js2r-split-var-declaration)
   (define-key js2-refactor-mode-map (funcall key-fn "ss") #'js2r-split-string)
   (define-key js2-refactor-mode-map (funcall key-fn "st") #'js2r-string-to-template)
+  (define-key js2-refactor-mode-map (funcall key-fn "s'") #'js2r-string-to-single-quote)
+  (define-key js2-refactor-mode-map (funcall key-fn "s\"") #'js2r-string-to-double-quote)
   (define-key js2-refactor-mode-map (funcall key-fn "ef") #'js2r-extract-function)
   (define-key js2-refactor-mode-map (funcall key-fn "em") #'js2r-extract-method)
   (define-key js2-refactor-mode-map (funcall key-fn "ip") #'js2r-introduce-parameter)
