@@ -81,10 +81,19 @@ this only works if the mode was called with
     (save-excursion
      (dolist (p places)
        (let ((begin (cdr (assq 'begin p)))
-             (end (cdr (assq 'end p))))
-         (delete-region begin end)
-         (goto-char begin)
-         (insert new-name)))
+             (end (cdr (assq 'end p)))
+             (node (cdr (assq 'node p))))
+         (cond
+           ((and (js2-name-node-p node)
+                 (js2-object-prop-node-p (js2-node-parent node))
+                 (eq node (js2-object-prop-node-left (js2-node-parent node)))
+                 (eq node (js2-object-prop-node-right (js2-node-parent node))))
+            (goto-char end)
+            (insert ": " new-name))
+           (t
+            (delete-region begin end)
+            (goto-char begin)
+            (insert new-name)))))
      (message "%d occurrences renamed to %s" (length places) new-name))
     (js2r-highlight-forgetit)))
 
@@ -139,7 +148,8 @@ see."
          (len (js2-node-len current-node)))
     (mapcar (lambda (beg)
               `((begin . ,beg)
-                (end . ,(+ beg len))))
+                (end . ,(+ beg len))
+                (node . ,(js2-node-at-point beg))))
             (js2r--local-var-positions current-node t))))
 
 (defun js2r--constant-node-value (node)
