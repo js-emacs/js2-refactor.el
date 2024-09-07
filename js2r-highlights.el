@@ -237,8 +237,16 @@ see."
       ((js2-this-or-super-node-p node)
        (js2r--hl-get-this-regions node)))))
 
+(defun js2r--hl-parent-function-this (node)
+  (setq node (js2-node-parent node))
+  (while (and node
+              (or (not (js2-function-node-p node))
+                  (eq 'FUNCTION_ARROW (js2-function-node-form node))))
+    (setq node (js2-node-parent node)))
+  (and (js2-function-node-p node) node))
+
 (defun js2r--hl-get-this-regions (node)
-  (let ((func (js2-mode-find-parent-fn node))
+  (let ((func (js2r--hl-parent-function-this node))
         (type (js2-node-type node))
         (regions (list)))
     (unless func
