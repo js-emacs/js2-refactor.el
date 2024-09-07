@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 ;;; js2r-highlights.el --- Highlight variable occurrences, free variables, etc.
 
-;; Copyright (C) 2016-2017 Mihai Bazon <mihai.bazon@gmail.com>
+;; Copyright (C) 2016-2024 Mihai Bazon <mihai.bazon@gmail.com>
 
 ;; Keywords: conveniences
 
@@ -17,6 +17,57 @@
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This is a minor mode that highlights certain things of interest and
+;; allows you to easily move through them. The most useful is
+;; `js2r-highlight-thing-at-point', which highlights occurrences of
+;; the thing at point. You'd normally use it on variables, and it
+;; selects all occurrences in the defining scope, but it also works on
+;; constants (highlights occurrences in the whole buffer), or on
+;; "this" or "super" keywords.
+;;
+;; There's also `js2r-highlight-free-vars' which selects free
+;; variables in the enclosing function, and `js2r-highlight-exits'
+;; which selects exit points from the current function ("return" or
+;; "throw" nodes).
+;;
+;; While highlights mode is on, the following key bindings are
+;; available:
+;;
+;;     C-<down> - `js2r-highlight-move-next'
+;;     C-<up> - `js2r-highlight-move-prev'
+;;     C-<return> - `js2r-highlight-rename'
+;;     <escape> or C-g - `js2r-highlight-forgetit'
+;;
+;; `js2r-highlight-rename' will replace all highlighted regions with
+;; something else (you'll specify in the minibuffer). When used on
+;; variables it takes care to maintain code semantics, for example in
+;; situations like this:
+;;
+;;     let { foo } = obj;
+;;
+;; With the cursor on "foo", `js2r-highlight-thing-at-point' will
+;; select all occurrences of "foo" in the enclosing scope, and if you
+;; use rename, it will convert to something like this, instead of
+;; simply renaming:
+;;
+;;     let { foo: newName } = obj;
+;;
+;; such that newName will still be initialized to obj.foo, as in the
+;; original code.
+;;
+;; I use the following key bindings to enter highlights mode:
+;;
+;;     (define-key js2-refactor-mode-map (kbd "M-?") 'js2r-highlight-thing-at-point)
+;;     (define-key js2-refactor-mode-map (kbd "C-c C-f") 'js2r-highlight-free-vars)
+;;     (define-key js2-refactor-mode-map (kbd "C-c C-x") 'js2r-highlight-exits)
+;;
+;; There is also an utility function suitable for expand-region, I
+;; have the following in my `js2-mode-hook':
+;;
+;;     (setq er/try-expand-list '(js2r-highlight-extend-region))
 
 ;;; Code:
 
