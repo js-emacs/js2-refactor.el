@@ -25,7 +25,7 @@
 (require 'js2r-helpers)
 (require 'cl-lib)
 
-(defconst js2r--iife-regexp "[[:space:]]*(\\(?:function ([^)]*)\\|([^)]*) => {\\)")
+(defconst js2r--iife-regexp "[[:space:]]*(\\(?:function[[:space:]]*([^)]*)\\|([^)]*)[[:space:]\n]*=>\\)[[:space:]\n]*{")
 (defconst js2r--use-strict-regexp "[[:space:]]*\\(['\"]\\)use strict\\1")
 
 (defun js2r-looking-at-iife-p ()
@@ -157,7 +157,7 @@ See `js2r-add-global-to-iife'."
         (forward-list)
         (delete-region start (point))
 
-        (when (looking-at "\\(([^)]*)\\)?;$?")
+        (when (looking-at "\\(([^)]*)\\)?;?")
           (delete-region (match-beginning 0) (match-end 0)))
 
         (insert (string-trim body))
@@ -167,8 +167,15 @@ See `js2r-add-global-to-iife'."
 (defun js2r-unwrap-iife-in-buffer ()
   "Unwrap the first IIFE in the current buffer.
 See `js2r-wrap-buffer-in-iife'."
-  (search-forward-regexp js2r--iife-regexp)
-  (js2r-unwrap-iife))
+  (interactive)
+  (save-excursion
+    (save-match-data
+      (goto-char (point-min))
+      (unless (search-forward-regexp js2r--iife-regexp nil t)
+        (user-error "No IIFE in the current buffer"))
+      (goto-char (match-beginning 0))
+      (js2r-unwrap-iife)
+      (point))))
 
 (provide 'js2r-iife)
 ;;; js2-iife.el ends here
