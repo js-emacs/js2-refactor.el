@@ -70,14 +70,14 @@
    (js2-node-get-enclosing-scope name-node)
    (js2-name-node-name name-node)))
 
-(defun js2r--local-usages-of-name-node (name-node)
+(defun js2r--local-usages-of-name-node (name-node &optional globals-p)
   (unless (js2r--local-name-node-p name-node)
     (error "Node is not on a local identifier"))
   (let* ((name (js2-name-node-name name-node))
          (scope (js2r--name-node-defining-scope name-node))
          (result nil))
     (js2-visit-ast
-     scope
+     (if globals-p (or scope js2-mode-ast) scope)
      (lambda (node end-p)
        (when (and (not end-p)
                   (js2r--local-name-node-p node)
@@ -87,8 +87,8 @@
        t))
     result))
 
-(defun js2r--local-var-positions (name-node)
-  (-map 'js2-node-abs-pos (js2r--local-usages-of-name-node name-node)))
+(defun js2r--local-var-positions (name-node &optional globals-p)
+  (-map 'js2-node-abs-pos (js2r--local-usages-of-name-node name-node globals-p)))
 
 (defun js2r--var-defining-node (var-node)
   (unless (js2r--local-name-node-p var-node)
