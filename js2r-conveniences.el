@@ -117,15 +117,31 @@ position where the log should be inserted."
 (defun js2r-string-to-template ()
   "Convert the string at point into a template string."
   (interactive)
+  (js2r--convert-string-delimiter "`"))
+
+(defun js2r-string-to-single-quote()
+  "Convert the string at point into a single-quote delimited string"
+  (interactive)
+  (js2r--convert-string-delimiter "'"))
+
+(defun js2r-string-to-double-quote()
+  "Convert the string at point into a double-quote delimited string"
+  (interactive)
+  (js2r--convert-string-delimiter "\""))
+
+(defun js2r--convert-string-delimiter (to-delim)
+  "Convert the delimiters of string at point to a specified delimiter TO-DELIM."
   (let ((node (js2-node-at-point)))
     (when (js2-string-node-p node)
       (let* ((start (js2-node-abs-pos node))
-             (end (+ start (js2-node-len node))))
-        (when (memq (char-after start) '(?' ?\"))
+             (end (+ start (js2-node-len node)))
+             (prev-delim (char-after start)))
+        (when (memq prev-delim '(?' ?\" ?`))
           (save-excursion
-            (goto-char end) (delete-char -1) (insert "`")
-            (goto-char start) (delete-char 1) (insert "`")
-            (perform-replace "`" "\\`" nil nil nil nil nil (1+ start) (1- end))))))))
+            (goto-char end) (delete-char -1) (insert to-delim)
+            (goto-char start) (delete-char 1) (insert to-delim)
+            (perform-replace to-delim (concat "\\" to-delim) nil nil nil nil nil (1+ start) (1- end))
+            (perform-replace (concat "\\" (char-to-string prev-delim)) (char-to-string prev-delim) nil nil nil nil nil (1+ start) (1- end))))))))
 
 (defun js2r--string-delimiter (node)
   "Return the delimiter character of the string node NODE.
